@@ -1,0 +1,27 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "Tamada"
+
+include ':app'
+include ':coreui'
+include ':network'
+include ':core'
+include ':features'
+include ':features:auth'
+include ':features:home'
+include ':features:info'
+include ':features:guests'
+include ':features:lists'
+include ':features:finance'

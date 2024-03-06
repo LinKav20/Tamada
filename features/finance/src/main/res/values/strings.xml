@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MainFinance Screen -->
+    <string name="main_finance_title">Расходы</string>
+    <string name="main_finance_road_map_step_1">вносим расходы</string>
+    <string name="main_finance_road_map_step_2">скидываем деньги</string>
+    <string name="main_finance_road_map_step_3">возвращаем долги</string>
+
+    <!-- BasicFinance Screen-->
+    <string name="basic_finance_onbording_title">Зачем нужен этот раздел?</string>
+    <string name="basic_finance_onbording_subtitle">Представьте, что вы из конструктора и пришли на вечеринку</string>
+    <string name="basic_finance_onbording_button">Хочу узнать</string>
+    <string name="basic_finance_turn_on_button">Включить расходы?</string>
+    <string name="basic_finance_turn_off_title">Для данной вечеринки не включено распределение расходов</string>
+</resources>

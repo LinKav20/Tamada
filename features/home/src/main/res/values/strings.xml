@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--HomeMain Screen -->
+    <string name="home_main_screen_party_tag">NEW</string>
+    <string name="home_main_screen_guest_party_title">Мои вечеринки</string>
+    <string name="home_main_screen_manage_party_title">Меня пригласили</string>
+    <string name="home_main_screen_hello_message">Привет, %s!</string>
+    <string name="home_main_screen_info_message">Чтобы продолжить, выбери или добавь вечеринку</string>
+
+    <!-- BottomBar Navigation -->
+    <string name="bottom_bar_navigation_info">Инфо</string>
+    <string name="bottom_bar_navigation_guests">Гости</string>
+    <string name="bottom_bar_navigation_lists">Списки</string>
+    <string name="bottom_bar_navigation_expenses">Расходы</string>
+
+    <!-- Lk Screen -->
+    <string name="lk_screen_title">Личный кабинет</string>
+</resources>

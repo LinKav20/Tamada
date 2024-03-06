@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- GuestsList Screen -->
+    <string name="guests_list_title">Гости</string>
+    <string name="guests_list_invite_title">Пригласить гостей</string>
+    <string name="guests_list_invite_subtitle">Отправьте эту ссылку в общую беседу с гостями или каждому лично</string>
+    <string name="guests_list_admin_title">Администраторы</string>
+    <string name="guests_list_admin_title_editable">Администраторы</string>
+    <string name="guests_list_admin_subtitle">Помогут вам в организации, выберите ответственных, перейдя в режим редактирования</string>
+    <string name="guests_list_guests_title">Все участники</string>
+    <string name="guests_list_guests_title_guests">Гости</string>
+    <string name="guests_list_guests_subtitle">Появятся в этом разделе, когда перейдут по ссылке</string>
+    <string name="guests_list_guests_exactly_come">Точно пойдут</string>
+    <string name="guests_list_guests_probably_come">Возможно пойдут</string>
+    <string name="guests_list_edit_users">Редактировать участников</string>
+    <string name="guests_list_save">Сохранить</string>
+    <string name="guests_list_info_shown_disclaimer_first">Афишу просмотрели</string>
+    <string name="guests_list_info_shown_disclaimer_second">%d гостей</string>
+</resources>

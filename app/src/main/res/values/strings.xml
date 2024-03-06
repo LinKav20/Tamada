@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tamada</string>
+
+    <string name="error_network">error_network</string>
+    <string name="error_server">error_server</string>
+    <string name="error_client">error_client</string>
+    <string name="error_unknown">error_unknown</string>
+    <string name="error_unauthorized">error_unauthorized</string>
+    <string name="error_unauthorized_action">error_unauthorized_action</string>
+    <string name="error_timeout">error_timeout</string>
+    <string name="error_forbidden">error_forbidden</string>
+
+</resources>

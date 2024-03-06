@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_blue">#FF5061FF</color>
+    <color name="secondary_blue">#FFEBECFF</color>
+    <color name="background_blue">#FFF9FBFF</color>
+    <color name="start_gradient_blue">#FF5061FF</color>
+    <color name="end_gradient_blue">#FFC0C6FF</color>
+
+    <color name="primary_purple">#FF7B58E6</color>
+    <color name="secondary_purple">#FFEBECFF</color>
+    <color name="background_purple">#FFF9F8FF</color>
+    <color name="start_gradient_purple">#FF7B58E6</color>
+    <color name="end_gradient_purple">#FFC5B1FF</color>
+
+    <color name="primary_pink">#FFF54397</color>
+    <color name="secondary_pink">#FFFFE3F0</color>
+    <color name="background_pink">#FFFFFAFC</color>
+    <color name="start_gradient_pink">#FFF54397</color>
+    <color name="end_gradient_pink">#FFFF87C0</color>
+
+    <color name="primary_green">#FF0A7F24</color>
+    <color name="secondary_green">#FFE9F6EC</color>
+    <color name="background_green">#FFFBFFFB</color>
+    <color name="start_gradient_green">#FF0A7F24</color>
+    <color name="end_gradient_green">#ABEAB9</color>
+
+    <color name="status_positive">#FF5AC461</color>
+    <color name="status_negative">#FFEC4F50</color>
+    <color name="status_warning">#FFFFDA68</color>
+
+    <color name="text_header">#FF252525</color>
+    <color name="text_main">#FF787878</color>
+    <color name="text_hint">#FFA5A7B9</color>
+    <color name="text_caption">#FFBEBEBE</color>
+    <color name="text_white">#FFFFFFFF</color>
+
+    <color name="background_primary">#FFFFFFFF</color>
+</resources>

@@ -1,0 +1,11 @@
+plugins {
+}
+
+android {
+    namespace 'com.github.linkav20.home'
+
+}
+
+dependencies {
+    implementation project(path: ':features:auth')
+}

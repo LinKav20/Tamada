@@ -1,0 +1,150 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'org.openapi.generator' version "5.3.0"
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
+}
+
+android {
+    namespace 'com.github.linkav20.network'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 26
+        targetSdk 34
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    // Network
+    api libs.retrofit
+    implementation libs.moshi
+    implementation libs.converter.moshi
+    implementation libs.converter.scalars
+    implementation libs.logging.interceptor
+
+    implementation libs.timber
+
+    // Serialization
+    implementation libs.serialization.json
+
+    // Hilt
+    implementation libs.hilt.android
+    implementation project(path: ':core')
+    kapt libs.hilt.compiler
+
+    // Tests
+    testImplementation libs.junit
+    androidTestImplementation libs.junit.ext
+    androidTestImplementation libs.espresso
+
+    // Tools
+    coreLibraryDesugaring libs.desugar
+}
+
+class Api {
+    final String moduleName
+    final String swaggerName
+
+    Api(String moduleName, String swaggerName) {
+        this.moduleName = moduleName
+        this.swaggerName = swaggerName
+    }
+}
+
+def apis = [
+
+]
+
+task runOpenApiGeneratorTaskGenerator {
+    apis.forEach({ api ->
+        final moduleName = api.moduleName
+        final fileName = api.swaggerName
+
+        final packageId = "ru.ozon.ozon_pvz.network.$moduleName"
+        final taskName = "openApiGenerate${moduleName.toUpperCase()}"
+        final filePath = "$projectDir/specs/$fileName"
+
+        task "$taskName"(type: GenerateTask) {
+            generatorName = "kotlin"
+            library = "jvm-retrofit2"
+            inputSpec = filePath
+            outputDir = "$projectDir/$moduleName".toString()
+            skipOverwrite = false // In case of custom changes made to modules are already generated
+            id = moduleName
+            groupId = packageId
+            packageName = "${packageId}.client"
+            apiPackage = "${packageId}.api"
+            modelPackage = "${packageId}.models"
+            invokerPackage = "${packageId}.invoker"
+            configOptions = [
+                    dateLibrary                      : "java8",
+                    sortModelPropertiesByRequiredFlag: "true",
+                    sortParamsByRequiredFlag         : "true",
+                    useCoroutines                    : "true"
+            ]
+        }
+
+        dependsOn taskName
+    })
+
+}
+
+task removeHeaders {
+    doLast {
+        def runJq = { fileName ->
+            def baOutput = new ByteArrayOutputStream()
+            exec {
+                commandLine("jq", "-f", "headers.jq", "$projectDir/specs/${fileName}.tmp.json")
+                standardOutput = baOutput
+            }
+            return baOutput.toString()
+        }
+
+        apis.forEach({ api ->
+            final moduleName = api.moduleName
+            final fileName = api.swaggerName
+            final filePath = "$projectDir/specs/$fileName"
+            final taskName = "removeHeaders${moduleName.toUpperCase()}"
+
+            copy {
+                from "$filePath"
+                into "$projectDir/specs/"
+                rename("$fileName", "${fileName}.tmp.json")
+            }
+            file("$filePath").delete()
+
+            def fixedJson = runJq(fileName)
+            new File("$filePath").text = fixedJson
+            file("$projectDir/specs/${fileName}.tmp.json").delete()
+        })
+    }
+}
+
+
+task runOpenApiGenerator {
+    dependsOn "removeHeaders"
+    dependsOn "runOpenApiGeneratorTaskGenerator"
+    tasks.findByName('runOpenApiGeneratorTaskGenerator').mustRunAfter 'removeHeaders'
+}

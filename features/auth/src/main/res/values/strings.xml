@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--AuthMain Screen -->
+    <string name="auth_main_screen_login_title">Войти</string>
+    <string name="auth_main_screen_signup_title">Зарегистироваться</string>
+    <string name="auth_main_screen_hello_message">Привет!</string>
+    <string name="auth_main_screen_about_us_message">Мы — tamada и мы поможем тебе с организацией вечеринки</string>
+
+    <!--Login Screen -->
+    <string name="login_screen_login_title">Введите логин или email</string>
+    <string name="login_screen_password_title">Введите пароль</string>
+    <string name="login_screen_login_hint">tamada@list.ru</string>
+    <string name="login_screen_password_hint">Пароль</string>
+    <string name="login_screen_login_button">Войти</string>
+    <string name="login_screen_error_title">Неверный логин или пароль</string>
+</resources>

@@ -1,0 +1,9 @@
+plugins {
+}
+
+android {
+    namespace 'com.github.linkav20.auth'
+}
+
+dependencies {
+}

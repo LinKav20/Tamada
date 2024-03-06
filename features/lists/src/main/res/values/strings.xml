@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--ListsMain Screen -->
+    <string name="lists_main_title">Списки</string>
+    <string name="lists_main_create_list_title">Идеальная вписка начинается со списка</string>
+    <string name="lists_main_create_list_description">Здесь все: шашлыки, лофты и даже плойка в подарок. Добавьте шаблон, чтобы готовиться к вечеринке вместе</string>
+    <string name="lists_main_empty_list_title">Пустой список</string>
+    <string name="lists_main_empty_list_description">Выпустите зверя своего воображения (даже если это утенок)</string>
+    <string name="lists_main_todo_list_title">Список дел</string>
+    <string name="lists_main_todo_list_description">Чтобы точно ничего не забыть, еще и несколько заметок из нашего опыта</string>
+    <string name="lists_main_buying_list_title">Список покупок</string>
+    <string name="lists_main_buying_list_description">Что нужно купить, а что уже куплено? Если нужно, поможем поделить затраты на всех</string>
+    <string name="lists_main_wishlist_title">Вишлист</string>
+    <string name="lists_main_wishlist_description">Плойка? Наушники? БДСМ набор? Гости отметят галочками, что хотят подарить</string>
+    <string name="lists_main_filter_only_for_managers">Только организаторские</string>
+    <string name="lists_main_more_tasks">+%d пунктов</string>
+
+    <!--List Screen -->
+    <string name="list_screen_default_title">Список</string>
+    <string name="list_screen_access_to_guests">Доступен гостям</string>
+    <string name="list_screen_add_button">Новый пункт</string>
+    <string name="list_screen_finance_disclaimer">Закупились? Перейдите в <u>разделение затрат</u>, чтобы добавить свои расходы, если хотите, чтобы на них скидывались</string>
+
+</resources>

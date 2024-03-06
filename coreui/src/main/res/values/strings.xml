@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- BottomBar Navigation -->
+    <string name="bottom_bar_navigation_info">Инфо</string>
+    <string name="bottom_bar_navigation_guests">Гости</string>
+    <string name="bottom_bar_navigation_lists">Списки</string>
+    <string name="bottom_bar_navigation_expenses">Расходы</string>
+
+    <!-- Dialog Buttons -->
+    <string name="dialog_button_cancel">Отмена</string>
+    <string name="dialog_button_next">Далее</string>
+    <string name="dialog_button_ok">Ок</string>
+    <string name="dialog_button_back">Назад</string>
+</resources>

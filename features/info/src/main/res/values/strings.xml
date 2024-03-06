@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--CreationParty Screen -->
+    <string name="creation_party_title">Создание вечеринки</string>
+    <string name="creation_party_screen_main_road_map">основное</string>
+    <string name="creation_party_screen_address_road_map">адрес</string>
+    <string name="creation_party_screen_important_road_map">важное</string>
+    <string name="creation_party_screen_theme_road_map">тематика</string>
+    <string name="creation_party_screen_info_block_title">Основное</string>
+    <string name="creation_party_screen_info_block_description">Без этой информации вечеринка не будет создана</string>
+    <string name="creation_party_screen_info_name_title">Название</string>
+    <string name="creation_party_screen_info_name_hint">Введите название</string>
+    <string name="creation_party_screen_info_start_datetime_title">Дата и время начала</string>
+    <string name="creation_party_screen_info_end_datetime_title">Дата и время конца</string>
+    <string name="creation_party_screen_info_start_datetime_mask">ДД.ММ.ГГ ЧЧ:ММ</string>
+    <string name="creation_party_screen_info_end_datetime_mask">ДД.ММ.ГГ ЧЧ:ММ</string>
+    <string name="creation_party_screen_info_expenses_title">Включить разделение затрат?</string>
+    <string name="creation_party_screen_info_expenses_description">После вечеринки каждый внесет потраченную сумму и мы посчитаем, кто сколько должен скинуть </string>
+    <string name="creation_party_screen_expenses_turn_on">Включить</string>
+    <string name="creation_party_screen_expenses_turn_off">Выключить</string>
+    <string name="creation_party_screen_next_button">Далее</string>
+    <string name="creation_party_screen_prev_button">Назад</string>
+    <string name="creation_party_screen_address_block_title">Место проведения</string>
+    <string name="creation_party_screen_address_block_description">Чтобы никто не потерялся</string>
+    <string name="creation_party_screen_address_hint">Адрес</string>
+    <string name="creation_party_screen_road_block_title">Как пройти</string>
+    <string name="creation_party_screen_road_block_description">Чтобы точно никто не потерялся</string>
+    <string name="creation_party_screen_road_hint">Код домофона точно будет не лишним</string>
+    <string name="creation_party_screen_important_block_title">Важная информация</string>
+    <string name="creation_party_screen_important_block_description">Здесь можно написать про время работы лофта или возрастную категорию</string>
+    <string name="creation_party_screen_important_hint">Возрастное ограничение:\nНеобходимые документы:</string>
+    <string name="creation_party_screen_theme_block_title">Тематика и дресскод</string>
+    <string name="creation_party_screen_theme_block_description">С ними веселее :)</string>
+    <string name="creation_party_screen_theme_theme_title">Тематика</string>
+    <string name="creation_party_screen_theme_theme_hint">Алиса в стране чудес</string>
+    <string name="creation_party_screen_theme_dresscode_title">Дресскод</string>
+    <string name="creation_party_screen_theme_dresscode_hint">Персонажи фильма</string>
+    <string name="creation_party_screen_theme_link_title">Ссылка на мудборд</string>
+    <string name="creation_party_screen_theme_link_description">Больше примеров — больше вероятность, что гости придут в костюмах</string>
+    <string name="creation_party_screen_theme_link_hint">https://pin.it/your-board-address</string>
+    <string name="creation_party_start_time_error">Дата начала не может быть позже даты конца</string>
+    <string name="creation_party_end_time_error">Дата конца не может быть раньше даты начала</string>
+    <string name="creation_party_result_success">Вечеринка создана!</string>
+    <string name="creation_party_result_error">Не удалось создать вечеринку</string>
+
+    <!--InfoParty Screen -->
+    <string name="info_party_title">Инфо</string>
+    <string name="info_party_save_button">Сохранить</string>
+    <string name="info_party_important_info_title">Важная информация</string>
+    <string name="info_party_theme_and_dresscode_title">Тематика и дресскод</string>
+    <string name="info_party_theme_title">Тематика</string>
+    <string name="info_party_dresscode_title">Дресскод</string>
+    <string name="info_party_moodboadlink_title">Ссылка на мудборд</string>
+    <string name="info_party_theme_and_dresscode_subtitle">С ними веселее :)</string>
+    <string name="info_party_important_info_subtitle">Тут можно написать про время работы лофта или возрастную категорию</string>
+    <string name="info_party_address_title">Место проведения</string>
+    <string name="info_party_save_party_error_title">Не удалось сохранить изменения</string>
+    <string name="info_party_start_time_error">Дата начала не может быть позже даты конца</string>
+    <string name="info_party_end_time_error">Дата конца не может быть раньше даты начала</string>
+></resources>
