@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -228,8 +229,9 @@ private fun ListItem(
         }
         if (listEntity.tasks.size > SHOW_TASKS) {
             Text(
-                text = stringResource(
-                    R.string.lists_main_more_tasks,
+                text = pluralStringResource(
+                    R.plurals.lists_main_more_tasks,
+                    count = listEntity.tasks.size,
                     listEntity.tasks.size - SHOW_TASKS
                 ),
                 style = TamadaTheme.typography.caption,

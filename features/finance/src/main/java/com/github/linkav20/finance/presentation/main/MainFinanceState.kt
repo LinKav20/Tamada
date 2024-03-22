@@ -1,14 +1,15 @@
 package com.github.linkav20.finance.presentation.main
 
-sealed class MainFinanceState {
-    data class BasicState(
-        val isManager: Boolean = false,
-        val showDialog: Boolean = false
-    ) : MainFinanceState()
-
-    object Loading : MainFinanceState()
-
-    data class Error(
-        val throwable: Throwable
-    ) : MainFinanceState()
+data class MainFinanceState(
+    val isManager: Boolean = false,
+    val showDialog: Boolean = false,
+    val loading: Boolean = true,
+    val throwable: Throwable? = null,
+    val tab: Tab? = null
+) {
+    enum class Tab(val index: Int) {
+        STEP1(0),
+        STEP2(1),
+        STEP3(2)
+    }
 }

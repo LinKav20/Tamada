@@ -2,6 +2,8 @@ package com.github.linkav20.guests.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.linkav20.core.domain.entity.UserRole
+import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.guests.domain.model.User
 import com.github.linkav20.guests.domain.usecase.GetLinkUseCase
 import com.github.linkav20.guests.domain.usecase.GetUsersForPartyUseCase
@@ -18,7 +20,8 @@ import javax.inject.Inject
 class GuestsListViewModel @Inject constructor(
     private val getUsersForPartyUseCase: GetUsersForPartyUseCase,
     private val sendUsersListUseCase: SendUsersListUseCase,
-    private val getLinkUseCase: GetLinkUseCase
+    private val getLinkUseCase: GetLinkUseCase,
+    private val getRoleUseCase: GetRoleUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(GuestsListState())
     val state = _state.asStateFlow()
@@ -67,13 +70,13 @@ class GuestsListViewModel @Inject constructor(
 
     private fun loadData() = viewModelScope.launch {
         _state.update { it.copy(loading = true) }
-        delay(1000)
         onUpdateLink()
         val users = getUsersForPartyUseCase.invoke(1)
+        val role = getRoleUseCase.invoke()
         _state.update {
             it.copy(
                 users = users,
-                isUserEdit = true,
+                isUserEdit = role == UserRole.MANAGER,
                 infoShownCount = 6
             )
         }

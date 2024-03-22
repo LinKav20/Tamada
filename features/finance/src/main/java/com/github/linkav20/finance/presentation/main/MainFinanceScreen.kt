@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +33,12 @@ import com.github.linkav20.coreui.ui.TamadaTopBar
 import com.github.linkav20.coreui.utils.ColorScheme
 import com.github.linkav20.coreui.utils.getBackgroundColor
 import com.github.linkav20.finance.R
-import com.github.linkav20.finance.presentation.dialog.TurnOnFinanceDialog
+import com.github.linkav20.finance.navigation.MainFinanceDestination
+import com.github.linkav20.finance.navigation.OnboardingDestination
+import com.github.linkav20.finance.navigation.Step1Destination
+import com.github.linkav20.finance.navigation.Step2Destination
+import com.github.linkav20.finance.navigation.Step3Destination
+import com.github.linkav20.finance.presentation.dialog.Dialog
 
 @Composable
 fun MainFinanceScreen(
@@ -57,36 +62,60 @@ fun MainFinanceScreen(
         },
     ) { paddings ->
         Box(modifier = Modifier.padding(paddings)) {
-            when (state) {
-                is MainFinanceState.BasicState -> {
-                    BasicContent(
-                        state = state,
-                        onClose = viewModel::onCloseDialog,
-                        onConfirm = viewModel::onConfirmDialog,
-                        onOpen = viewModel::onOpenDialog
-                    )
-                }
-
-                is MainFinanceState.Error -> {}
-                MainFinanceState.Loading -> TamadaFullscreenLoader(scheme = ColorScheme.FINANCE)
+            if (state.loading) {
+                TamadaFullscreenLoader(scheme = ColorScheme.FINANCE)
+            } else {
+                BasicContent(
+                    state = state,
+                    onClose = viewModel::onCloseDialog,
+                    onConfirm = viewModel::onConfirmDialog,
+                    onOpen = viewModel::onOpenDialog,
+                    onOnboardingClick = { navController.navigate(OnboardingDestination.route()) }
+                )
             }
             //ExpensesContent()
+        }
+    }
+
+    LaunchedEffect(state.tab) {
+        when (state.tab) {
+            MainFinanceState.Tab.STEP1 -> navController.navigate(Step1Destination.route()) {
+                popUpTo(MainFinanceDestination.route()) {
+                    inclusive = true
+                }
+            }
+
+            MainFinanceState.Tab.STEP2 -> navController.navigate(Step2Destination.route()) {
+                popUpTo(MainFinanceDestination.route()) {
+                    inclusive = true
+                }
+            }
+
+            MainFinanceState.Tab.STEP3 -> navController.navigate(Step3Destination.route()) {
+                popUpTo(MainFinanceDestination.route()) {
+                    inclusive = true
+                }
+            }
+
+            else -> {}
         }
     }
 }
 
 @Composable
 private fun BasicContent(
-    state: MainFinanceState.BasicState,
+    state: MainFinanceState,
     onClose: () -> Unit,
     onConfirm: () -> Unit,
-    onOpen: () -> Unit
+    onOpen: () -> Unit,
+    onOnboardingClick: () -> Unit
 ) = Column(
     modifier = Modifier.padding(16.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp)
 ) {
     if (state.showDialog) {
-        TurnOnFinanceDialog(
+        Dialog(
+            subtitle = stringResource(id = R.string.dialog_subtitle_turn_on_finance),
             onClose = onClose,
             onConfirm = onConfirm
         )
@@ -107,10 +136,10 @@ private fun BasicContent(
             Spacer(modifier = Modifier.height(24.dp))
             Image(
                 modifier = Modifier
-                    .height(192.dp)
+                    .height(264.dp)
                     .clip(TamadaTheme.shapes.mediumSmall)
                     .fillMaxWidth(),
-                painter = painterResource(id = com.github.linkav20.coreui.R.drawable.avatar),
+                painter = painterResource(id = R.drawable.onboarding_start),
                 contentDescription = "",
                 contentScale = ContentScale.Crop
             )
@@ -119,7 +148,7 @@ private fun BasicContent(
                 title = stringResource(id = R.string.basic_finance_onbording_button),
                 type = ButtonType.SECONDARY,
                 colorScheme = ColorScheme.FINANCE,
-                onClick = {}
+                onClick = onOnboardingClick
             )
         }
     }

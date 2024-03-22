@@ -3,6 +3,8 @@ package com.github.linkav20.lists.presentation.list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.linkav20.core.domain.entity.UserRole
+import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.lists.domain.entity.TaskEntity
 import com.github.linkav20.lists.domain.usecase.GetListByIdUseCase
 import com.github.linkav20.lists.navigation.ListDestination
@@ -18,7 +20,8 @@ private const val EMPTY_TASK_ID = 0L
 @HiltViewModel
 class ListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getListByIdUseCase: GetListByIdUseCase
+    private val getListByIdUseCase: GetListByIdUseCase,
+    private val getRoleUseCase: GetRoleUseCase
 ) : ViewModel() {
 
     private val id = ListDestination.extractId(savedStateHandle)
@@ -111,7 +114,8 @@ class ListViewModel @Inject constructor(
 
     private fun loadData() = viewModelScope.launch {
         val list = getListByIdUseCase.invoke(id)
-        _state.update { it.copy(list = list, isManager = true) }
+        val role = getRoleUseCase.invoke()
+        _state.update { it.copy(list = list, isManager = role == UserRole.MANAGER) }
     }
 
     private fun createTask() = viewModelScope.launch {

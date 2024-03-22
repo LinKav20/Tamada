@@ -120,7 +120,6 @@ private fun Content(
                 colorScheme = ColorScheme.LISTS
             )
         }
-
     }
 ) { paddings ->
     Column(

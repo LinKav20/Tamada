@@ -47,6 +47,7 @@ enum class ButtonType {
     PRIMARY,
     SECONDARY,
     OUTLINE,
+    ERROR
 }
 
 @Composable
@@ -137,7 +138,7 @@ private fun getContentColor(
     scheme: ColorScheme,
 ): Color =
     when (type) {
-        ButtonType.PRIMARY -> TamadaTheme.colors.textWhite
+        ButtonType.PRIMARY, ButtonType.ERROR -> TamadaTheme.colors.textWhite
         ButtonType.SECONDARY, ButtonType.OUTLINE ->
             when (scheme) {
                 ColorScheme.MAIN -> TamadaTheme.colors.primaryBlue
@@ -170,6 +171,7 @@ private fun getBackgroundColor(
             }
 
         ButtonType.OUTLINE -> Color.Transparent
+        ButtonType.ERROR -> TamadaTheme.colors.statusNegative
     }
 
 @Preview(widthDp = 300, heightDp = 600)

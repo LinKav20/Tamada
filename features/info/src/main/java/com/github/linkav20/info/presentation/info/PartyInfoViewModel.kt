@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.linkav20.core.domain.entity.DomainException
 import com.github.linkav20.core.domain.entity.ReactionStyle
+import com.github.linkav20.core.domain.entity.UserRole
 import com.github.linkav20.core.domain.usecase.GetPartyIdUseCase
+import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.info.R
 import com.github.linkav20.info.domain.model.Party
@@ -27,6 +29,7 @@ class PartyInfoViewModel @Inject constructor(
     private val getPartyUseCase: GetPartyUseCase,
     private val reactUseCase: ReactUseCase,
     private val savePartyUseCase: SavePartyUseCase,
+    private val getRoleUseCase: GetRoleUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(PartyInfoState())
@@ -167,7 +170,13 @@ class PartyInfoViewModel @Inject constructor(
                 return@launch
             }
             val party = getPartyUseCase.invoke(id)
-            _state.update { it.copy(party = party) }
+            val role = getRoleUseCase.invoke()
+            _state.update {
+                it.copy(
+                    party = party,
+                    canEdit = role == UserRole.MANAGER
+                )
+            }
         } catch (e: Throwable) {
             _state.update { it.copy(error = e) }
         }

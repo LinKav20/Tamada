@@ -1,5 +1,6 @@
 package com.github.linkav20.home.presentation.main
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,9 +40,18 @@ import com.github.linkav20.core.navigation.common.CreatePartyDestination
 import com.github.linkav20.core.navigation.common.InfoTabDestination
 import com.github.linkav20.core.utils.OnLifecycleStart
 import com.github.linkav20.coreui.theme.TamadaTheme
+import com.github.linkav20.coreui.ui.ButtonType
+import com.github.linkav20.coreui.ui.DebounceIconButton
+import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
+import com.github.linkav20.coreui.ui.TamadaTopBar
+import com.github.linkav20.coreui.utils.ColorScheme
+import com.github.linkav20.coreui.utils.getBackgroundColor
+import com.github.linkav20.coreui.utils.getPrimaryColor
+import com.github.linkav20.coreui.utils.getUserAvatar
 import com.github.linkav20.home.R
 import com.github.linkav20.home.domain.model.Party
+import com.github.linkav20.home.navigation.HomeGraphDestination
 import com.github.linkav20.home.navigation.LkDestination
 import com.github.linkav20.coreui.R as CoreR
 
@@ -54,18 +66,23 @@ fun HomeMainScreen(
         TamadaFullscreenLoader()
     } else {
         Content(
+            state = state,
             guestParties = state.guestParties,
             manageParties = state.managerParties,
             onPartyClick = viewModel::onPartyClick,
             onAddPartyClick = { navController.navigate(CreatePartyDestination.route()) },
-            onLkClick = { navController.navigate(LkDestination.route()) }
+            onLkClick = { navController.navigate(LkDestination.route()) },
+            onLogoutClick = viewModel::onLogoutClick
         )
     }
 
     LaunchedEffect(state.action) {
         when (state.action) {
             HomeMainScreenState.Action.PARTY -> navController.navigate(InfoTabDestination.route())
-            HomeMainScreenState.Action.AUTH -> navController.navigate(AuthGraphDestination.route())
+            HomeMainScreenState.Action.AUTH -> {
+                navController.navigate(AuthGraphDestination.route())
+            }
+
             else -> {}
         }
         viewModel.nullifyAction()
@@ -78,102 +95,144 @@ fun HomeMainScreen(
 
 @Composable
 private fun Content(
+    state: HomeMainScreenState,
     guestParties: List<Party>,
     manageParties: List<Party>,
     onAddPartyClick: () -> Unit,
     onPartyClick: (Party) -> Unit,
-    onLkClick: () -> Unit
+    onLkClick: () -> Unit,
+    onLogoutClick: () -> Unit
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal = 20.dp),
-    ) {
-        Spacer(modifier = Modifier.height(38.dp))
-        Image(
-            painter = painterResource(id = CoreR.drawable.avatar),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(64.dp)
-                .clip(CircleShape)
-                .clickable { onLkClick() },
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(id = R.string.home_main_screen_hello_message, "Lina"),
-            color = TamadaTheme.colors.textHeader,
-            style = TamadaTheme.typography.head,
-        )
-        Spacer(modifier = Modifier.height(38.dp))
-        Text(
-            text = stringResource(id = R.string.home_main_screen_info_message),
-            color = TamadaTheme.colors.textMain,
-            style = TamadaTheme.typography.body,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            modifier =
-            Modifier
-                .align(alignment = Alignment.Start)
-                .padding(horizontal = 8.dp),
-            text = stringResource(R.string.home_main_screen_manage_party_title),
-            color = TamadaTheme.colors.textHeader,
-            style = TamadaTheme.typography.head,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-        ) {
-            item {
-                BoxWithConstraints {
-                    val maxWidth = maxWidth
-                    Box(
-                        modifier =
-                        Modifier
-                            .size(maxWidth)
-                            .padding(8.dp)
-                            .background(
-                                TamadaTheme.colors.textCaption,
-                                TamadaTheme.shapes.mediumSmall,
-                            )
-                            .clickable { onAddPartyClick() },
-                    ) {
+    Scaffold(
+        backgroundColor = TamadaTheme.colors.backgroundPrimary,
+        topBar = {
+            TamadaTopBar(
+                transparent = true,
+                actions = {
+                    DebounceIconButton(onLogoutClick) {
                         Icon(
-                            modifier = Modifier.align(Alignment.Center),
-                            painter = painterResource(id = CoreR.drawable.outline_add_24),
-                            tint = TamadaTheme.colors.textHeader,
+                            painterResource(CoreR.drawable.baseline_logout_24),
                             contentDescription = null,
+                            tint = TamadaTheme.colors.textMain,
+                        )
+                    }
+                }
+            )
+        }
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(it)
+                .padding(horizontal = 20.dp),
+        ) {
+            Spacer(modifier = Modifier.height(38.dp))
+            Box(
+                modifier = Modifier.clickable { onLkClick() },
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                Image(
+                    painter = getUserAvatar(state.userAvatar),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .size(64.dp)
+                        .clip(CircleShape),
+                )
+                if (!state.isWalletFilled) {
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(CircleShape)
+                            .background(getPrimaryColor(scheme = ColorScheme.MAIN)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "!",
+                            color = TamadaTheme.colors.statusWarning,
+                            style = TamadaTheme.typography.head,
                         )
                     }
                 }
             }
-            items(manageParties) {
-                Party(
-                    party = it,
-                    onPartyClick = onPartyClick,
-                )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(id = R.string.home_main_screen_hello_message, state.userName),
+                color = TamadaTheme.colors.textHeader,
+                style = TamadaTheme.typography.head,
+            )
+            Spacer(modifier = Modifier.height(38.dp))
+            Text(
+                text = stringResource(id = R.string.home_main_screen_info_message),
+                color = TamadaTheme.colors.textMain,
+                style = TamadaTheme.typography.body,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                modifier =
+                Modifier
+                    .align(alignment = Alignment.Start)
+                    .padding(horizontal = 8.dp),
+                text = stringResource(R.string.home_main_screen_manage_party_title),
+                color = TamadaTheme.colors.textHeader,
+                style = TamadaTheme.typography.head,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+            ) {
+                item {
+                    BoxWithConstraints {
+                        val maxWidth = maxWidth
+                        Box(
+                            modifier =
+                            Modifier
+                                .size(maxWidth)
+                                .padding(8.dp)
+                                .background(
+                                    TamadaTheme.colors.textCaption,
+                                    TamadaTheme.shapes.mediumSmall,
+                                )
+                                .clickable { onAddPartyClick() },
+                        ) {
+                            Icon(
+                                modifier = Modifier.align(Alignment.Center),
+                                painter = painterResource(id = CoreR.drawable.outline_add_24),
+                                tint = TamadaTheme.colors.textHeader,
+                                contentDescription = null,
+                            )
+                        }
+                    }
+                }
+                items(manageParties) {
+                    Party(
+                        party = it,
+                        onPartyClick = onPartyClick,
+                    )
+                }
             }
-        }
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            modifier =
-            Modifier
-                .align(alignment = Alignment.Start)
-                .padding(horizontal = 8.dp),
-            text = stringResource(R.string.home_main_screen_guest_party_title),
-            color = TamadaTheme.colors.textHeader,
-            style = TamadaTheme.typography.head,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-        ) {
-            items(guestParties) {
-                Party(
-                    party = it,
-                    onPartyClick = onPartyClick,
-                )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                modifier =
+                Modifier
+                    .align(alignment = Alignment.Start)
+                    .padding(horizontal = 8.dp),
+                text = stringResource(R.string.home_main_screen_guest_party_title),
+                color = TamadaTheme.colors.textHeader,
+                style = TamadaTheme.typography.head,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+            ) {
+                items(guestParties) {
+                    Party(
+                        party = it,
+                        onPartyClick = onPartyClick,
+                    )
+                }
             }
         }
     }

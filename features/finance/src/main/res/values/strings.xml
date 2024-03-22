@@ -12,4 +12,119 @@
     <string name="basic_finance_onbording_button">Хочу узнать</string>
     <string name="basic_finance_turn_on_button">Включить расходы?</string>
     <string name="basic_finance_turn_off_title">Для данной вечеринки не включено распределение расходов</string>
+    <string name="basic_finance_turn_on_push_title">Расходы успешно включены</string>
+    <string name="basic_finance_turn_on_error_push_title">Что-то пошло не так</string>
+
+    <!-- Dialog Screen-->
+    <string name="dialog_title">Вы уверены?</string>
+    <string name="dialog_subtitle_turn_on_finance">Выключть расходы будет невозможно</string>
+    <string name="dialog_subtitle_delete_expense">Расход восстанвоить невозможно</string>
+    <string name="dialog_subtitle_delete_next_step">Вернуться на этот этап расходов будет невозможно</string>
+    <string name="dialog_turn_on_button">Ок</string>
+    <string name="dialog_cancel_button">Назад</string>
+
+    <!-- Onboarding Screen -->
+    <string name="onboarding_title">Зачем нужен этот раздел</string>
+    <string name="onboarding_start_title">Представьте ситуацию</string>
+    <string name="onboarding_start_subtitle">Вы пришли на вечеринку</string>
+    <string name="onboarding_step1_title">Внесение расходов</string>
+    <string name="onboarding_step1_subtitle">Сначала все гости вносят информацию о своих затратах</string>
+    <string name="onboarding_step2_title">Скидывание денег организатору</string>
+    <string name="onboarding_step2_subtitle">Калькулятор делит затраты на всех и выделяет гостей, которые остались должны: они скидывают долг на карту ответственного</string>
+    <string name="onboarding_step3_title">Организатор отправляет деньги тем, кому должны</string>
+    <string name="onboarding_step3_subtitle">Калькулятор делит затраты на всех и выделяет гостей, которым остались должны: им отвественный отправляет указанную сумму</string>
+    <string name="onboarding_finish_title">Ура, теперь все в расчете</string>
+    <string name="onboarding_next_button">Далее</string>
+    <string name="onboarding_back_button">Назад</string>
+
+    <!-- Step Screen-->
+    <string name="step1_disclaimer_title">Как работают расходы?</string>
+    <string name="step1_disclaimer_subtitle">Расскажем на пальцах</string>
+    <string name="step1_deadline_title">Внести расходы до</string>
+    <string name="step1_deadline_nullable_text">Установите дедлайн до которого гости должны внести свои затраты</string>
+    <string name="step1_deadline_button">Завершить внесение для всех</string>
+    <string name="step1_deadline_set_button">Установить</string>
+    <string name="step1_deadline_error_title">Дедлайн не может быть раньше текущей даты</string>
+    <string name="step1_party_progress_title">Стоимость вечеринки</string>
+    <string name="step1_sum_formatter">%,.2f руб</string>
+    <string name="step1_party_progress_button">Посмотреть прогресс</string>
+    <string name="step1_my_expenses_title">Мои расходы</string>
+    <string name="step1_my_expenses_subtitle">Все, на что вы потратились лично. Будет доступно после первого внесения</string>
+    <plurals name="step1_my_expenses_show_more_items">
+        <item quantity="zero">+%d пунктов</item>
+        <item quantity="one">+%d пункт</item>
+        <item quantity="two">+%d пункта</item>
+        <item quantity="few">+%d пунктов</item>
+        <item quantity="many">+%d пунктов</item>
+        <item quantity="other">+%d пунктов</item>
+    </plurals>
+    <string name="step1_my_expenses_add_expense">Добавить расход</string>
+    <string name="step1_my_expenses_open_full">Открыть Мои расходы</string>
+    <string name="step2_dept_title">Вы должны</string>
+    <string name="step2_dept_title_done">Перевод выполнен</string>
+    <string name="step2_dept_button">Я перевел(а)</string>
+    <string name="step2_dept_subtitle">Отправьте эту сумму по номеру карты ответственного за распределение администратора</string>
+    <string name="step3_dept_title">Вам должны</string>
+    <string name="step3_dept_title_done">Вам перевели</string>
+    <string name="step3_dept_button">Подтвердить</string>
+    <string name="step3_dept_done_subtitle">Ура, ваши вложения равноценны вложениям остальных</string>
+    <string name="step3_dept_subtitle">На этом этапе ответственный организатор отправляет деньги всем, кому остались должны</string>
+    <string name="step3_dept_done_success_popup">Ура! Вы получили деньги</string>
+
+
+    <!-- WalletComponent -->
+    <string name="wallet_component_title">Кошелёк вечеринки</string>
+    <string name="wallet_component_subtitle">Это номер карты ответственного за распределение затрат админа, сюда скидываются долги и распределяются на всех</string>
+    <string name="wallet_component_card_owner">Владелец карты: %s</string>
+    <string name="wallet_component_bank">Банк: %s</string>
+    <string name="wallet_component_card_number_placeholder">Номер карты</string>
+    <string name="wallet_component_phone_number_placeholder">Номер телефона</string>
+    <string name="wallet_component_card_owner_placeholder">ФИО владельца карты</string>
+    <string name="wallet_component_bank_placeholder">Банк</string>
+    <string name="wallet_component_empty">Данные о карте еще не заполнены, обратитесь к администратору</string>
+    <string name="wallet_component_empty_user">Данные о карте еще не заполнены, обратитесь к участнику</string>
+    <string name="wallet_save">Сохранить</string>
+    <string name="wallet_empty_error_popup">Номер карты и телефона не могут быть пустыми</string>
+
+    <!-- Progress Screen-->
+    <string name="progress_title">Все расходы</string>
+    <string name="open_my_expenses_button">Открыть мои расходы</string>
+    <string name="receipt_button">Чек</string>
+    <string name="error_in_expenses_button">Ошибка в расходе</string>
+    <string name="progress_total_sum_of_party">Общая стоимость вечеринки</string>
+    <string name="progress_user_total_sum">Итог</string>
+    <string name="progress_users_done_title_step1">Потратились</string>
+    <string name="progress_users_not_done_title_step1">Не заполнили</string>
+    <string name="progress_users_done_title_step2">Должны</string>
+    <string name="progress_users_not_done_title_step2">Участники</string>
+    <string name="progress_users_done_title_step3">Им должны</string>
+    <string name="progress_users_not_done_title_step3">Участники</string>
+    <string name="progress_empty_list_done_users">Тут пока пусто :(</string>
+    <string name="progress_empty_list_not_done_users">Тут пока пусто :(</string>
+    <string name="progress_step3_money_send">Деньги отправлены</string>
+    <string name="progress_step2_money_send">Деньги пришли</string>
+
+    <!--AddExpense Dialog-->
+    <string name="add_expense_dialog_title">Добавление расхода</string>
+    <string name="add_expense_dialog_name_title">Название</string>
+    <string name="add_expense_dialog_name_hint">Название покупки</string>
+    <string name="add_expense_dialog_sum_title">Сколько потрачено</string>
+    <string name="add_expense_dialog_sum_hint">Сколько потрачено</string>
+    <string name="add_expense_dialog_receipt_title">Чек</string>
+    <string name="add_expense_dialog_button">Добавить</string>
+    <string name="add_expense_add_receipt">Нажать чтобы добавить чек</string>
+    <string name="add_expense_popup_unfilled">Поля не могут быть пустыми</string>
+    <string name="add_expense_popup_success">Расход успешно сохранен</string>
+    <string name="add_expense_popup_error">Что-то пошло не так</string>
+
+    <!-- MyExpenses Screen-->
+    <string name="my_expenses_title">Мои расходы</string>
+    <string name="my_expenses_receipt_title">Чек</string>
+    <string name="my_expenses_receipt_value">Чек не найден</string>
+    <string name="my_expenses_add_button">Добавить расход</string>
+    <string name="my_expenses_edit_button">Редактировать</string>
+    <string name="my_expenses_sum_formatter">%,.2f руб</string>
+    <string name="my_expense_popup_expense_delete_success">Расход успешно удален</string>
+    <string name="my_expense_popup_expense_delete_error">"Что-то пошло не так"</string>
+    <string name="my_expense_popup_receipt_not_loaded">Не получилось загрузить чек</string>
 </resources>

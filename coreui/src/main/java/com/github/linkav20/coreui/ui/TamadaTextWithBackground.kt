@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.utils.ColorScheme
@@ -22,13 +23,14 @@ fun TamadaTextWithBackground(
     modifier: Modifier = Modifier,
     type: TextWithBackgroundType = TextWithBackgroundType.TEXT,
     textColor: Color? = null,
+    backgroundColor: Color? = null,
     colorScheme: ColorScheme = ColorScheme.MAIN,
-    maxLines: Int = 1
+    maxLines: Int = 1,
+    overflow: TextOverflow = TextOverflow.Ellipsis
 ) = Text(
     modifier = modifier
-        .fillMaxHeight()
         .clip(TamadaTheme.shapes.mediumSmall)
-        .background(getSecondaryColor(scheme = colorScheme))
+        .background(backgroundColor ?: getSecondaryColor(scheme = colorScheme))
         .padding(
             when (type) {
                 TextWithBackgroundType.TEXT -> 8.dp
@@ -39,4 +41,5 @@ fun TamadaTextWithBackground(
     style = TamadaTheme.typography.caption,
     color = textColor ?: getPrimaryColor(scheme = colorScheme),
     maxLines = maxLines,
+    overflow = overflow
 )

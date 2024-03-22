@@ -13,7 +13,14 @@
     <string name="lists_main_wishlist_title">Вишлист</string>
     <string name="lists_main_wishlist_description">Плойка? Наушники? БДСМ набор? Гости отметят галочками, что хотят подарить</string>
     <string name="lists_main_filter_only_for_managers">Только организаторские</string>
-    <string name="lists_main_more_tasks">+%d пунктов</string>
+    <plurals name="lists_main_more_tasks">
+        <item quantity="zero">+%d пунктов</item>
+        <item quantity="one">+%d пункт</item>
+        <item quantity="two">+%d пункта</item>
+        <item quantity="few">+%d пунктов</item>
+        <item quantity="many">+%d пунктов</item>
+        <item quantity="other">+%d пунктов</item>
+    </plurals>
 
     <!--List Screen -->
     <string name="list_screen_default_title">Список</string>

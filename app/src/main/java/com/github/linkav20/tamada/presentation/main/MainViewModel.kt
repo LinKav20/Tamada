@@ -24,7 +24,6 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            delay(1000)
             _state.update {
                 it.copy(
                     loading = false

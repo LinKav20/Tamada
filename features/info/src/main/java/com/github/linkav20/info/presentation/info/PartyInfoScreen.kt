@@ -306,9 +306,9 @@ private fun ImportantComponent(
                 Text(
                     text = important
                         ?: stringResource(id = R.string.info_party_important_info_subtitle),
-                    style = TamadaTheme.typography.body,
+                    style = TamadaTheme.typography.caption,
                     color = if (important == null) {
-                        TamadaTheme.colors.textCaption
+                        TamadaTheme.colors.textMain
                     } else {
                         TamadaTheme.colors.textHeader
                     },
@@ -416,7 +416,7 @@ private fun InfoComponent(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(

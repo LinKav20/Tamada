@@ -4,4 +4,6 @@ interface TokenRepository {
     var accessToken: String?
 
     var refreshToken: String?
+
+    suspend fun clear()
 }

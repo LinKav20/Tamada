@@ -41,14 +41,10 @@ fun TamadaTopBar(
 ) {
     val backgroundColor =
         if (transparent) Color.Transparent else getBackgroundColor(scheme = colorScheme)
-    val contentColor =
-        if (transparent) TamadaTheme.colors.textWhite else TamadaTheme.colors.textHeader
-    val subtitleTextColor =
-        if (transparent) TamadaTheme.colors.textWhite else TamadaTheme.colors.textHeader
+    val contentColor = TamadaTheme.colors.textHeader
+    val subtitleTextColor = TamadaTheme.colors.textHeader
     TopAppBar(
-        modifier =
-            modifier
-                .height(AppBarHeight),
+        modifier = modifier.height(AppBarHeight),
         backgroundColor = backgroundColor,
         contentColor = contentColor,
         elevation = 0.dp,
@@ -136,9 +132,9 @@ private fun Content(
         Box(
             contentAlignment = Alignment.Center,
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
+            Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
         ) {
             Text(
                 title,
@@ -153,9 +149,9 @@ private fun Content(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
+                Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
             ) {
                 Text(
                     subtitle,

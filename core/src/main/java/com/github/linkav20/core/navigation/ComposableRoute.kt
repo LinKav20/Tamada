@@ -5,7 +5,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
-public fun NavGraphBuilder.composableRoute(
+fun NavGraphBuilder.composableRoute(
     destination: Destination,
     content: @Composable (NavBackStackEntry) -> Unit
 ) {

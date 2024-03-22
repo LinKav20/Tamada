@@ -19,5 +19,6 @@ interface AuthModule {
     fun provideAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 
     @Binds
+    @Singleton
     fun provideTokenRepository(impl: TokenRepositoryImpl): TokenRepository
 }

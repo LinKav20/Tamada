@@ -6,6 +6,9 @@ data class HomeMainScreenState(
     val loading: Boolean = true,
     val parties: List<Party> = emptyList(),
     val action: Action? = null,
+    val userName: String = "",
+    val userAvatar: Int = 0,
+    val isWalletFilled: Boolean = true
 ) {
 
     enum class Action {

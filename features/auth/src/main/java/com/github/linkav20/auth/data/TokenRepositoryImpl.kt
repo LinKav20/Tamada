@@ -15,4 +15,6 @@ class TokenRepositoryImpl @Inject constructor(
     override var refreshToken: String?
         get() = secureStorage.getString(SecureStorage.REFRESH_TOKEN_KEY)
         set(value) = secureStorage.putString(SecureStorage.REFRESH_TOKEN_KEY, value)
+
+    override suspend fun clear() = secureStorage.clear()
 }

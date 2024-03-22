@@ -2,8 +2,8 @@
 <resources>
     <!--HomeMain Screen -->
     <string name="home_main_screen_party_tag">NEW</string>
-    <string name="home_main_screen_guest_party_title">Мои вечеринки</string>
-    <string name="home_main_screen_manage_party_title">Меня пригласили</string>
+    <string name="home_main_screen_guest_party_title">Я гость</string>
+    <string name="home_main_screen_manage_party_title">Я организатор</string>
     <string name="home_main_screen_hello_message">Привет, %s!</string>
     <string name="home_main_screen_info_message">Чтобы продолжить, выбери или добавь вечеринку</string>
 
@@ -15,4 +15,39 @@
 
     <!-- Lk Screen -->
     <string name="lk_screen_title">Личный кабинет</string>
+    <string name="lk_login_title">Логин:</string>
+    <string name="lk_login_placeholder">Логин</string>
+    <string name="lk_email_title">E-mail:</string>
+    <string name="lk_email_placeholder">E-mail</string>
+    <string name="lk_wallet_title">Мой кошелёк</string>
+    <string name="lk_wallet_need_to_fill_title">Заполните!</string>
+    <string name="lk_wallet_subtitle">На этот кошелек организатор перечислит вам необходимую сумму</string>
+    <string name="lk_wallet_card_owner">Владелец карты: %s</string>
+    <string name="lk_wallet_bank">Банк: %s</string>
+    <string name="lk_wallet_card_number_placeholder">Номер карты</string>
+    <string name="lk_wallet_phone_number_placeholder">Номер телефона</string>
+    <string name="lk_wallet_card_owner_placeholder">ФИО владельца карты</string>
+    <string name="lk_wallet_bank_placeholder">Банк</string>
+    <string name="lk_wallet_empty">Данные о карте еще не заполнены</string>
+    <string name="lk_wallet_save">Сохранить</string>
+    <string name="lk_info_save">Сохранить</string>
+    <string name="lk_change_password_button">Изменить пароль</string>
+    <string name="lk_delete_account_button">Удалить аккаунт</string>
+
+    <!-- ChangeAvatar Screen -->
+    <string name="change_avatar_title">Изменение аватара</string>
+
+    <!-- ChangePassword Screen -->
+    <string name="change_password_title">Изменение пароля</string>
+    <string name="change_password_current_title">Введите текущий пароль:</string>
+    <string name="change_password_new_title">Введите новый пароль:</string>
+    <string name="change_password_repeated_title">Повторите новый пароль:</string>
+    <string name="change_password_current_hint">Текущий пароль</string>
+    <string name="change_password_new_hint">Новый пароль</string>
+    <string name="change_password_repeated_hint">Новый пароль</string>
+    <string name="change_password_change_button">Изменить пароль</string>
+    <string name="change_password_password_not_the_same_error">Введный новый праоль не совпадает</string>
+    <string name="change_password_success_popup">Пароль успешно изменен</string>
+    <string name="change_password_error_popup">Что-то пошло не так</string>
+
 </resources>

@@ -37,7 +37,6 @@ class LoginViewModel @Inject constructor(
     fun onLoginClick() = viewModelScope.launch {
         _state.update { it.copy(loading = true) }
         try {
-            delay(1000)
             loginUseCase.invoke(
                 login = state.value.login,
                 password = state.value.password

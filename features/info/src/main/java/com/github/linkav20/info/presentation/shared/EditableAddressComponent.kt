@@ -39,7 +39,7 @@ fun EditableAddressComponent(
             Text(
                 text = stringResource(id = R.string.creation_party_screen_address_block_description),
                 style = TamadaTheme.typography.caption,
-                color = TamadaTheme.colors.textMain,
+                color = TamadaTheme.colors.textMain
             )
             Spacer(modifier = Modifier.height(16.dp))
             TamadaTextFiled(

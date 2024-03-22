@@ -7,6 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.core.navigation.composableRoute
+import com.github.linkav20.home.presentation.changeava.ChangeAvatarScreen
+import com.github.linkav20.home.presentation.changepass.ChangePasswordScreen
 import com.github.linkav20.home.presentation.lk.LkScreen
 import com.github.linkav20.home.presentation.main.HomeMainScreen
 import com.github.linkav20.home.presentation.party.PartyScreen
@@ -27,10 +29,22 @@ fun NavGraphBuilder.homeGraph(navController: NavController, errorMapper: ErrorMa
                 navController = navController,
             )
         }
-        composableRoute(LkDestination){
+        composableRoute(LkDestination) {
             LkScreen(
                 viewModel = hiltViewModel(),
                 navController = navController,
+            )
+        }
+        composableRoute(ChangeAvatarDestination) {
+            ChangeAvatarScreen(
+                viewModel = hiltViewModel(),
+                navController = navController
+            )
+        }
+        composableRoute(ChangePasswordDestination) {
+            ChangePasswordScreen(
+                viewModel = hiltViewModel(),
+                navController = navController
             )
         }
     }

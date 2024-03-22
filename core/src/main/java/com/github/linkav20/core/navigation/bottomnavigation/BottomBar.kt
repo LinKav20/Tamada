@@ -47,12 +47,12 @@ fun BottomBar(
                 selected = isSelected,
                 icon = {
                     Icon(
+                        modifier = Modifier.size(24.dp),
                         painter = painterResource(bottomEntry.drawableId),
                         contentDescription = "",
                     )
                 },
                 label = {
-                    //if (isSelected) {
                     Text(
                         text = stringResource(id = bottomEntry.labelId),
                         color = if (isSelected) {
@@ -61,7 +61,6 @@ fun BottomBar(
                             TamadaTheme.colors.textMain
                         },
                     )
-                    // }
                 },
                 onClick = {
                     navController.navigate(bottomEntry.destination.route()) {

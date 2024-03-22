@@ -51,6 +51,7 @@ open class TamadaColors(
     textMain: Color,
     textHint: Color,
     textWhite: Color,
+    textLightGray: Color,
     backgroundPrimary: Color,
     isDark: Boolean,
 ) {
@@ -115,6 +116,8 @@ open class TamadaColors(
         private set
     var textHint by mutableStateOf(textHint)
         private set
+    var textLightGray by mutableStateOf(textLightGray)
+        private set
 
     var backgroundPrimary by mutableStateOf(backgroundPrimary)
         private set
@@ -162,6 +165,7 @@ open class TamadaColors(
         textMain = other.textMain
         textWhite = other.textWhite
         textHint = other.textHint
+        textLightGray = other.textLightGray
 
         backgroundPrimary = other.backgroundPrimary
 
@@ -204,6 +208,7 @@ open class TamadaColors(
             textMain = this.textMain,
             textWhite = this.textWhite,
             textHint = this.textHint,
+            textLightGray = this.textLightGray,
             backgroundPrimary = this.backgroundPrimary,
             isDark = this.isDark,
         )
@@ -288,6 +293,7 @@ internal val LightTamadaColor
             textCaption = colorResource(R.color.text_caption),
             textHint = colorResource(R.color.text_hint),
             textWhite = colorResource(R.color.text_white),
+            textLightGray = colorResource(R.color.text_light_gray),
             backgroundPrimary = colorResource(R.color.background_primary),
             isDark = false,
         )
