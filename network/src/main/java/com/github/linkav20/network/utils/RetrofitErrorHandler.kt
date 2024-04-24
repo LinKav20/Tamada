@@ -34,6 +34,7 @@ class RetrofitErrorHandler @Inject constructor(
             try {
                 response = call.invoke()
             } catch (t: Throwable) {
+                Timber.e(t)
                 throw mapNetworkThrowableToDomain(t)
             }
 
@@ -120,6 +121,6 @@ private fun getException(
     url: HttpUrl,
 ) = Exception("$code error for $method $url")
 
-private fun Request.isAuthRequest() = this.url.encodedPath.contains("/auth")
+private fun Request.isAuthRequest() = this.url.encodedPath.contains("/register") || this.url.encodedPath.contains("/login")
 
 object NoContentException : RuntimeException()

@@ -57,10 +57,10 @@ class SignUpViewModel @Inject constructor(
             )
             _state.update { it.copy(action = SignUpState.Action.MAIN) }
         } catch (_: Exception) {
-//            reactUseCase.invoke(
-//                title = context.getString(R.string.login_screen_error_title),
-//                style = ReactionStyle.ERROR
-//            )
+            reactUseCase.invoke(
+                title = context.getString(R.string.login_screen_error_title),
+                style = ReactionStyle.ERROR
+            )
         }
         _state.update { it.copy(loading = false) }
     }

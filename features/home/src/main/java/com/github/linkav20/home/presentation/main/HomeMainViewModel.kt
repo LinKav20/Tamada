@@ -3,6 +3,7 @@ package com.github.linkav20.home.presentation.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.linkav20.auth.domain.usecase.GetAuthTokensUseCase
+import com.github.linkav20.core.domain.usecase.GetUserInformationUseCase
 import com.github.linkav20.core.domain.usecase.SetPartyIdUseCase
 import com.github.linkav20.home.domain.model.Party
 import com.github.linkav20.home.domain.usecase.GetAllPartiesUseCase
@@ -19,7 +20,8 @@ class HomeMainViewModel @Inject constructor(
     private val getAllPartiesUseCase: GetAllPartiesUseCase,
     private val setPartyIdUseCase: SetPartyIdUseCase,
     private val getAuthTokensUseCase: GetAuthTokensUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase
+    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val getUserInformationUseCase: GetUserInformationUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeMainScreenState())
@@ -50,14 +52,20 @@ class HomeMainViewModel @Inject constructor(
 
     private fun loadData() = viewModelScope.launch {
         val parties = getAllPartiesUseCase.invoke()
-        val user = getUserInfoUseCase.invoke()
+        val user = getUserInformationUseCase.invoke()
+        if (user != null) {
+            _state.update {
+                it.copy(
+                    userAvatar = user.avatarId,
+                    userName = user.login,
+                    isWalletFilled = user.isWallet
+                )
+            }
+        }
         _state.update {
             it.copy(
                 loading = false,
                 parties = parties,
-                userAvatar = user.avatar,
-                userName = user.login,
-                isWalletFilled = user.cardNumber != null
             )
         }
     }

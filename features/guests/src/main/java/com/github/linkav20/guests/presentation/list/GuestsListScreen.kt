@@ -45,6 +45,7 @@ import com.github.linkav20.coreui.utils.ColorScheme
 import com.github.linkav20.coreui.utils.getBackgroundColor
 import com.github.linkav20.coreui.utils.getPrimaryColor
 import com.github.linkav20.coreui.utils.getSecondaryColor
+import com.github.linkav20.coreui.utils.getUserAvatar
 import com.github.linkav20.coreui.R as CoreUi
 import com.github.linkav20.guests.R
 import com.github.linkav20.guests.domain.model.User
@@ -138,6 +139,9 @@ private fun Content(
                         onDeleteClick = onDeleteClick
                     )
                 }
+            }
+            item { 
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -528,7 +532,7 @@ private fun UserItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = CoreUi.drawable.avatar),
+                painter = getUserAvatar(id = user.avatar),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

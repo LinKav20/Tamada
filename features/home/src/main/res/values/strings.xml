@@ -5,6 +5,7 @@
     <string name="home_main_screen_guest_party_title">Я гость</string>
     <string name="home_main_screen_manage_party_title">Я организатор</string>
     <string name="home_main_screen_hello_message">Привет, %s!</string>
+    <string name="home_main_screen_guests_empty">Вас пока не пригласили ни на одну вечеринку. Может пришло время создать свою?</string>
     <string name="home_main_screen_info_message">Чтобы продолжить, выбери или добавь вечеринку</string>
 
     <!-- BottomBar Navigation -->

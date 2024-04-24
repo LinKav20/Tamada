@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -181,7 +182,7 @@ private fun Content(
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
+                columns = GridCells.Fixed(if (manageParties.isEmpty()) 1 else 2),
             ) {
                 item {
                     BoxWithConstraints {
@@ -189,7 +190,8 @@ private fun Content(
                         Box(
                             modifier =
                             Modifier
-                                .size(maxWidth)
+                                .height(if (manageParties.isEmpty()) maxWidth / 2 else maxWidth)
+                                .fillMaxWidth()
                                 .padding(8.dp)
                                 .background(
                                     TamadaTheme.colors.textCaption,
@@ -215,8 +217,7 @@ private fun Content(
             }
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                modifier =
-                Modifier
+                modifier = Modifier
                     .align(alignment = Alignment.Start)
                     .padding(horizontal = 8.dp),
                 text = stringResource(R.string.home_main_screen_guest_party_title),
@@ -224,14 +225,25 @@ private fun Content(
                 style = TamadaTheme.typography.head,
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-            ) {
-                items(guestParties) {
-                    Party(
-                        party = it,
-                        onPartyClick = onPartyClick,
-                    )
+            if (guestParties.isEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .align(alignment = Alignment.Start)
+                        .padding(horizontal = 8.dp),
+                    text = stringResource(id = R.string.home_main_screen_guests_empty),
+                    color = TamadaTheme.colors.textMain,
+                    style = TamadaTheme.typography.body
+                )
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                ) {
+                    items(guestParties) {
+                        Party(
+                            party = it,
+                            onPartyClick = onPartyClick,
+                        )
+                    }
                 }
             }
         }

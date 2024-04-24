@@ -17,6 +17,7 @@ import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -61,13 +62,14 @@ private fun Content(
             shape = TamadaTheme.shapes.medium,
         )
         .padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 16.dp),
+    verticalAlignment = Alignment.CenterVertically
 ) {
     if (type != null) {
         when (type) {
             Type.SUCCESS ->
                 Icon(
                     modifier =Modifier.size(32.dp),
-                    painter = painterResource(id = R.drawable.add_image_icon),
+                    painter = painterResource(id = R.drawable.round_done_24),
                     contentDescription = "success",
                     tint = TamadaTheme.colors.statusPositive,
                 )
@@ -75,7 +77,7 @@ private fun Content(
             Type.ERROR ->
                 Icon(
                     modifier =Modifier.size(32.dp),
-                    painter = painterResource(id = R.drawable.add_image_icon),
+                    painter = painterResource(id = R.drawable.round_close_24),
                     contentDescription = "error",
                     tint = TamadaTheme.colors.statusNegative,
                 )

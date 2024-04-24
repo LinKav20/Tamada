@@ -270,8 +270,12 @@ private fun MyExpensesList(
                 color = TamadaTheme.colors.textMain
             )
         } else {
-            expenses.slice(0 until SHOW_EXPENSES).forEach {
-                ExpenseItem(it)
+            if (expenses.size < SHOW_EXPENSES) {
+                expenses.forEach { ExpenseItem(it) }
+            } else {
+                expenses.slice(0 until SHOW_EXPENSES).forEach {
+                    ExpenseItem(it)
+                }
             }
         }
         if (expenses.size > SHOW_EXPENSES) {

@@ -13,7 +13,7 @@ class FinanceRepositoryImpl @Inject constructor(
 ) : FinanceRepository {
 
     override suspend fun loadFinanceState(id: Long): FinanceState {
-        return FinanceState.STEP_3
+        return FinanceState.NONE
     }
 
     override suspend fun getAllExpanses(id: Long): List<User> {
