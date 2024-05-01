@@ -43,10 +43,7 @@ class LoginViewModel @Inject constructor(
             )
             _state.update { it.copy(action = LoginState.Action.MAIN) }
         } catch (e: Exception) {
-            reactUseCase.invoke(
-                title = e.message,
-                style = ReactionStyle.ERROR
-            )
+            reactUseCase.invoke(e)
         }
         _state.update { it.copy(loading = false) }
     }
