@@ -4,8 +4,8 @@
     <style name="Theme.Tamada.Main" parent="Theme.AppCompat.Light.NoActionBar" />
 
     <style name="Theme.Tamada.SplashTheme" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/secondary_purple</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="windowSplashScreenBackground">@color/background_primary</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_spalsh</item>
         <item name="postSplashScreenTheme">@style/Theme.Tamada.Main</item>
     </style>
 </resources>
