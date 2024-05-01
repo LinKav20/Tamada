@@ -42,9 +42,9 @@ class LoginViewModel @Inject constructor(
                 password = state.value.password
             )
             _state.update { it.copy(action = LoginState.Action.MAIN) }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
             reactUseCase.invoke(
-                title = context.getString(R.string.login_screen_error_title),
+                title = e.message,
                 style = ReactionStyle.ERROR
             )
         }

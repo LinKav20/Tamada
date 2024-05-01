@@ -18,7 +18,7 @@ internal fun SnackbarHost(
     snackbarManager: SnackbarManager,
     errorManager: ErrorManager,
     mainViewModel: MainViewModel,
-    ozonSnackbarHostState: TamadaSnackbarHostState =
+    tamadaSnackbarHostState: TamadaSnackbarHostState =
         remember {
             TamadaSnackbarHostState(
                 SnackbarHostState(),
@@ -27,16 +27,16 @@ internal fun SnackbarHost(
     modifier: Modifier,
 ) {
     ErrorHost(
-        snackbarHostState = ozonSnackbarHostState,
+        snackbarHostState = tamadaSnackbarHostState,
         errorManager = errorManager,
         onAuthorizeClick = {}, // mainViewModel::onAuthorizeClick
     )
     NotificationHost(
-        snackbarHostState = ozonSnackbarHostState,
+        snackbarHostState = tamadaSnackbarHostState,
         snackbarManager = snackbarManager,
     )
     SnackbarHost(
-        hostState = ozonSnackbarHostState.snackbarHostState,
+        hostState = tamadaSnackbarHostState.snackbarHostState,
         modifier = modifier,
     ) { snackbarData ->
         val data: TamadaSnackbarData =
@@ -52,7 +52,7 @@ internal fun SnackbarHost(
             isSwipeable = data.isSwipeable,
             onSwipeToDismiss = {
                 if (data.isSwipeable) {
-                    ozonSnackbarHostState.currentSnackbarData?.dismiss()
+                    tamadaSnackbarHostState.currentSnackbarData?.dismiss()
                 }
             },
         )

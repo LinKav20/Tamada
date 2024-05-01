@@ -1,6 +1,6 @@
 package com.github.linkav20.network.di
 
-import com.github.linkav20.network.auth.api.AuthApi
+import com.github.linkav20.network.data.api.AuthApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

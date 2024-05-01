@@ -82,7 +82,7 @@ task runOpenApiGeneratorTaskGenerator {
         final moduleName = api.moduleName
         final fileName = api.swaggerName
 
-        final packageId = "ru.ozon.ozon_pvz.network.$moduleName"
+        final packageId = "com.github.linkav20.network.$moduleName"
         final taskName = "openApiGenerate${moduleName.toUpperCase()}"
         final filePath = "$projectDir/specs/$fileName"
 
