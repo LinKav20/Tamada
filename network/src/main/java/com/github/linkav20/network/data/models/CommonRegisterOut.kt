@@ -32,19 +32,19 @@ import com.squareup.moshi.JsonClass
 
 data class CommonRegisterOut (
 
-    @Json(name = "accessToken")
+    @Json(name = "AccessToken")
     val accessToken: kotlin.String? = null,
 
-    @Json(name = "login")
+    @Json(name = "Login")
     val login: kotlin.String,
 
-    @Json(name = "profileImageID")
+    @Json(name = "ProfileImageID")
     val profileImageID: kotlin.Int,
 
-    @Json(name = "refreshToken")
+    @Json(name = "RefreshToken")
     val refreshToken: kotlin.String? = null,
 
-    @Json(name = "userID")
+    @Json(name = "UserID")
     val userID: kotlin.Int
 
 )

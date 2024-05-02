@@ -32,7 +32,7 @@ interface AuthApi {
      * @param input account info
      * @return [CommonLoginOut]
      */
-    @POST("api/login")
+    @POST("login")
     suspend fun loginAcc(@Body input: CommonLoginIn): Response<CommonLoginOut>
 
     /**
@@ -44,7 +44,7 @@ interface AuthApi {
      * @param input account info
      * @return [CommonRegisterOut]
      */
-    @POST("api/register")
+    @POST("register")
     suspend fun registerAcc(@Body input: CommonRegisterIn): Response<CommonRegisterOut>
 
     @GET("api/refresh_token")

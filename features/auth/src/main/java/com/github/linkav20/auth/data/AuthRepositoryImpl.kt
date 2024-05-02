@@ -70,7 +70,7 @@ private fun CommonLoginOut.toDomain() = UserToTokens(
         login = login,
         id = userID,
         avatarId = profileImageID,
-        isWallet = hasDebitCard
+        isWallet = hasDebitCard ?: false
     ),
     tokens = AuthTokenData(
         accessToken = accessToken.orEmpty(),
