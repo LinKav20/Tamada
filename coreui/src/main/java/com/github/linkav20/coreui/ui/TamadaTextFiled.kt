@@ -55,7 +55,7 @@ fun TamadaTextFiled(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions(),
     singleLine: Boolean = false,
-    maxLines: Int = Int.MAX_VALUE,
+    maxLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     textStyle: TextStyle = TamadaTheme.typography.caption,
     visualTransformation: VisualTransformation = VisualTransformation.None,

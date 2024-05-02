@@ -8,17 +8,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -31,6 +39,7 @@ import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
 import com.github.linkav20.coreui.ui.TamadaTextFiled
 import com.github.linkav20.coreui.utils.ColorScheme
+import com.github.linkav20.coreui.utils.getPrimaryColor
 
 @Composable
 fun LoginScreen(
@@ -65,6 +74,7 @@ fun LoginScreen(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Content(
     loading: Boolean,
@@ -77,16 +87,18 @@ private fun Content(
     onShowPasswordClick: () -> Unit
 ) {
     Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(40.dp),
+            .padding(40.dp)
+            .imePadding()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (loading) {
             TamadaFullscreenLoader(scheme = ColorScheme.LISTS)
         } else {
+            val keyboardController = LocalSoftwareKeyboardController.current
             Spacer(modifier = Modifier.weight(1f))
             Image(
                 painter = painterResource(id = CoreR.drawable.logo),
@@ -126,10 +138,13 @@ private fun Content(
                         } else {
                             painterResource(id = CoreR.drawable.eyebrow)
                         },
+                        tint = getPrimaryColor(scheme = ColorScheme.LISTS),
                         contentDescription = null
                     )
                 },
                 colorScheme = ColorScheme.LISTS,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
             )
             Spacer(modifier = Modifier.height(4.dp))
             TamadaButton(

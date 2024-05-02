@@ -9,6 +9,7 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
     override suspend fun getUserInfo(): User {
         return User(
+            id = 2,
             login = "Lina",
             email = "maltseva-as@mail.ru",
             avatar = 10,

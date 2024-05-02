@@ -1,6 +1,7 @@
 package com.github.linkav20.network.di
 
 import com.github.linkav20.network.data.api.AuthApi
+import com.github.linkav20.network.data.api.EventApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,4 +16,9 @@ class ApiModule {
     @Provides
     fun providesMobileAuthApi(retrofit: Retrofit): AuthApi =
         retrofit.create(AuthApi::class.java)
+
+    @Singleton
+    @Provides
+    fun providesMobileEventApi(retrofit: Retrofit): EventApi =
+        retrofit.create(EventApi::class.java)
 }
