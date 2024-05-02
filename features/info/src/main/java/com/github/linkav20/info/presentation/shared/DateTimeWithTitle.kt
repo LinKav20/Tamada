@@ -41,7 +41,7 @@ fun DateTimeWithTitle(
                     null
                 },
                 text = if (value != null) {
-                    DateTimeUtils.toString(value)
+                    DateTimeUtils.toUiString(value)
                 } else {
                     hint
                 }

@@ -66,7 +66,7 @@ fun DeadlineComponent(
             )
         } else {
             Text(
-                text = DateTimeUtils.toString(deadline),
+                text = DateTimeUtils.toUiString(deadline),
                 style = TamadaTheme.typography.head,
                 color = getPrimaryColor(scheme = ColorScheme.FINANCE)
             )
@@ -119,7 +119,7 @@ fun EditableDeadlineComponent(
                         null
                     },
                     text = if (deadline != null) {
-                        DateTimeUtils.toString(deadline)
+                        DateTimeUtils.toUiString(deadline)
                     } else {
                         stringResource(id = com.github.linkav20.finance.R.string.step1_deadline_nullable_text)
                     }

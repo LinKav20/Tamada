@@ -17,9 +17,7 @@ class BearerInterceptor @Inject constructor(
         chain.request().newBuilder()
             .also { builder ->
                 if (!chain.request().isAuthRequest() && !chain.request().isVersioningRequest()) {
-                    Log.d("MY_", "in intercept")
                     tokenRepository.accessToken.let {
-                        Log.d("MY_", "in token intersept")
                         builder.addHeader(AUTHORIZATION_HEADER, "$AUTHORIZATION_PREFIX $it")
                     }
                 }

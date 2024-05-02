@@ -1,5 +1,6 @@
 package com.github.linkav20.network.utils
 
+import android.util.Log
 import com.github.linkav20.core.domain.entity.DomainException
 import com.github.linkav20.network.data.entity.ErrorResponse
 import kotlinx.coroutines.CancellationException
@@ -28,34 +29,25 @@ class RetrofitErrorHandler @Inject constructor(
     suspend fun <T : Any> apiCall(
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         call: suspend () -> Response<T>,
-    ): T =
-        withContext(dispatcher) {
-            val response: Response<T>
-            try {
-                response = call.invoke()
-            } catch (t: Throwable) {
-                Timber.e(t)
-                throw mapNetworkThrowableToDomain(t)
-            }
-
-            if (!response.isSuccessful) {
-                throw mapErrorBodyToDomainError(
-                    errorBody = response.errorBody(),
-                    code = response.code(),
-                    request = (response.raw() as okhttp3.Response).request,
-                )
-            }
-
-            val body = response.body()
-            when {
-                body != null -> return@withContext body
-                response.code() == 204 -> throw NoContentException
-                else -> {
-                    val request = (response.raw() as okhttp3.Response).request
-                    throw Exception("response.body() cannot be null for ${request.method} ${request.url}")
-                }
-            }
+    ): T? = withContext(dispatcher) {
+        val response: Response<T>
+        try {
+            response = call.invoke()
+        } catch (t: Throwable) {
+            Timber.e(t.message)
+            throw mapNetworkThrowableToDomain(t)
         }
+
+        if (!response.isSuccessful) {
+            throw mapErrorBodyToDomainError(
+                errorBody = response.errorBody(),
+                code = response.code(),
+                request = (response.raw() as okhttp3.Response).request,
+            )
+        }
+
+        return@withContext response.body()
+    }
 
     private fun mapErrorBodyToDomainError(
         errorBody: ResponseBody?,
@@ -121,6 +113,7 @@ private fun getException(
     url: HttpUrl,
 ) = Exception("$code error for $method $url")
 
-private fun Request.isAuthRequest() = this.url.encodedPath.contains("/register") || this.url.encodedPath.contains("/login")
+private fun Request.isAuthRequest() =
+    this.url.encodedPath.contains("/register") || this.url.encodedPath.contains("/login")
 
 object NoContentException : RuntimeException()

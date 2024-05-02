@@ -3,6 +3,7 @@ package com.github.linkav20.auth.data
 import com.github.linkav20.auth.domain.model.AuthTokenData
 import com.github.linkav20.auth.domain.model.UserToTokens
 import com.github.linkav20.auth.domain.repository.AuthRepository
+import com.github.linkav20.core.domain.entity.DomainException
 import com.github.linkav20.core.domain.entity.User
 import com.github.linkav20.core.domain.entity.UserRole
 import com.github.linkav20.network.data.api.AuthApi
@@ -26,7 +27,7 @@ class AuthRepositoryImpl @Inject constructor(
                     password = password
                 )
             )
-        }.toDomain()
+        }?.toDomain() ?: throw DomainException.NoDataException
 
     override suspend fun geUserRole(id: Long): UserRole {
         return UserRole.MANAGER
@@ -34,7 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun refreshToken() = retrofitErrorHandler.apiCall {
         authApi.refreshToken()
-    }.toDomain()
+    }?.toDomain()
 
 
     override suspend fun createUser(
@@ -49,7 +50,7 @@ class AuthRepositoryImpl @Inject constructor(
                 password = password
             )
         )
-    }.toDomain()
+    }?.toDomain() ?: throw DomainException.NoDataException
 }
 
 private fun CommonRegisterOut.toDomain() = UserToTokens(

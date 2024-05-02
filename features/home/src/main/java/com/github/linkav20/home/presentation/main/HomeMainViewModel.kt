@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.linkav20.auth.domain.usecase.GetAuthTokensUseCase
 import com.github.linkav20.core.domain.usecase.GetUserInformationUseCase
 import com.github.linkav20.core.domain.usecase.SetPartyIdUseCase
+import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.home.domain.model.Party
 import com.github.linkav20.home.domain.usecase.GetAllPartiesUseCase
 import com.github.linkav20.home.domain.usecase.GetUserInfoUseCase
@@ -20,8 +21,8 @@ class HomeMainViewModel @Inject constructor(
     private val getAllPartiesUseCase: GetAllPartiesUseCase,
     private val setPartyIdUseCase: SetPartyIdUseCase,
     private val getAuthTokensUseCase: GetAuthTokensUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase,
-    private val getUserInformationUseCase: GetUserInformationUseCase
+    private val getUserInformationUseCase: GetUserInformationUseCase,
+    private val reactUseCase: ReactUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeMainScreenState())
@@ -50,23 +51,33 @@ class HomeMainViewModel @Inject constructor(
         _state.update { it.copy(loading = false) }
     }
 
-    private fun loadData() = viewModelScope.launch {
-        val parties = getAllPartiesUseCase.invoke()
+    private fun loadData() {
+        loadUser()
+        loadParties()
+    }
+
+    private fun loadParties() = viewModelScope.launch {
         val user = getUserInformationUseCase.invoke()
-        if (user != null) {
-            _state.update {
-                it.copy(
-                    userAvatar = user.avatarId,
-                    userName = user.login,
-                    isWalletFilled = user.isWallet
-                )
-            }
-        }
         _state.update {
             it.copy(
-                loading = false,
-                parties = parties,
+                userAvatar = user.avatarId,
+                userName = user.login,
+                isWalletFilled = user.isWallet
             )
+        }
+    }
+
+    private fun loadUser() = viewModelScope.launch {
+        try {
+            val parties = getAllPartiesUseCase.invoke()
+            _state.update {
+                it.copy(
+                    loading = false,
+                    parties = parties,
+                )
+            }
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
         }
     }
 }

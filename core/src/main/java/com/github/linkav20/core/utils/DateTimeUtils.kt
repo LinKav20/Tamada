@@ -20,15 +20,17 @@ object DateTimeUtils {
         }
     }
 
-    fun toString(value: OffsetDateTime): String = value.format(stringFormat)
+    fun toString(value: OffsetDateTime): String = value.format(formatWithZone)
 
-    fun toString(start: OffsetDateTime, end: OffsetDateTime): String =
+    fun toUiString(value: OffsetDateTime): String = value.format(stringFormat)
+
+    fun toUiString(start: OffsetDateTime, end: OffsetDateTime): String =
         if (start.dayOfYear == end.dayOfYear) {
             val dateFormat = start.format(dateFormat)
             val startTime = start.format(timeFormat)
             val endTime = end.format(timeFormat)
             "$dateFormat    $startTime - $endTime"
         } else {
-            "${toString(start)} - ${toString(end)}"
+            "${toUiString(start)} - ${toUiString(end)}"
         }
 }

@@ -19,7 +19,7 @@ data class PartyInfoState(
     val isThemeSectionEditable = canThemeEdit && canEdit
 
     val partyDate: String? = if (party?.startTime != null && party.endTime != null) {
-        DateTimeUtils.toString(party.startTime, party.endTime)
+        DateTimeUtils.toUiString(party.startTime, party.endTime)
     } else {
         if (party?.startTime != null) party.startTime
         if (party?.endTime != null) party.endTime

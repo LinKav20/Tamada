@@ -79,6 +79,10 @@ internal fun ErrorHost(
                                 message = context.getString(R.string.error_forbidden),
                                 type = Type.ERROR,
                             )
+
+                        is DomainException.NoDataException -> {
+
+                        }
                     }
                 when (result) {
                     SnackbarResult.Dismissed -> Log.d("", "Notification dismissed")

@@ -167,7 +167,7 @@ interface EventApi {
      * @return [CommonGetUserPartiesOut]
      */
     @POST("api/get_user_parties")
-    suspend fun getUserEvents(@Body input: CommonGetUserEventsIn): Response<CommonGetUserPartiesOut>
+    suspend fun getUserEvents(@Body input: CommonGetUserEventsIn): Response<List<CommonGetUserPartiesOut>>
 
     /**
      * UpdateListVisibility

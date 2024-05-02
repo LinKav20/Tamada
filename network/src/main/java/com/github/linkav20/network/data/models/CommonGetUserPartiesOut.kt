@@ -33,20 +33,20 @@ import com.squareup.moshi.JsonClass
 data class CommonGetUserPartiesOut (
 
     @Json(name = "coverID")
-    val coverID: kotlin.Int? = null,
+    val coverID: kotlin.Int,
 
     @Json(name = "isManager")
-    val isManager: kotlin.Boolean? = null,
+    val isManager: kotlin.Boolean,
 
     /* 3 дня после создания */
     @Json(name = "isNew")
-    val isNew: kotlin.Boolean? = null,
+    val isNew: kotlin.Boolean,
 
     @Json(name = "name")
-    val name: kotlin.String? = null,
+    val name: kotlin.String,
 
     @Json(name = "partyID")
-    val partyID: kotlin.Int? = null
+    val partyID: kotlin.Int
 
 )
 

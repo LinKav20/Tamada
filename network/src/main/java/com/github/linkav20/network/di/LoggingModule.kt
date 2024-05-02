@@ -1,5 +1,6 @@
 package com.github.linkav20.network.di
 
+import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +21,7 @@ class LoggingModule {
     fun providesConsoleLoggingInterceptor(interceptor: HttpLoggingInterceptor): Interceptor =
         Interceptor { chain ->
             val request: Request = chain.request()
+            Timber.tag("NETWORK").d(request.url.toString())
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
             chain.proceed(request)
         }

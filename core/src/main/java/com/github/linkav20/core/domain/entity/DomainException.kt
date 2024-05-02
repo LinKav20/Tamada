@@ -19,4 +19,6 @@ sealed class DomainException : Exception() {
     data class Client(val code: Int) : DomainException()
 
     object Timeout : DomainException()
+
+    object NoDataException: DomainException()
 }
