@@ -75,10 +75,7 @@ fun PartyInfoScreen(
         onThemeChanged = viewModel::onThemeChanged,
         onMoodboardinkChanged = viewModel::onMoodboardinkChanged,
         onDressCodeChanged = viewModel::onDressCodeChanged,
-        onBackClick = {
-            viewModel.saveParty()
-            navController.navigateUp()
-        },
+        onBackClick = { navController.navigateUp() },
         onError = { throwable ->
             errorMapper.OnError(
                 throwable,
@@ -113,8 +110,7 @@ private fun Content(
     onDressCodeChanged: (String) -> Unit,
     onError: @Composable (Throwable) -> Unit,
 ) = Scaffold(
-    modifier =
-    Modifier
+    modifier = Modifier
         .statusBarsPadding()
         .navigationBarsPadding()
         .imePadding(),
@@ -130,8 +126,7 @@ private fun Content(
 
     } else {
         LazyColumn(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .padding(paddings)
                 .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),

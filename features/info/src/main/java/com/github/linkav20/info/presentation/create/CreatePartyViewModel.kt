@@ -31,10 +31,10 @@ constructor(
 
     fun onRoadMapClicks() =
         listOf(
-            { onMainRoadMapClick() },
-            { onAddressRoadMapClick() },
-            { onImportantClick() },
-            { onThemeRoadMapClick() },
+            { },
+            { },
+            { },
+            { },
         )
 
     fun onNameChanged(value: String) = _state.update { it.copy(name = value) }

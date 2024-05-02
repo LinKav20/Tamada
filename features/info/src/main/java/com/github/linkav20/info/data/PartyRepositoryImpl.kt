@@ -14,9 +14,9 @@ class PartyRepositoryImpl @Inject constructor(
     private val retrofitErrorHandler: RetrofitErrorHandler,
     private val eventApi: EventApi
 ) : PartyRepository {
-    override suspend fun saveParty(party: Party) {
+    override suspend fun saveParty(party: Party, userId: Int) {
         retrofitErrorHandler.apiCall {
-            eventApi.createEvent(party.toRequest())
+            eventApi.createEvent(party.toRequest().copy(userCreatorID = userId))
         }
     }
 

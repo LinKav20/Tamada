@@ -1,14 +1,11 @@
 package com.github.linkav20.network.utils
 
-import android.util.Log
 import com.github.linkav20.core.domain.entity.DomainException
-import com.github.linkav20.network.data.entity.ErrorResponse
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.HttpUrl
 import okhttp3.Request
@@ -57,17 +54,16 @@ class RetrofitErrorHandler @Inject constructor(
         if (code == 403) return DomainException.Forbidden
         if (errorBody != null) {
             try {
-                val error =
-                    json.decodeFromString<ErrorResponse>(errorBody.string().replace("\\n", " "))
+                val error = errorBody.string()
                 return if (code == 401) {
                     DomainException.Unauthorized(
-                        text = error.message,
+                        text = error,
                         showButton = !request.isAuthRequest()
                     )
                 } else {
                     DomainException.Text(
-                        text = error.message,
-                        returnCode = error.returnCode,
+                        text = error,
+                        returnCode = code.toString(),
                     )
                 }
             } catch (throwable: SerializationException) {
