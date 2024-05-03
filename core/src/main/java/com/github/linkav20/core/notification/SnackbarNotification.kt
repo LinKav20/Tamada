@@ -4,7 +4,7 @@ import com.github.linkav20.core.domain.entity.ReactionStyle
 
 class SnackbarNotification(
     val title: String?,
-    val subtitle: String?,
+    val subtitle: String? = null,
     val reactionStyle: ReactionStyle = ReactionStyle.INFO,
     val isSwipeable: Boolean = true,
 )

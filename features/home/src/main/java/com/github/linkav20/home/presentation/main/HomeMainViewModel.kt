@@ -8,7 +8,6 @@ import com.github.linkav20.core.domain.usecase.SetPartyIdUseCase
 import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.home.domain.model.Party
 import com.github.linkav20.home.domain.usecase.GetAllPartiesUseCase
-import com.github.linkav20.home.domain.usecase.GetUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,10 +27,6 @@ class HomeMainViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeMainScreenState())
     val state = _state.asStateFlow()
 
-    init {
-        getData()
-    }
-
     fun onPartyClick(party: Party) {
         setPartyIdUseCase.invoke(party.id)
         _state.update { it.copy(action = HomeMainScreenState.Action.PARTY) }
@@ -48,7 +43,6 @@ class HomeMainViewModel @Inject constructor(
         } else {
             _state.update { it.copy(action = HomeMainScreenState.Action.AUTH) }
         }
-        _state.update { it.copy(loading = false) }
     }
 
     private fun loadData() {
@@ -56,7 +50,7 @@ class HomeMainViewModel @Inject constructor(
         loadParties()
     }
 
-    private fun loadParties() = viewModelScope.launch {
+    private fun loadUser() = viewModelScope.launch {
         val user = getUserInformationUseCase.invoke()
         _state.update {
             it.copy(
@@ -67,14 +61,11 @@ class HomeMainViewModel @Inject constructor(
         }
     }
 
-    private fun loadUser() = viewModelScope.launch {
+    private fun loadParties() = viewModelScope.launch {
         try {
             val parties = getAllPartiesUseCase.invoke()
             _state.update {
-                it.copy(
-                    loading = false,
-                    parties = parties,
-                )
+                it.copy(parties = parties)
             }
         } catch (e: Exception) {
             reactUseCase.invoke(e)

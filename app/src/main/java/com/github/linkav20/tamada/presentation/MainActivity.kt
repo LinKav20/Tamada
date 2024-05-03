@@ -1,19 +1,16 @@
 package com.github.linkav20.tamada.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.linkav20.core.error.ErrorManager
 import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.core.notification.SnackbarManager
 import com.github.linkav20.coreui.theme.TamadaTheme
+import com.github.linkav20.tamada.presentation.invitation.InvitationActivity
 import com.github.linkav20.tamada.presentation.main.MainScreen
 import com.squareup.leakcanary.core.BuildConfig
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,6 +44,23 @@ class MainActivity : ComponentActivity() {
                     onLoadingStateChanged = { keepOnScreenCondition = it },
                 )
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleDeepLink(intent)
+    }
+
+    private fun handleDeepLink(intent: Intent) {
+        try {
+            val id = intent.data.toString().split('/').last()
+            val idToInt = id.toInt()
+            startActivity(Intent(this, InvitationActivity::class.java).apply {
+                putExtra("partyId", idToInt)
+            })
+        } catch (e: Exception) {
+            Timber.e(e.message)
         }
     }
 

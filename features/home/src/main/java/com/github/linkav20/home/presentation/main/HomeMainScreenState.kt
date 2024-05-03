@@ -12,7 +12,7 @@ data class HomeMainScreenState(
 ) {
 
     enum class Action {
-        PARTY, AUTH
+        PARTY, AUTH, INVITATION
     }
 
     val guestParties = parties.filterNot { it.isManager }

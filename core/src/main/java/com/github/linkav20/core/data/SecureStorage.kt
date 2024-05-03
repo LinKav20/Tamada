@@ -5,8 +5,6 @@ import androidx.core.content.edit
 import com.github.linkav20.core.di.Encrypted
 import javax.inject.Inject
 
-private const val DEFAULT_INT_VALUE = 0
-
 class SecureStorage @Inject constructor(
     @Encrypted private val sharedPreferences: SharedPreferences
 ) {
@@ -32,5 +30,6 @@ class SecureStorage @Inject constructor(
         const val USER_AVATAR = "USER_AVATAR"
         const val USER_LOGIN = "USER_LOGIN"
         const val USER_IS_WALLED = "USER_IS_WALLED"
+        const val DEFAULT_INT_VALUE = 0
     }
 }

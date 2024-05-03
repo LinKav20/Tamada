@@ -83,6 +83,10 @@ dependencies {
     implementation libs.navigation.compose
     implementation libs.compose.runtime
     implementation libs.hilt.navigation
+    implementation platform(libs.compose.bom)
+    implementation libs.ui.graphics
+    implementation libs.compose.material3
+    androidTestImplementation platform(libs.compose.bom)
     debugImplementation libs.compose.ui.tooling
     debugImplementation libs.compose.ui.test.manifest
     androidTestImplementation libs.compose.ui.test

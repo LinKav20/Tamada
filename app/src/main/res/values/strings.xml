@@ -10,5 +10,6 @@
     <string name="error_unauthorized_action">error_unauthorized_action</string>
     <string name="error_timeout">Превышено время ожидания</string>
     <string name="error_forbidden">Недостостаточно прав</string>
+    <string name="title_activity_invitation">InvitationActivity</string>
 
 </resources>

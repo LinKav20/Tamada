@@ -23,8 +23,8 @@ class UserInformationRepositoryImpl @Inject constructor(
         set(value) = secureStorage.putInt(SecureStorage.USER_AVATAR, value)
 
     override var isWallet: Boolean
-        get() = secureStorage.getBoolean(SecureStorage.TOKEN_KEY)
-        set(value) = secureStorage.putBoolean(SecureStorage.TOKEN_KEY, value)
+        get() = secureStorage.getBoolean(SecureStorage.USER_IS_WALLED)
+        set(value) = secureStorage.putBoolean(SecureStorage.USER_IS_WALLED, value)
 
     override fun getUser() = User(
         id = userId,

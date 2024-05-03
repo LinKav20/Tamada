@@ -35,3 +35,12 @@ fun OnLifecycleStart(block: () -> Unit) {
         }
     }
 }
+
+@Composable
+fun OnLifecycleResume(block: () -> Unit) {
+    OnLifecycleEvent { _, event ->
+        if (event == Lifecycle.Event.ON_RESUME) {
+            block()
+        }
+    }
+}

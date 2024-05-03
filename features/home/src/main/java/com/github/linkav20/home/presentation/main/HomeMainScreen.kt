@@ -1,6 +1,5 @@
 package com.github.linkav20.home.presentation.main
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,9 +15,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -28,7 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,18 +37,14 @@ import com.github.linkav20.core.navigation.common.CreatePartyDestination
 import com.github.linkav20.core.navigation.common.InfoTabDestination
 import com.github.linkav20.core.utils.OnLifecycleStart
 import com.github.linkav20.coreui.theme.TamadaTheme
-import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.DebounceIconButton
-import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
 import com.github.linkav20.coreui.ui.TamadaTopBar
 import com.github.linkav20.coreui.utils.ColorScheme
-import com.github.linkav20.coreui.utils.getBackgroundColor
 import com.github.linkav20.coreui.utils.getPrimaryColor
 import com.github.linkav20.coreui.utils.getUserAvatar
 import com.github.linkav20.home.R
 import com.github.linkav20.home.domain.model.Party
-import com.github.linkav20.home.navigation.HomeGraphDestination
 import com.github.linkav20.home.navigation.LkDestination
 import com.github.linkav20.coreui.R as CoreR
 

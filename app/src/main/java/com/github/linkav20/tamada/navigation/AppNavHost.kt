@@ -23,18 +23,6 @@ fun AppNavHost(
         navController = navController,
         startDestination = startDestination,
     ) {
-//        composable("home") {
-//            println("--------------------")
-// //            TamadaApp(onNavigateToSignUp = {
-// //                navController.navigate(AuthDestination.route())
-// //                println("--------------------")
-// //                navController.currentBackStack.value.forEach {
-// //                    println("screen : ${it.destination.route}")
-// //                }
-// //                println("--------------------")
-// //            },
-// //                vm = hiltViewModel())
-//        }
         authGraph(
             navController = navController,
             errorMapper = errorMapper
