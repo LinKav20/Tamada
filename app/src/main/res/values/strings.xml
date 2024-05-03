@@ -2,13 +2,13 @@
 <resources>
     <string name="app_name">Tamada</string>
 
-    <string name="error_network">error_network</string>
-    <string name="error_server">error_server</string>
-    <string name="error_client">error_client</string>
-    <string name="error_unknown">error_unknown</string>
-    <string name="error_unauthorized">error_unauthorized</string>
+    <string name="error_network">Ошибка соединения</string>
+    <string name="error_server">Ошибка на сервере</string>
+    <string name="error_client">Что-то пошло не так</string>
+    <string name="error_unknown">Что-то пошло не так</string>
+    <string name="error_unauthorized">Не авторизованы</string>
     <string name="error_unauthorized_action">error_unauthorized_action</string>
-    <string name="error_timeout">error_timeout</string>
-    <string name="error_forbidden">error_forbidden</string>
+    <string name="error_timeout">Превышено время ожидания</string>
+    <string name="error_forbidden">Недостостаточно прав</string>
 
 </resources>

@@ -78,6 +78,8 @@ class HomeMainViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
         }
     }
 }
