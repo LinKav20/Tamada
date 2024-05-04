@@ -70,15 +70,19 @@ fun HomeMainScreen(
     }
 
     LaunchedEffect(state.action) {
-        when (state.action) {
-            HomeMainScreenState.Action.PARTY -> navController.navigate(InfoTabDestination.route())
+        val action = state.action
+        when (action) {
+            HomeMainScreenState.Action.PARTY -> {
+                navController.navigate(InfoTabDestination.route())
+                viewModel.nullifyAction()
+            }
             HomeMainScreenState.Action.AUTH -> {
                 navController.navigate(AuthGraphDestination.route())
+                viewModel.nullifyAction()
             }
 
             else -> {}
         }
-        viewModel.nullifyAction()
     }
 
     OnLifecycleStart {

@@ -12,7 +12,6 @@ class GetAllPartiesUseCase @Inject constructor(
 ) {
     suspend fun invoke(): List<Party> {
         val userId = userInformationRepository.userId
-        Log.d("MY_", userId.toString())
         return repository.getAllParties(userId)
     }
 }

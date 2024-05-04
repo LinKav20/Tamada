@@ -147,4 +147,5 @@ dependencies {
     implementation project(path: ':features:guests')
     implementation project(path: ':features:lists')
     implementation project(path: ':features:finance')
+    implementation project(path: ':features:invitation')
 }

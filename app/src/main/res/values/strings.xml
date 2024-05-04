@@ -12,4 +12,5 @@
     <string name="error_forbidden">Недостостаточно прав</string>
     <string name="title_activity_invitation">InvitationActivity</string>
 
+    <string name="error_parsing_deeplink_title">Приглашение по данной ссылке отсутвует</string>
 </resources>

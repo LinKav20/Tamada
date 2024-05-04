@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Invitation Screen-->
+    <string name="invitation_screen_title">Приглашение</string>
+    <string name="invitation_screen_unauth_error_title">Вы не авторизованы!</string>
+    <string name="invitation_screen_unauth_error_subtitle">Сначала авторизуйтесь, а затем пройдите по ссылке-приглашению еще раз</string>
+    <string name="invitation_screen_error_title">Что-то пошло не так!</string>
+    <string name="invitation_screen_error_subtitle">Проверьте данную вечеринку в вашем списке или попробуйте еще раз спустя несколько минут</string>
+    <string name="invitation_screen_unauth_error_button">Понятно</string>
+    <string name="invitation_screen_add_button">Присоединиться</string>
+    <string name="invitation_screen_party_not_found">Вечерника не найдена</string>
+    <string name="invitation_screen_where">Где? %s!</string>
+    <string name="invitation_screen_when">Когда? %s!</string>
+
+</resources>

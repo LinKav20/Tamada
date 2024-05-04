@@ -6,11 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.linkav20.core.domain.entity.ReactionStyle
 import com.github.linkav20.core.error.ErrorManager
 import com.github.linkav20.core.error.ErrorMapper
+import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.core.notification.SnackbarManager
 import com.github.linkav20.coreui.theme.TamadaTheme
+import com.github.linkav20.tamada.R
 import com.github.linkav20.tamada.presentation.invitation.InvitationActivity
+import com.github.linkav20.tamada.presentation.invitation.PARTY_ID
 import com.github.linkav20.tamada.presentation.main.MainScreen
 import com.squareup.leakcanary.core.BuildConfig
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +32,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var errorManager: ErrorManager
+
+    @Inject
+    lateinit var reactUseCase: ReactUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,10 +64,13 @@ class MainActivity : ComponentActivity() {
             val id = intent.data.toString().split('/').last()
             val idToInt = id.toInt()
             startActivity(Intent(this, InvitationActivity::class.java).apply {
-                putExtra("partyId", idToInt)
+                putExtra(PARTY_ID, idToInt)
             })
         } catch (e: Exception) {
-            Timber.e(e.message)
+            reactUseCase.invoke(
+                title = applicationContext.getString(R.string.error_parsing_deeplink_title),
+                style = ReactionStyle.WARNING
+            )
         }
     }
 

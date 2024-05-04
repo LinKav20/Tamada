@@ -52,7 +52,7 @@ data class CommonGetEventOut (
 
     /* обложка, рандом изначально */
     @Json(name = "coverID")
-    val coverID: kotlin.Int? = null,
+    val coverID: kotlin.Int,
 
     @Json(name = "dressCode")
     val dressCode: kotlin.String? = null,
@@ -71,10 +71,10 @@ data class CommonGetEventOut (
     val moodboadLink: kotlin.String? = null,
 
     @Json(name = "name")
-    val name: kotlin.String? = null,
+    val name: kotlin.String,
 
     @Json(name = "partyID")
-    val partyID: kotlin.Int? = null,
+    val partyID: kotlin.Int,
 
     @Json(name = "startTime")
     val startTime: kotlin.String? = null,

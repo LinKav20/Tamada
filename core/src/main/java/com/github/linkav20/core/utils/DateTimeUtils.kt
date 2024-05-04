@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter
 object DateTimeUtils {
     private val formatWithoutZone = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     private val formatWithZone = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
-    private val stringFormat = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
+    private val stringFormat = DateTimeFormatter.ofPattern("dd MMMM yy HH:mm")
     private val dateFormat = DateTimeFormatter.ofPattern("dd MMMM")
     private val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
 

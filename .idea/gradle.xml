@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/features/guests" />
             <option value="$PROJECT_DIR$/features/home" />
             <option value="$PROJECT_DIR$/features/info" />
+            <option value="$PROJECT_DIR$/features/invitation" />
             <option value="$PROJECT_DIR$/features/lists" />
             <option value="$PROJECT_DIR$/network" />
           </set>
