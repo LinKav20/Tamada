@@ -1,12 +1,16 @@
 package com.github.linkav20.auth.data
 
 import com.github.linkav20.auth.domain.model.AuthTokenData
+import com.github.linkav20.auth.domain.model.Party
 import com.github.linkav20.auth.domain.model.UserToTokens
 import com.github.linkav20.auth.domain.repository.AuthRepository
 import com.github.linkav20.core.domain.entity.DomainException
 import com.github.linkav20.core.domain.entity.User
 import com.github.linkav20.core.domain.entity.UserRole
 import com.github.linkav20.network.data.api.AuthApi
+import com.github.linkav20.network.data.api.EventApi
+import com.github.linkav20.network.data.models.CommonGetUserEventsIn
+import com.github.linkav20.network.data.models.CommonGetUserPartiesOut
 import com.github.linkav20.network.data.models.CommonLoginIn
 import com.github.linkav20.network.data.models.CommonLoginOut
 import com.github.linkav20.network.data.models.CommonRefreshOut
@@ -17,6 +21,7 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val authApi: AuthApi,
+    private val eventApi: EventApi,
     private val retrofitErrorHandler: RetrofitErrorHandler
 ) : AuthRepository {
     override suspend fun login(login: String, password: String) =
@@ -29,9 +34,10 @@ class AuthRepositoryImpl @Inject constructor(
             )
         }?.toDomain() ?: throw DomainException.NoDataException
 
-    override suspend fun geUserRole(id: Long): UserRole {
-        return UserRole.MANAGER
-    }
+    override suspend fun getAllParties(userId: Int): List<Party> = retrofitErrorHandler.apiCall {
+        eventApi.getUserEvents(CommonGetUserEventsIn(userID = userId))
+    }?.map { it.toDomain() } ?: emptyList()
+
 
     override suspend fun refreshToken() = retrofitErrorHandler.apiCall {
         authApi.refreshToken()
@@ -82,4 +88,9 @@ private fun CommonLoginOut.toDomain() = UserToTokens(
 private fun CommonRefreshOut.toDomain() = AuthTokenData(
     accessToken = accessToken,
     refreshToken = refreshToken
+)
+
+private fun CommonGetUserPartiesOut.toDomain() = Party(
+    id = partyID,
+    isManager = isManager
 )

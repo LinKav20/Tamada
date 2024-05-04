@@ -168,19 +168,22 @@ private fun Content(
                 textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                modifier =
-                Modifier
-                    .align(alignment = Alignment.Start)
-                    .padding(horizontal = 8.dp),
-                text = stringResource(R.string.home_main_screen_manage_party_title),
-                color = TamadaTheme.colors.textHeader,
-                style = TamadaTheme.typography.head,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
             LazyVerticalGrid(
-                columns = GridCells.Fixed(if (manageParties.isEmpty()) 1 else 2),
+                columns = GridCells.Fixed(if (manageParties.isEmpty() && guestParties.isEmpty()) 1 else 2),
             ) {
+                item {
+                    Text(
+                        modifier =
+                        Modifier
+                            .align(alignment = Alignment.Start)
+                            .padding(horizontal = 8.dp),
+                        text = stringResource(R.string.home_main_screen_manage_party_title),
+                        color = TamadaTheme.colors.textHeader,
+                        style = TamadaTheme.typography.head,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+                item { Box {} }
                 item {
                     BoxWithConstraints {
                         val maxWidth = maxWidth
@@ -224,7 +227,7 @@ private fun Content(
                         color = TamadaTheme.colors.textHeader,
                         style = TamadaTheme.typography.head,
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
                 item { Box {} }
                 if (guestParties.isEmpty()) {
