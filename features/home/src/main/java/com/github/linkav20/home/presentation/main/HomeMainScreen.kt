@@ -190,7 +190,7 @@ private fun Content(
                         Box(
                             modifier =
                             Modifier
-                                .height(if (manageParties.isEmpty()) maxWidth / 2 else maxWidth)
+                                .height(if (manageParties.isEmpty() && guestParties.isEmpty()) maxWidth / 2 else maxWidth)
                                 .fillMaxWidth()
                                 .padding(8.dp)
                                 .background(
