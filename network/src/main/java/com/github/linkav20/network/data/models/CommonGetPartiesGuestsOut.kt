@@ -32,19 +32,19 @@ import com.squareup.moshi.JsonClass
 
 data class CommonGetPartiesGuestsOut (
 
-    @Json(name = "avatarID")
+    @Json(name = "AvatarID")
     val avatarID: kotlin.Int? = null,
 
-    @Json(name = "login")
+    @Json(name = "Login")
     val login: kotlin.String? = null,
 
-    @Json(name = "role")
+    @Json(name = "Role")
     val role: kotlin.String? = null,
 
-    @Json(name = "status")
+    @Json(name = "Status")
     val status: kotlin.String? = null,
 
-    @Json(name = "userID")
+    @Json(name = "UserID")
     val userID: kotlin.Int? = null
 
 )

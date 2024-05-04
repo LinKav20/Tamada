@@ -3,13 +3,15 @@ package com.github.linkav20.guests.presentation.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.linkav20.core.domain.entity.UserRole
+import com.github.linkav20.core.domain.usecase.GetPartyIdUseCase
 import com.github.linkav20.core.domain.usecase.GetRoleUseCase
+import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.guests.domain.model.User
+import com.github.linkav20.guests.domain.usecase.DeleteUserUseCase
 import com.github.linkav20.guests.domain.usecase.GetLinkUseCase
 import com.github.linkav20.guests.domain.usecase.GetUsersForPartyUseCase
-import com.github.linkav20.guests.domain.usecase.SendUsersListUseCase
+import com.github.linkav20.guests.domain.usecase.UpdateUserRoleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,9 +21,12 @@ import javax.inject.Inject
 @HiltViewModel
 class GuestsListViewModel @Inject constructor(
     private val getUsersForPartyUseCase: GetUsersForPartyUseCase,
-    private val sendUsersListUseCase: SendUsersListUseCase,
+    private val updateUserRoleUseCase: UpdateUserRoleUseCase,
     private val getLinkUseCase: GetLinkUseCase,
-    private val getRoleUseCase: GetRoleUseCase
+    private val getRoleUseCase: GetRoleUseCase,
+    private val getPartyIdUseCase: GetPartyIdUseCase,
+    private val deleteUserUseCase: DeleteUserUseCase,
+    private val reactUseCase: ReactUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(GuestsListState())
     val state = _state.asStateFlow()
@@ -48,11 +53,11 @@ class GuestsListViewModel @Inject constructor(
     fun onDeleteClick(user: User) {
         val newUsers = state.value.users.minus(user)
         _state.update { it.copy(users = newUsers) }
+        deleteUserFromParty(user)
     }
 
     fun onSaveClick() = viewModelScope.launch {
         _state.update { it.copy(isEditable = false) }
-        sendUsersListUseCase.invoke(1, state.value.users)
     }
 
     private fun changeUserRole(
@@ -65,13 +70,33 @@ class GuestsListViewModel @Inject constructor(
             val newUsers = state.value.users.minus(user).toMutableList()
             newUsers.add(index, newUser)
             _state.update { it.copy(users = newUsers) }
+            loadNewUserRoleToServer(newUser)
+        }
+    }
+
+    private fun loadNewUserRoleToServer(user: User) = viewModelScope.launch {
+        val partyId = getPartyIdUseCase.invoke() ?: return@launch
+        try {
+            updateUserRoleUseCase.invoke(partyId = partyId, user = user)
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        }
+    }
+
+    private fun deleteUserFromParty(user: User) = viewModelScope.launch {
+        val partyId = getPartyIdUseCase.invoke() ?: return@launch
+        try {
+            deleteUserUseCase.invoke(partyId = partyId, userId = user.id)
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
         }
     }
 
     private fun loadData() = viewModelScope.launch {
         _state.update { it.copy(loading = true) }
         onUpdateLink()
-        val users = getUsersForPartyUseCase.invoke(1)
+        val partyId = getPartyIdUseCase.invoke() ?: return@launch
+        val users = getUsersForPartyUseCase.invoke(partyId)
         val role = getRoleUseCase.invoke()
         _state.update {
             it.copy(
