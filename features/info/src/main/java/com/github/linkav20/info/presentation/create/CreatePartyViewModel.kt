@@ -92,6 +92,8 @@ constructor(
 
     fun nullifyAction() = _state.update { it.copy(action = null) }
 
+    fun onAddressLinkChanged(link: String) = _state.update { it.copy(addressLink = link) }
+
     fun onNextClick() {
         val currentIndex = state.value.tab.index
         val newTab = CreationPartyState.Tab.values().find { it.index == currentIndex + 1 }

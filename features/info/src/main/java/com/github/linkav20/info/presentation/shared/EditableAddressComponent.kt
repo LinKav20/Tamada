@@ -23,9 +23,11 @@ import com.github.linkav20.info.R
 fun EditableAddressComponent(
     address: String?,
     addressAdditional: String?,
+    addressLink:String?,
     showButton: Boolean = false,
     onAddressChanged: (String) -> Unit,
     onAddressAdditionChanged: (String) -> Unit,
+    onAddressLinkChanged: (String) -> Unit,
     onSaveButtonClick: (() -> Unit)? = null
 ) = Column {
     TamadaCard {
@@ -48,16 +50,11 @@ fun EditableAddressComponent(
                 onValueChange = onAddressChanged,
             )
             Spacer(modifier = Modifier.height(16.dp))
-            // TODO
-            Box(
-                modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .clip(TamadaTheme.shapes.mediumSmall)
-                    .background(TamadaTheme.colors.textHint),
-            ) {
-            }
+            TamadaTextFiled(
+                value = addressLink ?: "",
+                placeholder = stringResource(id = R.string.creation_party_screen_theme_link_hint),
+                onValueChange = onAddressLinkChanged,
+            )
             if (showButton) {
                 Spacer(modifier = Modifier.height(24.dp))
                 TamadaButton(

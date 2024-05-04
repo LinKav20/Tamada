@@ -114,13 +114,6 @@ private fun TextFiledWithTitleAndButton(
                 placeholder = hint,
                 onValueChange = onValueChanged
             )
-//            Spacer(modifier = Modifier.width(4.dp))
-//            TamadaButton(
-//                modifier = Modifier.size(height),
-//                onClick = { /*TODO*/ },
-//                iconPainter = painterResource(id = com.github.linkav20.coreui.R.drawable.add_image_icon),
-//                type = ButtonType.SECONDARY
-//            )
         }
     }
 }

@@ -21,8 +21,12 @@ data class PartyInfoState(
     val partyDate: String? = if (party?.startTime != null && party.endTime != null) {
         DateTimeUtils.toUiString(party.startTime, party.endTime)
     } else {
-        if (party?.startTime != null) party.startTime
-        if (party?.endTime != null) party.endTime
-        null
+        if (party?.startTime != null) {
+            DateTimeUtils.toUiString(party.startTime)
+        } else if (party?.endTime != null) {
+            DateTimeUtils.toUiString(party.endTime)
+        } else {
+            null
+        }
     }
 }

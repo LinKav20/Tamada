@@ -76,6 +76,7 @@ fun PartyInfoScreen(
         onMoodboardinkChanged = viewModel::onMoodboardinkChanged,
         onDressCodeChanged = viewModel::onDressCodeChanged,
         onBackClick = { navController.navigateUp() },
+        onAddressLinkChanged = viewModel::onAddressLinkChanged,
         onError = { throwable ->
             errorMapper.OnError(
                 throwable,
@@ -108,6 +109,7 @@ private fun Content(
     onThemeChanged: (String) -> Unit,
     onMoodboardinkChanged: (String) -> Unit,
     onDressCodeChanged: (String) -> Unit,
+    onAddressLinkChanged: (String) -> Unit,
     onError: @Composable (Throwable) -> Unit,
 ) = Scaffold(
     modifier = Modifier
@@ -123,7 +125,7 @@ private fun Content(
     },
 ) { paddings ->
     if (state.party == null) {
-
+        state.error?.let { onError(it) }
     } else {
         LazyColumn(
             modifier = Modifier
@@ -164,9 +166,11 @@ private fun Content(
                     EditableAddressComponent(
                         address = state.party.address,
                         addressAdditional = state.party.addressAdditional,
+                        addressLink = state.party.addressLink,
                         showButton = true,
                         onAddressChanged = onAddressChanged,
                         onAddressAdditionChanged = onAddressAdditionalChanged,
+                        onAddressLinkChanged = onAddressLinkChanged,
                         onSaveButtonClick = onSaveAddressClick
                     )
                 } else {
@@ -254,25 +258,15 @@ private fun AddressComponent(
                     )
                 }
             }
-            if (address != null) {
+            if (!address.isNullOrEmpty()) {
                 Text(
                     text = address,
                     style = TamadaTheme.typography.caption,
                     color = TamadaTheme.colors.textHeader,
                 )
             }
-            // TODO
-            if (addressLink != null) {
+            if (!addressLink.isNullOrEmpty()) {
                 LinkComponent(addressLink)
-                Box(
-                    modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .clip(TamadaTheme.shapes.mediumSmall)
-                        .background(TamadaTheme.colors.textHint),
-                ) {
-                }
             }
         }
     }
@@ -299,10 +293,13 @@ private fun ImportantComponent(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = important
-                        ?: stringResource(id = R.string.info_party_important_info_subtitle),
+                    text = if (important.isNullOrEmpty()) {
+                        stringResource(id = R.string.info_party_important_info_subtitle)
+                    } else {
+                        important
+                    },
                     style = TamadaTheme.typography.caption,
-                    color = if (important == null) {
+                    color = if (important.isNullOrEmpty()) {
                         TamadaTheme.colors.textMain
                     } else {
                         TamadaTheme.colors.textHeader
@@ -345,7 +342,7 @@ private fun ThemeComponent(
                         color = TamadaTheme.colors.textHeader,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    if (dressCode == null && theme == null && moodboardLink == null) {
+                    if (dressCode.isNullOrEmpty() && theme.isNullOrEmpty() && moodboardLink.isNullOrEmpty()) {
                         Text(
                             text = stringResource(id = R.string.info_party_theme_and_dresscode_subtitle),
                             style = TamadaTheme.typography.caption,
@@ -361,7 +358,7 @@ private fun ThemeComponent(
                     )
                 }
             }
-            if (theme != null) {
+            if (!theme.isNullOrEmpty()) {
                 Text(
                     text = stringResource(id = R.string.info_party_theme_title),
                     style = TamadaTheme.typography.body,
@@ -374,7 +371,7 @@ private fun ThemeComponent(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }
-            if (dressCode != null) {
+            if (!dressCode.isNullOrEmpty()) {
                 Text(
                     text = stringResource(id = R.string.info_party_dresscode_title),
                     style = TamadaTheme.typography.body,
@@ -387,7 +384,7 @@ private fun ThemeComponent(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }
-            if (moodboardLink != null) {
+            if (!moodboardLink.isNullOrEmpty()) {
                 Text(
                     text = stringResource(id = R.string.info_party_moodboadlink_title),
                     style = TamadaTheme.typography.body,

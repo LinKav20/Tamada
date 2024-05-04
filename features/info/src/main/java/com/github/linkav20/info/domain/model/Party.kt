@@ -3,6 +3,7 @@ package com.github.linkav20.info.domain.model
 import java.time.OffsetDateTime
 
 data class Party(
+    val id: Int = 0,
     val name: String,
     val startTime: OffsetDateTime? = null,
     val endTime: OffsetDateTime? = null,

@@ -76,6 +76,7 @@ fun HomeMainScreen(
                 navController.navigate(InfoTabDestination.route())
                 viewModel.nullifyAction()
             }
+
             HomeMainScreenState.Action.AUTH -> {
                 navController.navigate(AuthGraphDestination.route())
                 viewModel.nullifyAction()
@@ -210,30 +211,34 @@ private fun Content(
                         onPartyClick = onPartyClick,
                     )
                 }
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                modifier = Modifier
-                    .align(alignment = Alignment.Start)
-                    .padding(horizontal = 8.dp),
-                text = stringResource(R.string.home_main_screen_guest_party_title),
-                color = TamadaTheme.colors.textHeader,
-                style = TamadaTheme.typography.head,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            if (guestParties.isEmpty()) {
-                Text(
-                    modifier = Modifier
-                        .align(alignment = Alignment.Start)
-                        .padding(horizontal = 8.dp),
-                    text = stringResource(id = R.string.home_main_screen_guests_empty),
-                    color = TamadaTheme.colors.textMain,
-                    style = TamadaTheme.typography.body
-                )
-            } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                ) {
+                if (manageParties.size % 2 == 0) {
+                    item { Box {} }
+                }
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        modifier = Modifier
+                            .align(alignment = Alignment.Start)
+                            .padding(horizontal = 8.dp),
+                        text = stringResource(R.string.home_main_screen_guest_party_title),
+                        color = TamadaTheme.colors.textHeader,
+                        style = TamadaTheme.typography.head,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+                item { Box {} }
+                if (guestParties.isEmpty()) {
+                    item {
+                        Text(
+                            modifier = Modifier
+                                .align(alignment = Alignment.Start)
+                                .padding(horizontal = 8.dp),
+                            text = stringResource(id = R.string.home_main_screen_guests_empty),
+                            color = TamadaTheme.colors.textMain,
+                            style = TamadaTheme.typography.body
+                        )
+                    }
+                } else {
                     items(guestParties) {
                         Party(
                             party = it,

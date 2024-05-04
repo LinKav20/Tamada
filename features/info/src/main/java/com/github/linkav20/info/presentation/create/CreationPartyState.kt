@@ -16,6 +16,7 @@ data class CreationPartyState(
     val theme: String? = null,
     val dressCode: String? = null,
     val moodboadLink: String? = null,
+    val addressLink: String? = null
 ) {
     enum class Tab(val index: Int) {
         MAIN(0),

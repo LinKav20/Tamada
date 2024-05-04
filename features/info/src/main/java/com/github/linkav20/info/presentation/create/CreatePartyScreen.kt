@@ -50,6 +50,7 @@ fun CreatePartyScreen(
         onThemeChanged = viewModel::onThemeChanged,
         onMoodboardinkChanged = viewModel::onMoodboardinkChanged,
         onDressCodeChanged = viewModel::onDressCodeChanged,
+        onAddressLinkChanged = viewModel::onAddressLinkChanged,
         onBackClick = { navController.navigateUp() },
     )
 
@@ -79,6 +80,7 @@ private fun Content(
     onThemeChanged: (String) -> Unit,
     onMoodboardinkChanged: (String) -> Unit,
     onDressCodeChanged: (String) -> Unit,
+    onAddressLinkChanged: (String) -> Unit
 ) = Scaffold(
     modifier =
     Modifier
@@ -134,6 +136,7 @@ private fun Content(
                                 state = state,
                                 onAddressChanged = onAddressChanged,
                                 onAddressAdditionChanged = onAddressAdditionalChanged,
+                                onAddressLinkChanged = onAddressLinkChanged
                             )
 
                         CreationPartyState.Tab.IMPORTANT.index ->
@@ -212,6 +215,7 @@ private fun Preview() {
             onThemeChanged = {},
             onMoodboardinkChanged = {},
             onDressCodeChanged = {},
+            onAddressLinkChanged = {}
         )
     }
 }

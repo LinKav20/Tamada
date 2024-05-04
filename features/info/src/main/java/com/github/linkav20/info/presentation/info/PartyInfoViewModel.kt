@@ -14,6 +14,15 @@ import com.github.linkav20.info.R
 import com.github.linkav20.info.domain.model.Party
 import com.github.linkav20.info.domain.usecase.GetPartyUseCase
 import com.github.linkav20.info.domain.usecase.SavePartyUseCase
+import com.github.linkav20.info.domain.usecase.UpdatePartyAddressAdditionalUseCase
+import com.github.linkav20.info.domain.usecase.UpdatePartyAddressLinkUseCase
+import com.github.linkav20.info.domain.usecase.UpdatePartyAddressUseCase
+import com.github.linkav20.info.domain.usecase.UpdatePartyDresscodeUseCase
+import com.github.linkav20.info.domain.usecase.UpdatePartyEndTimeUseCase
+import com.github.linkav20.info.domain.usecase.UpdatePartyImportantUseCase
+import com.github.linkav20.info.domain.usecase.UpdatePartyMoodboardLinkUseCase
+import com.github.linkav20.info.domain.usecase.UpdatePartyStartTimeUseCase
+import com.github.linkav20.info.domain.usecase.UpdatePartyThemeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +39,15 @@ class PartyInfoViewModel @Inject constructor(
     private val reactUseCase: ReactUseCase,
     private val savePartyUseCase: SavePartyUseCase,
     private val getRoleUseCase: GetRoleUseCase,
+    private val updatePartyThemeUseCase: UpdatePartyThemeUseCase,
+    private val updatePartyStartTimeUseCase: UpdatePartyStartTimeUseCase,
+    private val updatePartyMoodboardLinkUseCase: UpdatePartyMoodboardLinkUseCase,
+    private val updatePartyImportantUseCase: UpdatePartyImportantUseCase,
+    private val updatePartyEndTimeUseCase: UpdatePartyEndTimeUseCase,
+    private val updatePartyDresscodeUseCase: UpdatePartyDresscodeUseCase,
+    private val updatePartyAddressUseCase: UpdatePartyAddressUseCase,
+    private val updatePartyAddressLinkUseCase: UpdatePartyAddressLinkUseCase,
+    private val updatePartyAddressAdditionalUseCase: UpdatePartyAddressAdditionalUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(PartyInfoState())
@@ -59,7 +77,7 @@ class PartyInfoViewModel @Inject constructor(
         val party = state.value.party ?: return
         val newParty = party.copy(name = value)
         _state.update { it.copy(party = newParty) }
-        saveParty()
+        // TODO save
     }
 
     fun onStartDateChanged(value: OffsetDateTime) {
@@ -68,7 +86,12 @@ class PartyInfoViewModel @Inject constructor(
         if (endTime == null) {
             val newParty = party.copy(startTime = value)
             _state.update { it.copy(party = newParty) }
-            saveParty()
+            invokeUseCase {
+                updatePartyStartTimeUseCase.invoke(
+                    partyId = party.id,
+                    startTime = value
+                )
+            }
         } else {
             if (value >= endTime) {
                 reactUseCase.invoke(
@@ -78,7 +101,12 @@ class PartyInfoViewModel @Inject constructor(
             } else {
                 val newParty = party.copy(startTime = value)
                 _state.update { it.copy(party = newParty) }
-                saveParty()
+                invokeUseCase {
+                    updatePartyStartTimeUseCase.invoke(
+                        partyId = party.id,
+                        startTime = value
+                    )
+                }
             }
         }
     }
@@ -89,7 +117,12 @@ class PartyInfoViewModel @Inject constructor(
         if (startTime == null) {
             val newParty = party.copy(endTime = value)
             _state.update { it.copy(party = newParty) }
-            saveParty()
+            invokeUseCase {
+                updatePartyEndTimeUseCase.invoke(
+                    partyId = party.id,
+                    endTime = value
+                )
+            }
         } else {
             if (value <= startTime) {
                 reactUseCase.invoke(
@@ -99,7 +132,12 @@ class PartyInfoViewModel @Inject constructor(
             } else {
                 val newParty = party.copy(endTime = value)
                 _state.update { it.copy(party = newParty) }
-                saveParty()
+                invokeUseCase {
+                    updatePartyEndTimeUseCase.invoke(
+                        partyId = party.id,
+                        endTime = value
+                    )
+                }
             }
         }
     }
@@ -108,48 +146,89 @@ class PartyInfoViewModel @Inject constructor(
         val party = state.value.party ?: return
         val newParty = party.copy(address = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        saveParty()
-        loadData()
+        invokeUseCase {
+            updatePartyAddressUseCase.invoke(
+                partyId = party.id,
+                address = value
+            )
+        }
     }
 
     fun onAddressAdditionalChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(addressAdditional = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        saveParty()
+        invokeUseCase {
+            updatePartyAddressAdditionalUseCase.invoke(
+                partyId = party.id,
+                address = value
+            )
+        }
     }
 
     fun onImportantChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(important = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        saveParty()
+        invokeUseCase {
+            updatePartyImportantUseCase.invoke(
+                partyId = party.id,
+                important = value
+            )
+        }
     }
 
     fun onMoodboardinkChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(moodboadLink = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        saveParty()
+        invokeUseCase {
+            updatePartyMoodboardLinkUseCase.invoke(
+                partyId = party.id,
+                link = value
+            )
+        }
     }
 
     fun onThemeChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(theme = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        saveParty()
+        invokeUseCase {
+            updatePartyThemeUseCase.invoke(
+                partyId = party.id,
+                theme = value
+            )
+        }
     }
 
     fun onDressCodeChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(dressCode = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        saveParty()
+        invokeUseCase {
+            updatePartyDresscodeUseCase.invoke(
+                partyId = party.id,
+                dresscode = value
+            )
+        }
+    }
+
+    fun onAddressLinkChanged(value: String) {
+        val party = state.value.party ?: return
+        val newParty = party.copy(addressLink = value.ifEmpty { null })
+        _state.update { it.copy(party = newParty) }
+        invokeUseCase {
+            updatePartyAddressLinkUseCase.invoke(
+                partyId = party.id,
+                link = value
+            )
+        }
     }
 
     fun onRetry() = loadData()
 
-    fun saveParty() = viewModelScope.launch {
+    private fun saveParty() = viewModelScope.launch {
         val party = state.value.party ?: return@launch
         try {
             savePartyUseCase.invoke(party)
@@ -161,15 +240,26 @@ class PartyInfoViewModel @Inject constructor(
         }
     }
 
+    private fun invokeUseCase(action: suspend () -> Unit) = viewModelScope.launch {
+        _state.update { it.copy(loading = true) }
+        try {
+            action.invoke()
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
     private fun loadData() = viewModelScope.launch {
         _state.update { it.copy(loading = true) }
         try {
             val id = getPartyIdUseCase.invoke()
             if (id == null) {
-                _state.update { it.copy(error = DomainException.Unknown) }
                 return@launch
             }
             val party = getPartyUseCase.invoke(id)
+            Log.d("MY_", party.toString())
             val role = getRoleUseCase.invoke()
             _state.update {
                 it.copy(

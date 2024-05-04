@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$PROJECT_DIR$/../Library/Android/sdk/icons/material/materialiconsround/close/round_close_24.xml" />
+                                      <entry key="url" value="file:$PROJECT_DIR$/../Library/Android/sdk/icons/material/materialiconsoutlined/info/outline_info_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,7 +33,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="round_close_24" />
+                            <entry key="outputName" value="outline_info_24" />
                           </map>
                         </option>
                       </PersistentState>

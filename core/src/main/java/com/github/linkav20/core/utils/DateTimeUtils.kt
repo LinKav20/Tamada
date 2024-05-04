@@ -12,11 +12,11 @@ object DateTimeUtils {
     private val dateFormat = DateTimeFormatter.ofPattern("dd MMMM")
     private val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
 
-    fun fromString(date: String): OffsetDateTime {
+    fun fromString(date: String): OffsetDateTime? {
         return try {
-            LocalDateTime.parse(date, formatWithoutZone).atOffset(ZoneOffset.UTC)
-        } catch (_: Exception) {
             OffsetDateTime.parse(date, formatWithZone)
+        } catch (_: Exception) {
+            null
         }
     }
 
@@ -29,7 +29,7 @@ object DateTimeUtils {
             val dateFormat = start.format(dateFormat)
             val startTime = start.format(timeFormat)
             val endTime = end.format(timeFormat)
-            "$dateFormat    $startTime - $endTime"
+            "$dateFormat   $startTime - $endTime"
         } else {
             "${toUiString(start)} - ${toUiString(end)}"
         }

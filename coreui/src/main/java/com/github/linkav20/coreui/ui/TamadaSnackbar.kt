@@ -69,7 +69,7 @@ private fun Content(
             Type.SUCCESS ->
                 Icon(
                     modifier =Modifier.size(32.dp),
-                    painter = painterResource(id = R.drawable.round_done_24),
+                    painter = painterResource(id = R.drawable.check),
                     contentDescription = "success",
                     tint = TamadaTheme.colors.statusPositive,
                 )
@@ -85,7 +85,7 @@ private fun Content(
             Type.WARNING ->
                 Icon(
                     modifier =Modifier.size(32.dp),
-                    painter = painterResource(id = R.drawable.add_image_icon),
+                    painter = painterResource(id = R.drawable.alert),
                     contentDescription = "warning",
                     tint = TamadaTheme.colors.statusWarning,
                 )
@@ -93,7 +93,7 @@ private fun Content(
             Type.INFO ->
                 Icon(
                     modifier =Modifier.size(32.dp),
-                    painter = painterResource(id = R.drawable.add_image_icon),
+                    painter = painterResource(id = R.drawable.information),
                     contentDescription = "info",
                     tint = TamadaTheme.colors.textMain,
                 )
