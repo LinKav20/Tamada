@@ -28,6 +28,11 @@ class LkViewModel @Inject constructor(
 
     fun onEditWalletClick() = _state.update { it.copy(isWalletEdit = true) }
 
+    fun onRetry() {
+        _state.update { it.copy(exception = null) }
+        loadData()
+    }
+
     fun onEditInfoClick() = _state.update { it.copy(isInfoEdit = true) }
 
     fun onSaveWalletClick() {
@@ -59,7 +64,8 @@ class LkViewModel @Inject constructor(
     fun onCardNumberChanged(value: String) {
         val user = state.value.user
         if (user != null) {
-            val newUser = user.copy(cardNumber = value)
+            val newWallet = user.wallet?.copy(cardNumber = value)
+            val newUser = user.copy(wallet = newWallet)
             _state.update { it.copy(user = newUser) }
         }
     }
@@ -67,7 +73,8 @@ class LkViewModel @Inject constructor(
     fun onCardPhoneNumberChanged(value: String) {
         val user = state.value.user
         if (user != null) {
-            val newUser = user.copy(cardPhoneNumber = value)
+            val newWallet = user.wallet?.copy(cardPhoneNumber = value)
+            val newUser = user.copy(wallet = newWallet)
             _state.update { it.copy(user = newUser) }
         }
     }
@@ -75,7 +82,8 @@ class LkViewModel @Inject constructor(
     fun onCardOwnerChanged(value: String) {
         val user = state.value.user
         if (user != null) {
-            val newUser = user.copy(cardOwner = value)
+            val newWallet = user.wallet?.copy(cardOwner = value)
+            val newUser = user.copy(wallet = newWallet)
             _state.update { it.copy(user = newUser) }
         }
     }
@@ -83,7 +91,8 @@ class LkViewModel @Inject constructor(
     fun onCardBankChanged(value: String) {
         val user = state.value.user
         if (user != null) {
-            val newUser = user.copy(cardBank = value)
+            val newWallet = user.wallet?.copy(cardBank = value)
+            val newUser = user.copy(wallet = newWallet)
             _state.update { it.copy(user = newUser) }
         }
     }
@@ -107,8 +116,8 @@ class LkViewModel @Inject constructor(
         try {
             val user = getUserInfoUseCase.invoke()
             _state.update { it.copy(user = user) }
-        } catch (_: Exception) {
-
+        } catch (e: Exception) {
+            _state.update { it.copy(exception = e) }
         }
         _state.update { it.copy(loading = false) }
     }

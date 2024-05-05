@@ -42,12 +42,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.github.linkav20.auth.navigation.AuthGraphDestination
+import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.core.utils.copyToClipboard
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.DebounceIconButton
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaCard
+import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
 import com.github.linkav20.coreui.ui.TamadaTextFiled
 import com.github.linkav20.coreui.ui.TamadaTextWithBackground
 import com.github.linkav20.home.R
@@ -66,7 +68,8 @@ import com.github.linkav20.home.navigation.HomeGraphDestination
 @Composable
 fun LkScreen(
     viewModel: LkViewModel,
-    navController: NavController
+    navController: NavController,
+    errorMapper: ErrorMapper
 ) {
     val state = viewModel.state.collectAsState().value
 
@@ -89,7 +92,14 @@ fun LkScreen(
         onPhoneNumberChanged = viewModel::onCardPhoneNumberChanged,
         onBankChanged = viewModel::onCardBankChanged,
         onCardOwnerChanged = viewModel::onCardOwnerChanged,
-        onLogoutClick = viewModel::onLogoutClick
+        onLogoutClick = viewModel::onLogoutClick,
+        onError = { throwable ->
+            errorMapper.OnError(
+                throwable,
+                viewModel::onRetry,
+                ColorScheme.MAIN
+            )
+        }
     )
 
     LaunchedEffect(state.action) {
@@ -117,7 +127,8 @@ private fun Content(
     onPhoneNumberChanged: (String) -> Unit,
     onBankChanged: (String) -> Unit,
     onCardOwnerChanged: (String) -> Unit,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onError: @Composable (Throwable) -> Unit
 ) {
     Scaffold(
         backgroundColor = TamadaTheme.colors.backgroundPrimary,
@@ -126,41 +137,47 @@ private fun Content(
                 title = stringResource(id = R.string.lk_screen_title),
                 onBackClick = onBackClick,
                 actions = {
-                    DebounceIconButton(onLogoutClick) {
-                        Icon(
-                            painterResource(CoreR.drawable.baseline_logout_24),
-                            contentDescription = null,
-                            tint = TamadaTheme.colors.textMain,
-                        )
+                    if (state.user != null) {
+                        DebounceIconButton(onLogoutClick) {
+                            Icon(
+                                painterResource(CoreR.drawable.baseline_logout_24),
+                                contentDescription = null,
+                                tint = TamadaTheme.colors.textMain,
+                            )
+                        }
                     }
                 },
                 transparent = true
             )
         },
         bottomBar = {
-            Column(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            ) {
-                TamadaCard(colorScheme = ColorScheme.LISTS) {
-                    TamadaButton(
-                        onClick = onChangePasswordClick,
-                        title = stringResource(id = R.string.lk_change_password_button),
-                        type = ButtonType.OUTLINE,
-                        colorScheme = ColorScheme.LISTS
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                TamadaCard {
-                    TamadaButton(
-                        onClick = onDeleteAccountClick,
-                        title = stringResource(id = R.string.lk_delete_account_button),
-                        type = ButtonType.ERROR
-                    )
+            if (state.user != null) {
+                Column(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                ) {
+                    TamadaCard(colorScheme = ColorScheme.LISTS) {
+                        TamadaButton(
+                            onClick = onChangePasswordClick,
+                            title = stringResource(id = R.string.lk_change_password_button),
+                            type = ButtonType.OUTLINE,
+                            colorScheme = ColorScheme.LISTS
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TamadaCard {
+                        TamadaButton(
+                            onClick = onDeleteAccountClick,
+                            title = stringResource(id = R.string.lk_delete_account_button),
+                            type = ButtonType.ERROR
+                        )
+                    }
                 }
             }
         }
     ) { paddingValues ->
-        if (state.user != null) {
+        if (state.loading) {
+            TamadaFullscreenLoader(scheme = ColorScheme.LISTS)
+        } else if (state.user != null) {
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
@@ -208,10 +225,10 @@ private fun Content(
                 }
                 if (state.isWalletEdit) {
                     EditableWalletComponent(
-                        cartNumber = state.user.cardNumber,
-                        phoneNumber = state.user.cardPhoneNumber,
-                        cardOwner = state.user.cardOwner,
-                        bank = state.user.cardBank,
+                        cartNumber = state.user.wallet?.cardNumber,
+                        phoneNumber = state.user.wallet?.cardPhoneNumber,
+                        cardOwner = state.user.wallet?.cardOwner,
+                        bank = state.user.wallet?.cardBank,
                         onCardNumberChanged = onCardNumberChanged,
                         onBankChanged = onBankChanged,
                         onSaveDataClick = onSaveWalletClick,
@@ -220,15 +237,17 @@ private fun Content(
                     )
                 } else {
                     WalletComponent(
-                        cartNumber = state.user.cardNumber,
-                        phoneNumber = state.user.cardPhoneNumber,
-                        owner = state.user.cardOwner,
-                        bank = state.user.cardBank,
+                        cartNumber = state.user.wallet?.cardNumber,
+                        phoneNumber = state.user.wallet?.cardPhoneNumber,
+                        owner = state.user.wallet?.cardOwner,
+                        bank = state.user.wallet?.cardBank,
                         onEditClick = onEditWalletClick
                     )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
             }
+        } else if (state.exception != null) {
+            onError(state.exception)
         }
     }
 }

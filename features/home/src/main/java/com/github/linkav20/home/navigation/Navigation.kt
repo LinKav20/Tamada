@@ -32,6 +32,7 @@ fun NavGraphBuilder.homeGraph(navController: NavController, errorMapper: ErrorMa
             LkScreen(
                 viewModel = hiltViewModel(),
                 navController = navController,
+                errorMapper = errorMapper
             )
         }
         composableRoute(ChangeAvatarDestination) {

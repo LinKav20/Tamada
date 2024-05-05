@@ -12,13 +12,14 @@ class GetUserInfoUseCase @Inject constructor(
 
     suspend fun invoke(): User {
         val savedData = userInformationRepository.getUser()
-        val serverUser = repository.getUserInfo()
-        // TODO
+        val wallet = repository.getUserWalletInfo(savedData.id)
 
-        return serverUser.copy(
-            login = savedData.login,
+        return User(
             id = savedData.id,
-            avatar = savedData.avatarId
+            avatar = savedData.avatarId,
+            email = savedData.login,
+            login = savedData.login,
+            wallet = wallet
         )
     }
 }
