@@ -27,8 +27,6 @@ material3 = "1.1.2"
 dialogs = "1.0.2"
 
 [libraries]
-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 gradle = "com.android.tools.build:gradle:7.3.0"
 
 #Kotlin
@@ -78,6 +76,10 @@ converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.r
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 moshi = "com.squareup.moshi:moshi-kotlin:1.12.0"
 logging-interceptor = "com.squareup.okhttp3:logging-interceptor:4.9.3"
+
+#Firebase
+firebase-platform = "com.google.firebase:firebase-bom:32.0.0"
+firebase-messaging = "com.google.firebase:firebase-messaging:24.0.0"
 
 #Tests
 junit = "org.junit.jupiter:junit-jupiter:5.8.2"

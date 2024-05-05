@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "52346144162",
+    "project_id": "tamada-application",
+    "storage_bucket": "tamada-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:52346144162:android:68e7d9b753c41789c2defb",
+        "android_client_info": {
+          "package_name": "com.github.linkav20.tamada"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLPJkZMMLeK_U6-oVNCZVDHXgfI-X00ps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

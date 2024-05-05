@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
+    id 'com.google.gms.google-services'
 }
 
 apply plugin: 'kotlinx-serialization'
@@ -138,6 +139,11 @@ dependencies {
     androidTestImplementation libs.moshi
     androidTestImplementation libs.converter.moshi
     androidTestImplementation libs.retrofit
+
+    // FCM
+    implementation platform(libs.firebase.platform)
+    implementation libs.firebase.messaging
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     implementation project(path: ':core')
     implementation project(path: ':coreui')
