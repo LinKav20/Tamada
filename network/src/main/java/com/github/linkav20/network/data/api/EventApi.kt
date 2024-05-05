@@ -35,6 +35,18 @@ import com.github.linkav20.network.data.models.CommonUpdateListVisibilityIn
 import com.github.linkav20.network.data.models.CommonUpdateTaskNameIn
 import com.github.linkav20.network.data.models.CommonUpdateTaskStatusIn
 import com.github.linkav20.network.data.models.CommonUpdateUserRoleOnPartyIn
+import ru.ozon.ozon_pvz.network.my.models.CommonGetAllUserReceiptIn
+import ru.ozon.ozon_pvz.network.my.models.CommonGetInviteLinkIn
+import ru.ozon.ozon_pvz.network.my.models.CommonGetInviteLinkOut
+import ru.ozon.ozon_pvz.network.my.models.CommonGetUserReceiptIn
+import ru.ozon.ozon_pvz.network.my.models.CommonLoadFinanceStateIn
+import ru.ozon.ozon_pvz.network.my.models.CommonLoadFinanceStateOut
+import ru.ozon.ozon_pvz.network.my.models.CommonUpdateEventNameIn
+import ru.ozon.ozon_pvz.network.my.models.CommonUpdateFinanceStateIn
+import ru.ozon.ozon_pvz.network.my.models.CommonUpdatePartyWalletBankIn
+import ru.ozon.ozon_pvz.network.my.models.CommonUpdatePartyWalletCardIn
+import ru.ozon.ozon_pvz.network.my.models.CommonUpdatePartyWalletOwnerIn
+import ru.ozon.ozon_pvz.network.my.models.CommonUpdatePartyWalletPhoneIn
 
 interface EventApi {
     /**
@@ -110,6 +122,18 @@ interface EventApi {
     suspend fun deleteUserFromEvent(@Body input: CommonDeleteUserFromPartyIn): Response<Unit>
 
     /**
+     * GetAllUserReceipt
+     * Получение всех чеков пользователя в одном пдф
+     * Responses:
+     *  - 200: Success
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/get_all_user_receipts")
+    suspend fun getAllUserReceipt(@Body input: CommonGetAllUserReceiptIn): Response<Unit>
+
+    /**
      * GetEvent
      * Получение информации о мероприятии
      * Responses:
@@ -120,6 +144,18 @@ interface EventApi {
      */
     @POST("api/get_event")
     suspend fun getEvent(@Body input: CommonGetEventIn): Response<CommonGetEventOut>
+
+    /**
+     * GetInviteLinkToEvent
+     * Получение диплинка на мероприятия (пригласительная ссылка)
+     * Responses:
+     *  - 200: OK
+     *
+     * @param input event info
+     * @return [CommonGetInviteLinkOut]
+     */
+    @POST("api/get_invite_link")
+    suspend fun getEventInviteLink(@Body input: CommonGetInviteLinkIn): Response<CommonGetInviteLinkOut>
 
     /**
      * GetListInfo
@@ -164,10 +200,22 @@ interface EventApi {
      *  - 200: OK
      *
      * @param input event info
-     * @return [CommonGetUserPartiesOut]
+     * @return [kotlin.collections.List<CommonGetUserPartiesOut>]
      */
     @POST("api/get_user_parties")
-    suspend fun getUserEvents(@Body input: CommonGetUserEventsIn): Response<List<CommonGetUserPartiesOut>>
+    suspend fun getUserEvents(@Body input: CommonGetUserEventsIn): Response<kotlin.collections.List<CommonGetUserPartiesOut>>
+
+    /**
+     * GetUserReceipt
+     * Получение чека пользователя по id чека
+     * Responses:
+     *  - 200: Success
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/get_user_receipt")
+    suspend fun getUserReceipt(@Body input: CommonGetUserReceiptIn): Response<Unit>
 
     /**
      * UpdateListVisibility
@@ -180,6 +228,18 @@ interface EventApi {
      */
     @POST("api/is_list_visible_to_guest")
     suspend fun listVisibility(@Body input: CommonUpdateListVisibilityIn): Response<Unit>
+
+    /**
+     * LoadFinanceState
+     * Получение стадии трат(?) мероприятия (параметр is_expenses)
+     * Responses:
+     *  - 200: OK
+     *
+     * @param input event info
+     * @return [CommonLoadFinanceStateOut]
+     */
+    @POST("api/load_finance_state")
+    suspend fun loadFinanceState(@Body input: CommonLoadFinanceStateIn): Response<CommonLoadFinanceStateOut>
 
     /**
      * UpdateEventAddress
@@ -242,6 +302,30 @@ interface EventApi {
     suspend fun updateEndTime(@Body input: CommonUpdateEventEndTimeIn): Response<Unit>
 
     /**
+     * UpdateEventName
+     * Обновление названия мероприятия
+     * Responses:
+     *  - 204: No Content
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/update_event_name")
+    suspend fun updateEventName(@Body input: CommonUpdateEventNameIn): Response<Unit>
+
+    /**
+     * UpdateFinanceState
+     * Получение стадии трат(?) мероприятия (параметр is_expenses)
+     * Responses:
+     *  - 204: No Content
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/update_finance_state")
+    suspend fun updateFinanceState(@Body input: CommonUpdateFinanceStateIn): Response<Unit>
+
+    /**
      * UpdateEventImportant
      * Обновление включены ли ты траты на меро
      * Responses:
@@ -288,6 +372,54 @@ interface EventApi {
      */
     @POST("api/update_event_moodboard_link")
     suspend fun updateMoodboard(@Body input: CommonUpdateEventMoodboardLinkIn): Response<Unit>
+
+    /**
+     * UpdatePartyWalletBank
+     * Обновление банка кошелька мероприятия
+     * Responses:
+     *  - 204: No Content
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/update_party_wallet_bank")
+    suspend fun updatePartyWalletBank(@Body input: CommonUpdatePartyWalletBankIn): Response<Unit>
+
+    /**
+     * UpdatePartyWalletCard
+     * Обновление карты кошелька мероприятия
+     * Responses:
+     *  - 204: No Content
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/update_party_wallet_card")
+    suspend fun updatePartyWalletCard(@Body input: CommonUpdatePartyWalletCardIn): Response<Unit>
+
+    /**
+     * UpdatePartyWalletOwner
+     * Обновление владельца кошелька мероприятия
+     * Responses:
+     *  - 204: No Content
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/update_party_wallet_owner")
+    suspend fun updatePartyWalletOwner(@Body input: CommonUpdatePartyWalletOwnerIn): Response<Unit>
+
+    /**
+     * UpdatePartyWalletPhone
+     * Обновление телефона кошелька мероприятия
+     * Responses:
+     *  - 204: No Content
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/update_party_wallet_phone")
+    suspend fun updatePartyWalletPhone(@Body input: CommonUpdatePartyWalletPhoneIn): Response<Unit>
 
     /**
      * UpdateEventStartTime

@@ -17,4 +17,8 @@ interface UsersRepository {
         actionFrom: Int,
         userId: Int
     )
+
+    suspend fun getInviteLink(
+        partyId: Long,
+    ): String?
 }

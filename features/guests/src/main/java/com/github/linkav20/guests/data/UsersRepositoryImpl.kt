@@ -9,6 +9,7 @@ import com.github.linkav20.network.data.models.CommonGetPartiesGuestsIn
 import com.github.linkav20.network.data.models.CommonGetPartiesGuestsOut
 import com.github.linkav20.network.data.models.CommonUpdateUserRoleOnPartyIn
 import com.github.linkav20.network.utils.RetrofitErrorHandler
+import ru.ozon.ozon_pvz.network.my.models.CommonGetInviteLinkIn
 import javax.inject.Inject
 
 class UsersRepositoryImpl @Inject constructor(
@@ -49,6 +50,10 @@ class UsersRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun getInviteLink(partyId: Long): String? = retrofitErrorHandler.apiCall {
+        eventApi.getEventInviteLink(CommonGetInviteLinkIn(partyID = partyId.toInt()))
+    }?.link
 
     override suspend fun getUsers(partyId: Long) = retrofitErrorHandler.apiCall {
         eventApi.getPartiesGuests(CommonGetPartiesGuestsIn(partyID = partyId.toInt()))

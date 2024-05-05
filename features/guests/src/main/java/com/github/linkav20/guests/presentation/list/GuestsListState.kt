@@ -14,7 +14,7 @@ data class GuestsListState(
     val isUsersEmpty: Boolean
         get() = users.isEmpty()
 
-    fun managers() = users.filter { it.role == User.UserRole.MANAGER }
+    fun managers() = users.filter { it.role == User.UserRole.MANAGER || it.role == User.UserRole.CREATOR }
     fun guestsProbablyCome() = users.filter {
         it.role == User.UserRole.GUEST &&
                 it.status == User.ArriveStatus.PROBABLY

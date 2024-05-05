@@ -114,7 +114,7 @@ private fun Content(
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item { InfoDisclaimer(infoShownCount = infoShownCount) }
+//            item { InfoDisclaimer(infoShownCount = infoShownCount) }
             item {
                 InviteGuestsCard(
                     link = link,
@@ -140,7 +140,7 @@ private fun Content(
                     )
                 }
             }
-            item { 
+            item {
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -547,7 +547,7 @@ private fun UserItem(
             )
         }
     }
-    if (isEditable) {
+    if (isEditable && user.role != User.UserRole.CREATOR) {
         TamadaButton(
             colorScheme = ColorScheme.GUESTS,
             iconPainter = painterResource(id = CoreUi.drawable.delete_icon),

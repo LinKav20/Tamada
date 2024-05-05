@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -72,7 +74,9 @@ private fun Content(
         modifier = Modifier
             .padding(paddings)
             .padding(24.dp)
+            .verticalScroll(rememberScrollState())
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
         when (step) {
             OnboardingState.Step.START -> {
                 CardComponent(
@@ -136,6 +140,7 @@ private fun Content(
                 ),
             )
         }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 

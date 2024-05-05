@@ -8,7 +8,7 @@ import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.guests.domain.model.User
 import com.github.linkav20.guests.domain.usecase.DeleteUserUseCase
-import com.github.linkav20.guests.domain.usecase.GetLinkUseCase
+import com.github.linkav20.guests.domain.usecase.GetInviteLinkUseCase
 import com.github.linkav20.guests.domain.usecase.GetUsersForPartyUseCase
 import com.github.linkav20.guests.domain.usecase.UpdateUserRoleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,10 +22,10 @@ import javax.inject.Inject
 class GuestsListViewModel @Inject constructor(
     private val getUsersForPartyUseCase: GetUsersForPartyUseCase,
     private val updateUserRoleUseCase: UpdateUserRoleUseCase,
-    private val getLinkUseCase: GetLinkUseCase,
     private val getRoleUseCase: GetRoleUseCase,
     private val getPartyIdUseCase: GetPartyIdUseCase,
     private val deleteUserUseCase: DeleteUserUseCase,
+    private val getInviteLinkUseCase: GetInviteLinkUseCase,
     private val reactUseCase: ReactUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(GuestsListState())
@@ -45,10 +45,7 @@ class GuestsListViewModel @Inject constructor(
 
     fun onEditClick() = _state.update { it.copy(isEditable = true) }
 
-    fun onUpdateLink() = viewModelScope.launch {
-        val link = getLinkUseCase.invoke()
-        _state.update { it.copy(link = link) }
-    }
+    fun onUpdateLink() = loadInvitationLink()
 
     fun onDeleteClick(user: User) {
         val newUsers = state.value.users.minus(user)
@@ -96,15 +93,34 @@ class GuestsListViewModel @Inject constructor(
         _state.update { it.copy(loading = true) }
         onUpdateLink()
         val partyId = getPartyIdUseCase.invoke() ?: return@launch
-        val users = getUsersForPartyUseCase.invoke(partyId)
         val role = getRoleUseCase.invoke()
-        _state.update {
-            it.copy(
-                users = users,
-                isUserEdit = role == UserRole.MANAGER,
-                infoShownCount = 6
-            )
+        loadInvitationLink()
+        try {
+            val users = getUsersForPartyUseCase.invoke(partyId)
+            _state.update {
+                it.copy(
+                    users = users,
+                    isUserEdit = role == UserRole.MANAGER,
+                    infoShownCount = 6
+                )
+            }
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
         }
-        _state.update { it.copy(loading = false) }
+    }
+
+    private fun loadInvitationLink() = viewModelScope.launch {
+        _state.update { it.copy(loading = true) }
+        val partyId = getPartyIdUseCase.invoke() ?: return@launch
+        try {
+            val inviteLink = getInviteLinkUseCase.invoke(partyId)
+            _state.update { it.copy(link = inviteLink) }
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
     }
 }
