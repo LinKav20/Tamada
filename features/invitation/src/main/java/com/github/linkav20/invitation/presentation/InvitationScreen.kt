@@ -145,7 +145,7 @@ private fun Invitation(party: Party) = Column(
                 style = TamadaTheme.typography.head,
             )
             Spacer(modifier = Modifier.height(8.dp))
-            if (party.address != null) {
+            if (!party.address.isNullOrEmpty()) {
                 Text(
                     text = stringResource(R.string.invitation_screen_where, party.address),
                     color = TamadaTheme.colors.textWhite,

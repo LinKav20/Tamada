@@ -4,68 +4,54 @@ import android.util.Log
 import com.github.linkav20.lists.domain.entity.ListEntity
 import com.github.linkav20.lists.domain.entity.TaskEntity
 import com.github.linkav20.lists.domain.repository.ListsRepository
+import com.github.linkav20.network.data.api.EventApi
+import com.github.linkav20.network.data.models.CommonGetListInfoIn
+import com.github.linkav20.network.data.models.CommonGetListInfoOut
+import com.github.linkav20.network.data.models.CommonGetPartyListsIn
+import com.github.linkav20.network.data.models.CommonGetPartyListsOut
+import com.github.linkav20.network.data.models.CommonTaskInfo
+import com.github.linkav20.network.utils.RetrofitErrorHandler
 import javax.inject.Inject
 
-class ListsRepositoryImpl @Inject constructor() : ListsRepository {
-    override suspend fun getLists(partyId: Long): List<ListEntity> {
-        return listOf(
-            ListEntity(
-                id = 1,
-                type = ListEntity.Type.WISHLIST,
-                tasks = listOf(
-                    TaskEntity(1, "Hello8"),
-                    TaskEntity(2, "Hello7", true),
-                    TaskEntity(3, "Hello6"),
-                    TaskEntity(4, "Hello5"),
-                    TaskEntity(5, "Hello4", true),
-                    TaskEntity(6, "Hello3", true),
-                    TaskEntity(7, "Hello2"),
-                    TaskEntity(8, "Hello9"),
-                    TaskEntity(9, "Hello1"),
-                    TaskEntity(10, "Hello4", true),
-                    TaskEntity(11, "Hello3", true),
-                    TaskEntity(12, "Hello2"),
-                    TaskEntity(13, "Hello9"),
-                    TaskEntity(14, "Hello1"),
-                    TaskEntity(15, "Hello4", true),
-                    TaskEntity(16, "Hello3", true),
-                    TaskEntity(17, "Hello2"),
-                    TaskEntity(18, "Hello9"),
-                    TaskEntity(19, "Hello1"),
+class ListsRepositoryImpl @Inject constructor(
+    private val retrofitErrorHandler: RetrofitErrorHandler,
+    private val eventApi: EventApi
+) : ListsRepository {
+    override suspend fun getLists(partyId: Long): List<ListEntity> = retrofitErrorHandler.apiCall {
+        eventApi.getPartyLists(CommonGetPartyListsIn(partyId.toInt()))
+    }?.map { it.toDomain() } ?: emptyList()
+
+    override suspend fun getListById(listId: Long, partyId: Long): ListEntity =
+        retrofitErrorHandler.apiCall {
+            eventApi.getListInfo(
+                CommonGetListInfoIn(
+                    listID = listId.toInt(),
+                    partyID = partyId.toInt(),
                 )
             )
-        )
-    }
-
-    override suspend fun getListById(listId: Long): ListEntity {
-        return ListEntity(
-            id = 1,
-            type = ListEntity.Type.WISHLIST,
-            tasks = listOf(
-                TaskEntity(1, "Hello8"),
-                TaskEntity(2, "Hello7", true),
-                TaskEntity(3, "Hello6"),
-                TaskEntity(4, "Hello5"),
-                TaskEntity(5, "Hello4", true),
-                TaskEntity(6, "Hello3", true),
-                TaskEntity(7, "Hello2"),
-                TaskEntity(8, "Hello9"),
-                TaskEntity(9, "Hello1"),
-                TaskEntity(10, "Hello4", true),
-                TaskEntity(11, "Hello3", true),
-                TaskEntity(12, "Hello2"),
-                TaskEntity(13, "Hello9"),
-                TaskEntity(14, "Hello1"),
-                TaskEntity(15, "Hello4", true),
-                TaskEntity(16, "Hello3", true),
-                TaskEntity(17, "Hello2"),
-                TaskEntity(18, "Hello9"),
-                TaskEntity(19, "Hello1"),
-            )
-        )
-    }
+        }!!.toDomain()
 
     override suspend fun sendList(list: ListEntity) {
         Log.d("MY_", "Sended $list")
     }
 }
+
+private fun CommonGetPartyListsOut.toDomain() = ListEntity(
+    id = id.toLong(),
+    tasks = emptyList(),
+    managersOnly = true,
+    type = ListEntity.Type.EMPTY
+)
+
+private fun CommonGetListInfoOut.toDomain() = ListEntity(
+    id = listID.toLong(),
+    tasks = tasks?.map { it.toDomain() } ?: emptyList(),
+    managersOnly = true,
+    type = ListEntity.Type.EMPTY
+)
+
+private fun CommonTaskInfo.toDomain() = TaskEntity(
+    id = taskID.toLong(),
+    name = name,
+    done = isDone
+)

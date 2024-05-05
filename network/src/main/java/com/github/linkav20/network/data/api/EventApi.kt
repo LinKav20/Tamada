@@ -155,7 +155,7 @@ interface EventApi {
      * @return [CommonGetPartyListsOut]
      */
     @POST("api/get_party_lists")
-    suspend fun getPartyLists(@Body input: CommonGetPartyListsIn): Response<CommonGetPartyListsOut>
+    suspend fun getPartyLists(@Body input: CommonGetPartyListsIn): Response<List<CommonGetPartyListsOut>>
 
     /**
      * GetUserEvents

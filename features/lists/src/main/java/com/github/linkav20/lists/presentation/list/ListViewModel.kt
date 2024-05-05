@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.linkav20.core.domain.entity.UserRole
+import com.github.linkav20.core.domain.usecase.GetPartyIdUseCase
 import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.lists.domain.entity.TaskEntity
 import com.github.linkav20.lists.domain.usecase.GetListByIdUseCase
@@ -21,6 +22,7 @@ private const val EMPTY_TASK_ID = 0L
 class ListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getListByIdUseCase: GetListByIdUseCase,
+    private val getPartyIdUseCase: GetPartyIdUseCase,
     private val getRoleUseCase: GetRoleUseCase
 ) : ViewModel() {
 
@@ -113,7 +115,11 @@ class ListViewModel @Inject constructor(
     }
 
     private fun loadData() = viewModelScope.launch {
-        val list = getListByIdUseCase.invoke(id)
+        val partyId = getPartyIdUseCase.invoke() ?: return@launch
+        val list = getListByIdUseCase.invoke(
+            id = id,
+            partyId = partyId
+        )
         val role = getRoleUseCase.invoke()
         _state.update { it.copy(list = list, isManager = role == UserRole.MANAGER) }
     }

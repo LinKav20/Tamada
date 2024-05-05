@@ -24,7 +24,7 @@ internal class BearerAuthenticator @Inject constructor(
     override fun authenticate(route: Route?, response: Response): Request? =
         with(response.request) {
             if (url.pathSegments.contains("login") ||
-                url.pathSegments.contains("refresh-token")
+                url.pathSegments.contains("refresh_token")
             ) {
                 return null
             }

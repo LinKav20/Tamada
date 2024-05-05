@@ -7,5 +7,8 @@ class GetListByIdUseCase @Inject constructor(
     private val repository: ListsRepository
 ) {
 
-    suspend fun invoke(id: Long) = repository.getListById(id)
+    suspend fun invoke(id: Long, partyId: Long) = repository.getListById(
+        listId = id,
+        partyId = partyId
+    )
 }

@@ -36,7 +36,7 @@ data class CommonGetListInfoOut (
     val isVisible: kotlin.String? = null,
 
     @Json(name = "listID")
-    val listID: kotlin.Int? = null,
+    val listID: kotlin.Int,
 
     @Json(name = "partyID")
     val partyID: kotlin.Int? = null,

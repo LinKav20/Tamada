@@ -31,13 +31,13 @@ import com.squareup.moshi.JsonClass
 data class CommonTaskInfo (
 
     @Json(name = "isDone")
-    val isDone: kotlin.Boolean? = null,
+    val isDone: kotlin.Boolean,
 
     @Json(name = "name")
-    val name: kotlin.String? = null,
+    val name: kotlin.String,
 
     @Json(name = "taskID")
-    val taskID: kotlin.Int? = null
+    val taskID: kotlin.Int
 
 )
 

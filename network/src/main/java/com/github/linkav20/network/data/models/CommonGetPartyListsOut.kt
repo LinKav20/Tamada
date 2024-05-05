@@ -32,7 +32,7 @@ import com.squareup.moshi.JsonClass
 data class CommonGetPartyListsOut (
 
     @Json(name = "id")
-    val id: kotlin.Int? = null,
+    val id: kotlin.Int,
 
     @Json(name = "isVisible")
     val isVisible: kotlin.String? = null,
