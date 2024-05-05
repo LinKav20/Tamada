@@ -6,6 +6,6 @@ Assistance in organizing small events
 
 ## Techology
 
-Hilt, Jectpack-Compose, Coroutines, Retrogit, Logging Inteseptors, Gradle, Material 3
+Hilt, Jectpack-Compose, Coroutines, Retrogit, Logging Inteseptors, Gradle, Material, CleanAchitecture, SOLID
 
 ## IN PROGRESS
