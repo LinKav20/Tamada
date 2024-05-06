@@ -30,7 +30,7 @@ import com.github.linkav20.tamada.notification.SnackbarHost
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 
-@OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
@@ -40,7 +40,6 @@ fun MainScreen(
     onLoadingStateChanged: (Boolean) -> Unit,
 ) {
     val state = viewModel.state.collectAsState().value
-    // val navController = rememberNavController()
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
 

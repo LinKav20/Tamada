@@ -248,7 +248,7 @@ fun ExpenseItem(expense: Expense) {
 private fun Preview() {
     TamadaTheme {
         ExpandableExpensesCard(
-            isAccent = true,
+            isAccent = false,
             step = 2,
             isManager = false,
             user = UserUI(
