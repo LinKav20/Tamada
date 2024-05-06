@@ -17,6 +17,7 @@ import com.github.linkav20.network.data.models.CommonUpdateEventMoodboardLinkIn
 import com.github.linkav20.network.data.models.CommonUpdateEventStartTimeIn
 import com.github.linkav20.network.data.models.CommonUpdateEventThemeIn
 import com.github.linkav20.network.utils.RetrofitErrorHandler
+import ru.ozon.ozon_pvz.network.my.models.CommonUpdateEventNameIn
 import timber.log.Timber
 import java.time.OffsetDateTime
 import javax.inject.Inject
@@ -36,7 +37,15 @@ class PartyRepositoryImpl @Inject constructor(
     }?.toDomain()
 
     override suspend fun updateName(name: String, partyId: Int, userId: Int) {
-        TODO("Not yet implemented")
+        retrofitErrorHandler.apiCall {
+            eventApi.updateEventName(
+                CommonUpdateEventNameIn(
+                    actionFrom = userId,
+                    partyID = partyId,
+                    name = name
+                )
+            )
+        }
     }
 
     override suspend fun updateStartTime(time: OffsetDateTime, partyId: Int, userId: Int) {

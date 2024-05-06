@@ -21,6 +21,7 @@ import com.github.linkav20.info.domain.usecase.UpdatePartyDresscodeUseCase
 import com.github.linkav20.info.domain.usecase.UpdatePartyEndTimeUseCase
 import com.github.linkav20.info.domain.usecase.UpdatePartyImportantUseCase
 import com.github.linkav20.info.domain.usecase.UpdatePartyMoodboardLinkUseCase
+import com.github.linkav20.info.domain.usecase.UpdatePartyNameUseCase
 import com.github.linkav20.info.domain.usecase.UpdatePartyStartTimeUseCase
 import com.github.linkav20.info.domain.usecase.UpdatePartyThemeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,6 +49,7 @@ class PartyInfoViewModel @Inject constructor(
     private val updatePartyAddressUseCase: UpdatePartyAddressUseCase,
     private val updatePartyAddressLinkUseCase: UpdatePartyAddressLinkUseCase,
     private val updatePartyAddressAdditionalUseCase: UpdatePartyAddressAdditionalUseCase,
+    private val updatePartyNameUseCase: UpdatePartyNameUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(PartyInfoState())
@@ -77,7 +79,12 @@ class PartyInfoViewModel @Inject constructor(
         val party = state.value.party ?: return
         val newParty = party.copy(name = value)
         _state.update { it.copy(party = newParty) }
-        // TODO save
+        invokeUseCase {
+            updatePartyNameUseCase.invoke(
+                partyId = party.id,
+                name = value
+            )
+        }
     }
 
     fun onStartDateChanged(value: OffsetDateTime) {
