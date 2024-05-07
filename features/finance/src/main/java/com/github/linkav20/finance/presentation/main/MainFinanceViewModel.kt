@@ -68,26 +68,31 @@ class MainFinanceViewModel @Inject constructor(
 
 
     private fun loadData() = viewModelScope.launch {
-        _state.update { it.copy(loading = true) }
-        val id = getPartyIdUseCase.invoke() ?: return@launch
-        when (loadFinanceStateUseCase.invoke(id)) {
-            FinanceState.NONE -> {
-                val role = getRoleUseCase.invoke()
-                _state.update { it.copy(isManager = role == UserRole.MANAGER) }
-            }
+        try {
+            _state.update { it.copy(loading = true) }
+            val id = getPartyIdUseCase.invoke() ?: return@launch
+            when (loadFinanceStateUseCase.invoke(id)) {
+                FinanceState.NONE -> {
+                    val role = getRoleUseCase.invoke()
+                    _state.update { it.copy(isManager = role == UserRole.MANAGER) }
+                }
 
-            FinanceState.STEP_1 -> {
-                _state.update { it.copy(tab = MainFinanceState.Tab.STEP1) }
-            }
+                FinanceState.STEP_1 -> {
+                    _state.update { it.copy(tab = MainFinanceState.Tab.STEP1) }
+                }
 
-            FinanceState.STEP_2 -> {
-                _state.update { it.copy(tab = MainFinanceState.Tab.STEP2) }
-            }
+                FinanceState.STEP_2 -> {
+                    _state.update { it.copy(tab = MainFinanceState.Tab.STEP2) }
+                }
 
-            FinanceState.STEP_3 -> {
-                _state.update { it.copy(tab = MainFinanceState.Tab.STEP3) }
+                FinanceState.STEP_3 -> {
+                    _state.update { it.copy(tab = MainFinanceState.Tab.STEP3) }
+                }
             }
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
         }
-        _state.update { it.copy(loading = false) }
     }
 }

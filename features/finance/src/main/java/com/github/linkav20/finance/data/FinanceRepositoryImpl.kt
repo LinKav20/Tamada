@@ -5,15 +5,29 @@ import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.domain.model.FinanceState
 import com.github.linkav20.finance.domain.model.User
 import com.github.linkav20.finance.domain.repository.FinanceRepository
+import com.github.linkav20.network.data.api.AuthApi
+import com.github.linkav20.network.data.api.EventApi
+import com.github.linkav20.network.utils.RetrofitErrorHandler
+import ru.ozon.ozon_pvz.network.my.models.CommonLoadFinanceStateIn
 import java.io.InputStream
 import javax.inject.Inject
 
 class FinanceRepositoryImpl @Inject constructor(
-
+    private val retrofitErrorHandler: RetrofitErrorHandler,
+    private val eventApi: EventApi,
+    private val authApi: AuthApi
 ) : FinanceRepository {
 
     override suspend fun loadFinanceState(id: Long): FinanceState {
-        return FinanceState.NONE
+        val state = retrofitErrorHandler.apiCall {
+            eventApi.loadFinanceState(CommonLoadFinanceStateIn(partyID = id.toInt()))
+        }?.financeState
+        return when (state) {
+            1 -> FinanceState.STEP_1
+            2 -> FinanceState.STEP_2
+            3 -> FinanceState.STEP_3
+            else -> FinanceState.NONE
+        }
     }
 
     override suspend fun getAllExpanses(id: Long): List<User> {
