@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.linkav20.core.notification.ReactUseCase
+import com.github.linkav20.home.domain.usecase.UpdateUserAvatarUseCase
 import com.github.linkav20.home.navigation.ChangeAvatarDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChangeAvatarViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val updateUserAvatarUseCase: UpdateUserAvatarUseCase,
+    private val reactUseCase: ReactUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ChangeAvatarState())
@@ -26,8 +30,14 @@ class ChangeAvatarViewModel @Inject constructor(
     }
 
     fun onChangeAvatar(id: Int) = viewModelScope.launch {
-        _state.update { it.copy(loading = true) }
-        _state.update { it.copy(id = id) }
-        _state.update { it.copy(loading = false) }
+        try {
+            _state.update { it.copy(loading = true) }
+            updateUserAvatarUseCase.invoke(id)
+            _state.update { it.copy(id = id) }
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
     }
 }

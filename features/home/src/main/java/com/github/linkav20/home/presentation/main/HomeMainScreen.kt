@@ -235,7 +235,7 @@ private fun Content(
                         Text(
                             modifier = Modifier
                                 .align(alignment = Alignment.Start)
-                                .padding(horizontal = 8.dp),
+                                .padding(horizontal = 8.dp, vertical = 16.dp),
                             text = stringResource(id = R.string.home_main_screen_guests_empty),
                             color = TamadaTheme.colors.textMain,
                             style = TamadaTheme.typography.body

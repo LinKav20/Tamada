@@ -30,7 +30,7 @@ import com.squareup.moshi.JsonClass
 data class CommonUpdateUserWalletCardIn (
 
     @Json(name = "cardNumber")
-    val cardNumber: kotlin.Int? = null,
+    val cardNumber: kotlin.Long? = null,
 
     @Json(name = "userID")
     val userID: kotlin.Int? = null

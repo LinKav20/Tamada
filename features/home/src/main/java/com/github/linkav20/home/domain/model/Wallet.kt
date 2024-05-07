@@ -6,3 +6,8 @@ data class Wallet(
     val cardOwner: String?,
     val cardBank: String?
 )
+
+fun Wallet.isNotEmpty() = !cardBank.isNullOrEmpty()
+        && !cardOwner.isNullOrEmpty()
+        && !cardPhoneNumber.isNullOrEmpty()
+        && !cardNumber.isNullOrEmpty()

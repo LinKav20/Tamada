@@ -17,4 +17,14 @@ interface UserRepository {
         currentPassword: String,
         newPassword: String
     )
+
+    suspend fun updateLogin(login: String, userId: Int)
+
+    suspend fun updateCardNumber(number: String, userId: Int)
+
+    suspend fun updateCardOwner(owner: String, userId: Int)
+
+    suspend fun updateCardBank(bank: String, userId: Int)
+
+    suspend fun updateCardPhoneNumber(phone: String, userId: Int)
 }

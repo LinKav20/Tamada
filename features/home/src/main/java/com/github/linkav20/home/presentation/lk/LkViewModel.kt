@@ -2,9 +2,17 @@ package com.github.linkav20.home.presentation.lk
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.linkav20.core.notification.ReactUseCase
+import com.github.linkav20.home.domain.model.isNotEmpty
 import com.github.linkav20.home.domain.usecase.DeleteUserUseCase
 import com.github.linkav20.home.domain.usecase.GetUserInfoUseCase
 import com.github.linkav20.home.domain.usecase.SaveUserUseCase
+import com.github.linkav20.home.domain.usecase.UpdateUserAvatarUseCase
+import com.github.linkav20.home.domain.usecase.UpdateUserInfoIsWalletUseCase
+import com.github.linkav20.home.domain.usecase.UpdateWalletCardBankUseCase
+import com.github.linkav20.home.domain.usecase.UpdateWalletCardNumberUseCase
+import com.github.linkav20.home.domain.usecase.UpdateWalletCardOwnerUseCase
+import com.github.linkav20.home.domain.usecase.UpdateWalletCardPhoneUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,14 +25,18 @@ import javax.inject.Inject
 class LkViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val deleteUserUseCase: DeleteUserUseCase,
-    private val saveUserUseCase: SaveUserUseCase
+    private val saveUserUseCase: SaveUserUseCase,
+    private val updateWalletCardBankUseCase: UpdateWalletCardBankUseCase,
+    private val updateWalletCardNumberUseCase: UpdateWalletCardNumberUseCase,
+    private val updateWalletCardOwnerUseCase: UpdateWalletCardOwnerUseCase,
+    private val updateWalletCardPhoneUseCase: UpdateWalletCardPhoneUseCase,
+    private val updateUserInfoIsWalletUseCase: UpdateUserInfoIsWalletUseCase,
+    private val reactUseCase: ReactUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(LkState())
     val state = _state.asStateFlow()
 
-    init {
-        loadData()
-    }
+    fun onStart() = loadData()
 
     fun onEditWalletClick() = _state.update { it.copy(isWalletEdit = true) }
 
@@ -36,8 +48,8 @@ class LkViewModel @Inject constructor(
     fun onEditInfoClick() = _state.update { it.copy(isInfoEdit = true) }
 
     fun onSaveWalletClick() {
-
         _state.update { it.copy(isWalletEdit = false) }
+        saveWallet()
     }
 
     fun onSaveInfoClick() {
@@ -115,7 +127,7 @@ class LkViewModel @Inject constructor(
         _state.update { it.copy(loading = true) }
         try {
             val user = getUserInfoUseCase.invoke()
-            _state.update { it.copy(user = user) }
+            _state.update { it.copy(user = user, wallet = user.wallet) }
         } catch (e: Exception) {
             _state.update { it.copy(exception = e) }
         }
@@ -124,7 +136,7 @@ class LkViewModel @Inject constructor(
 
     fun onLogoutClick() {
         _state.update { it.copy(action = LkState.Action.AUTH) }
-        //todo clear tokens
+        // todo clear tokens
     }
 
     private fun saveUser() = viewModelScope.launch {
@@ -134,10 +146,69 @@ class LkViewModel @Inject constructor(
             if (user != null) {
                 saveUserUseCase.invoke(state.value.user!!)
             }
-        } catch (_: Exception) {
-
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
         }
-        _state.update { it.copy(loading = false) }
+    }
+
+    private fun saveWallet() {
+        val wallet = state.value.wallet
+        if (wallet?.cardBank != state.value.user?.wallet?.cardBank) saveCardBank()
+        if (wallet?.cardNumber != state.value.user?.wallet?.cardNumber) saveCardNumber()
+        if (wallet?.cardOwner != state.value.user?.wallet?.cardOwner) saveCardOwner()
+        if (wallet?.cardPhoneNumber != state.value.user?.wallet?.cardPhoneNumber) saveCardPhone()
+
+        updateUserInfoIsWalletUseCase.invoke(state.value.user?.wallet?.isNotEmpty() == true)
+    }
+
+    private fun saveCardBank() = viewModelScope.launch {
+        _state.update { it.copy(loading = true) }
+        try {
+            val bank = state.value.user?.wallet?.cardBank ?: return@launch
+            updateWalletCardBankUseCase.invoke(bank)
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
+    private fun saveCardOwner() = viewModelScope.launch {
+        _state.update { it.copy(loading = true) }
+        try {
+            val owner = state.value.user?.wallet?.cardOwner ?: return@launch
+            updateWalletCardOwnerUseCase.invoke(owner)
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
+    private fun saveCardNumber() = viewModelScope.launch {
+        _state.update { it.copy(loading = true) }
+        try {
+            val cardNumber = state.value.user?.wallet?.cardNumber ?: return@launch
+            updateWalletCardNumberUseCase.invoke(cardNumber)
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
+    private fun saveCardPhone() = viewModelScope.launch {
+        _state.update { it.copy(loading = true) }
+        try {
+            val cardPhoneNumber = state.value.user?.wallet?.cardPhoneNumber ?: return@launch
+            updateWalletCardPhoneUseCase.invoke(cardPhoneNumber)
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
     }
 
 }

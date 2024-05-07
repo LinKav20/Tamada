@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.github.linkav20.auth.navigation.AuthGraphDestination
 import com.github.linkav20.core.error.ErrorMapper
+import com.github.linkav20.core.utils.OnLifecycleStart
 import com.github.linkav20.core.utils.copyToClipboard
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
@@ -101,6 +102,10 @@ fun LkScreen(
             )
         }
     )
+
+    OnLifecycleStart {
+        viewModel.onStart()
+    }
 
     LaunchedEffect(state.action) {
         if (state.action == LkState.Action.AUTH) {
