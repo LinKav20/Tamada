@@ -98,7 +98,7 @@ class UserRepositoryImpl @Inject constructor(
 }
 
 private fun CommonGetUserWalletOut.toDomain() = Wallet(
-    cardNumber = cardNumber,
+    cardNumber = if (cardNumber == "0") "" else cardNumber,
     cardPhoneNumber = phoneNumber,
     cardOwner = cardOwner,
     cardBank = bank
