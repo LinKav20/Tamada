@@ -28,7 +28,7 @@ class ListsRepositoryImpl @Inject constructor(
         eventApi.getPartyLists(CommonGetPartyListsIn(partyId.toInt()))
     }?.map { it.toDomain() } ?: emptyList()
 
-    override suspend fun getListById(listId: Long, partyId: Long): ListEntity =
+    override suspend fun getListById(listId: Long, partyId: Long): ListEntity? =
         retrofitErrorHandler.apiCall {
             eventApi.getListInfo(
                 CommonGetListInfoIn(
@@ -36,7 +36,7 @@ class ListsRepositoryImpl @Inject constructor(
                     partyID = partyId.toInt(),
                 )
             )
-        }!!.toDomain()
+        }?.toDomain()
 
     override suspend fun createList(partyId: Long, type: ListEntity.Type): Int? =
         retrofitErrorHandler.apiCall {
@@ -120,12 +120,18 @@ private fun CommonGetPartyListsOut.toDomain() = ListEntity(
 private fun CommonGetListInfoOut.toDomain() = ListEntity(
     id = listID.toLong(),
     tasks = tasks?.map { it.toDomain() } ?: emptyList(),
-    managersOnly = true,
-    type = ListEntity.Type.EMPTY
+    managersOnly = isVisible == "true",
+    type = when (type) {
+        "TODO" -> ListEntity.Type.TODO
+        "BUY" -> ListEntity.Type.BUY
+        "WISHLIST" -> ListEntity.Type.WISHLIST
+        else -> ListEntity.Type.EMPTY
+    }
 )
 
 private fun CommonTaskInfo.toDomain() = TaskEntity(
     id = taskID.toLong(),
     name = name,
-    done = isDone
+    done = isDone,
+    isServer = true
 )

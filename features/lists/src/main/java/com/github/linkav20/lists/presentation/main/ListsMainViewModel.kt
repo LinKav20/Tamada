@@ -3,10 +3,17 @@ package com.github.linkav20.lists.presentation.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.linkav20.core.domain.entity.UserRole
 import com.github.linkav20.core.domain.usecase.GetPartyIdUseCase
+import com.github.linkav20.core.domain.usecase.GetRoleUseCase
+import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.lists.domain.entity.ListEntity
 import com.github.linkav20.lists.domain.entity.TaskEntity
+import com.github.linkav20.lists.domain.usecase.CreateListUseCase
+import com.github.linkav20.lists.domain.usecase.GetListByIdUseCase
+import com.github.linkav20.lists.domain.usecase.GetListsFullInfoUseCase
 import com.github.linkav20.lists.domain.usecase.GetListsUseCase
+import com.github.linkav20.lists.domain.usecase.UpdateTaskDoneUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,19 +23,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListsMainViewModel @Inject constructor(
-    private val getListsUseCase: GetListsUseCase,
-    private val getPartyIdUseCase: GetPartyIdUseCase
+    private val getUserRoleUseCase: GetRoleUseCase,
+    private val getPartyIdUseCase: GetPartyIdUseCase,
+    private val getListsFullInfoUseCase: GetListsFullInfoUseCase,
+    private val updateTaskDoneUseCase: UpdateTaskDoneUseCase,
+    private val createListUseCase: CreateListUseCase,
+    private val reactUseCase: ReactUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(ListsMainState())
     val state = _state.asStateFlow()
 
-    init {
-        loadData()
-    }
+    fun onStart() = loadData()
+
+    fun onCreateList(type: ListEntity.Type) = createList(type)
 
     fun onFilterChange(value: Boolean) {
         _state.update { it.copy(managersFilter = value) }
     }
+
+    fun nullifyCreatedListId() = _state.update { it.copy(createdListId = null) }
 
     fun onTaskClick(list: ListEntity, task: TaskEntity) {
         val newList = updateItemInList(list, task)
@@ -46,15 +59,67 @@ class ListsMainViewModel @Inject constructor(
             val index = list.tasks.indexOf(task)
             val newTasks = list.tasks.minus(task).toMutableList()
             newTasks.add(index, newTask)
+            updateTaskOnServer(newTask)
             return list.copy(tasks = newTasks)
         }
         return null
     }
 
-    private fun loadData() = viewModelScope.launch {
-        val lists = getListsUseCase.invoke(1)
-        val id = getPartyIdUseCase.invoke()
-        Log.d("MY_", "Lists $id")
-        _state.update { it.copy(lists = lists) }
+    private fun updateTaskOnServer(task: TaskEntity) = viewModelScope.launch {
+        try {
+            _state.update { it.copy(loading = true) }
+            updateTaskDoneUseCase.invoke(task)
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
+    private fun loadData() {
+        loadRole()
+        loadLists()
+    }
+
+    private fun loadLists() = viewModelScope.launch {
+        try {
+            _state.update { it.copy(loading = true) }
+            val id = getPartyIdUseCase.invoke() ?: return@launch
+            val lists = getListsFullInfoUseCase.invoke(partyId = id)
+            _state.update {
+                it.copy(
+                    lists = lists,
+                )
+            }
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
+    private fun loadRole() = viewModelScope.launch {
+        try {
+            val role = getUserRoleUseCase.invoke()
+            _state.update {
+                it.copy(
+                    isManager = role == UserRole.MANAGER || role == UserRole.CREATOR
+                )
+            }
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        }
+    }
+
+    private fun createList(type: ListEntity.Type) = viewModelScope.launch {
+        try {
+            _state.update { it.copy(loading = true) }
+            val id = createListUseCase.invoke(type)
+            _state.update { it.copy(createdListId = id) }
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
     }
 }

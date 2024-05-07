@@ -5,7 +5,9 @@ import com.github.linkav20.lists.domain.entity.TaskEntity
 
 data class ListsMainState(
     val loading: Boolean = false,
+    val isManager: Boolean = false,
     val managersFilter: Boolean = false,
+    val createdListId: Int? = null,
     val lists: List<ListEntity> = emptyList()
 ) {
     fun filteredLists() = if (managersFilter) {

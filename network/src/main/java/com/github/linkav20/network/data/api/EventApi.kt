@@ -7,6 +7,8 @@ import com.github.linkav20.network.data.models.CommonAddListToEventIn
 import com.github.linkav20.network.data.models.CommonAddListToEventOut
 import com.github.linkav20.network.data.models.CommonAddTasksToListIn
 import com.github.linkav20.network.data.models.CommonAddUserToPartyIn
+import com.github.linkav20.network.data.models.CommonCalculateExpensesIn
+import com.github.linkav20.network.data.models.CommonCalculateExpensesOut
 import com.github.linkav20.network.data.models.CommonCreateEventIn
 import com.github.linkav20.network.data.models.CommonDeleteListIn
 import com.github.linkav20.network.data.models.CommonDeleteUserFromPartyIn
@@ -16,6 +18,8 @@ import com.github.linkav20.network.data.models.CommonGetListInfoIn
 import com.github.linkav20.network.data.models.CommonGetListInfoOut
 import com.github.linkav20.network.data.models.CommonGetPartiesGuestsIn
 import com.github.linkav20.network.data.models.CommonGetPartiesGuestsOut
+import com.github.linkav20.network.data.models.CommonGetPartyExpensesDeadlineIn
+import com.github.linkav20.network.data.models.CommonGetPartyExpensesDeadlineOut
 import com.github.linkav20.network.data.models.CommonGetPartyListsIn
 import com.github.linkav20.network.data.models.CommonGetPartyListsOut
 import com.github.linkav20.network.data.models.CommonGetUserEventsIn
@@ -32,9 +36,13 @@ import com.github.linkav20.network.data.models.CommonUpdateEventStartTimeIn
 import com.github.linkav20.network.data.models.CommonUpdateEventThemeIn
 import com.github.linkav20.network.data.models.CommonUpdateListTypeIn
 import com.github.linkav20.network.data.models.CommonUpdateListVisibilityIn
+import com.github.linkav20.network.data.models.CommonUpdatePartyExpensesDeadlineIn
 import com.github.linkav20.network.data.models.CommonUpdateTaskNameIn
 import com.github.linkav20.network.data.models.CommonUpdateTaskStatusIn
 import com.github.linkav20.network.data.models.CommonUpdateUserRoleOnPartyIn
+import com.github.linkav20.network.data.models.CommonUploadReceiptInfoNameIn
+import com.github.linkav20.network.data.models.CommonUploadReceiptInfoSumIn
+import com.github.linkav20.network.data.models.CommonUserExpenses
 import ru.ozon.ozon_pvz.network.my.models.CommonGetAllUserReceiptIn
 import ru.ozon.ozon_pvz.network.my.models.CommonGetInviteLinkIn
 import ru.ozon.ozon_pvz.network.my.models.CommonGetInviteLinkOut
@@ -480,5 +488,77 @@ interface EventApi {
      */
     @POST("api/update_user_role_on_party")
     suspend fun updateUserRole(@Body input: CommonUpdateUserRoleOnPartyIn): Response<Unit>
+
+    /**
+     * CalculateExpenses
+     * Расчет сколько с человека надо собрать, сколько должен конкретный пользователь
+     * Responses:
+     *  - 200: OK
+     *
+     * @param input event info
+     * @return [CommonCalculateExpensesOut]
+     */
+    @POST("api/calculate_expenses")
+    suspend fun calculateExpenses(@Body input: CommonCalculateExpensesIn): Response<CommonCalculateExpensesOut>
+
+    /**
+     * GetAllUserExpenses
+     * Получение информации по расходам пользователя (без чека, просто из базы) (на выходе массив моделек)
+     * Responses:
+     *  - 200: OK
+     *
+     * @param input event info
+     * @return [CommonUserExpenses]
+     */
+    @POST("api/get_all_user_expenses")
+    suspend fun getAllUserExpenses(@Body input: CommonGetAllUserReceiptIn): Response<CommonUserExpenses>
+
+    /**
+     * GetPartyExpensesDeadline
+     * Получение текущего дедлайна шага трат
+     * Responses:
+     *  - 200: OK
+     *
+     * @param input event info
+     * @return [CommonGetPartyExpensesDeadlineOut]
+     */
+    @POST("api/get_party_expenses_deadline")
+    suspend fun getExpensesDeadline(@Body input: CommonGetPartyExpensesDeadlineIn): Response<CommonGetPartyExpensesDeadlineOut>
+
+    /**
+     * UpdatePartyExpensesDeadline
+     * Обновление дедлайна шага трат
+     * Responses:
+     *  - 204: No Content
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/update_party_expenses_deadline")
+    suspend fun updatePartyExepensesDeadline(@Body input: CommonUpdatePartyExpensesDeadlineIn): Response<Unit>
+
+    /**
+     * UploadReceiptInfoName
+     * Обновление названия чека
+     * Responses:
+     *  - 204: No Content
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/update_receipt_info_name")
+    suspend fun updateReceiptName(@Body input: CommonUploadReceiptInfoNameIn): Response<Unit>
+
+    /**
+     * UploadReceiptInfoSum
+     * Обновление суммы чека
+     * Responses:
+     *  - 204: No Content
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/update_receipt_info_sum")
+    suspend fun updateReceiptSum(@Body input: CommonUploadReceiptInfoSumIn): Response<Unit>
 
 }

@@ -88,9 +88,9 @@ private fun Content(
 ) {
     Column(
         modifier = Modifier
+            .imePadding()
             .fillMaxSize()
             .padding(40.dp)
-            .imePadding()
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)

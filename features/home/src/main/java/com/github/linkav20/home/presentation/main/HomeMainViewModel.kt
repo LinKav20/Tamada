@@ -37,12 +37,10 @@ class HomeMainViewModel @Inject constructor(
     fun nullifyAction() = _state.update { it.copy(action = null) }
 
     fun getData() = viewModelScope.launch {
-        _state.update { it.copy(loading = true) }
         if (getAuthTokensUseCase.invoke() != null) {
             loadData()
         } else {
             _state.update { it.copy(action = HomeMainScreenState.Action.AUTH) }
-            _state.update { it.copy(loading = false) }
         }
     }
 

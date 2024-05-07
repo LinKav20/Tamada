@@ -15,6 +15,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.github.linkav20.core.utils.OnLifecycleStart
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.TamadaCard
 import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
@@ -51,21 +53,37 @@ fun ListsMainScreen(
     val state = viewModel.state.collectAsState().value
 
     Content(
+        isManager = state.isManager,
         managersFilter = state.managersFilter,
         loading = state.loading,
         lists = state.filteredLists(),
         onFilterChange = viewModel::onFilterChange,
         onTaskClick = viewModel::onTaskClick,
+        onCreateListClick = viewModel::onCreateList,
         onListClick = { navController.navigate(ListDestination.createRoute(it)) },
         onBackClick = { navController.navigateUp() },
     )
+
+    OnLifecycleStart {
+        viewModel.onStart()
+    }
+
+    LaunchedEffect(state.createdListId) {
+        val id = state.createdListId
+        if (id != null) {
+            navController.navigate(ListDestination.createRoute(id.toLong()))
+            viewModel.nullifyCreatedListId()
+        }
+    }
 }
 
 @Composable
 private fun Content(
+    isManager: Boolean,
     managersFilter: Boolean,
     loading: Boolean,
     lists: List<ListEntity>,
+    onCreateListClick: (ListEntity.Type) -> Unit,
     onFilterChange: (Boolean) -> Unit,
     onTaskClick: (ListEntity, TaskEntity) -> Unit,
     onListClick: (Long) -> Unit,
@@ -89,16 +107,23 @@ private fun Content(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Filter(
-                title = stringResource(id = R.string.lists_main_filter_only_for_managers),
-                isSelected = managersFilter,
-                onFilterChange = onFilterChange
-            )
+            if (isManager) {
+                Filter(
+                    title = stringResource(id = R.string.lists_main_filter_only_for_managers),
+                    isSelected = managersFilter,
+                    onFilterChange = onFilterChange
+                )
+            }
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item { Spacer(modifier = Modifier.height(16.dp)) }
-                item { ListsHint(lists.isEmpty()) }
+                item {
+                    ListsHint(
+                        isEmpty = lists.isEmpty(),
+                        onCreateListClick = onCreateListClick
+                    )
+                }
                 items(lists) {
                     ListItem(
                         modifier = Modifier.clickable { onListClick(it.id) },
@@ -114,7 +139,8 @@ private fun Content(
 
 @Composable
 private fun ListsHint(
-    isEmpty: Boolean
+    isEmpty: Boolean,
+    onCreateListClick: (ListEntity.Type) -> Unit
 ) = TamadaCard(
     colorScheme = ColorScheme.LISTS
 ) {
@@ -135,21 +161,25 @@ private fun ListsHint(
         Spacer(modifier = Modifier.height(8.dp))
         ListDisclaimer(
             isEmpty = isEmpty,
+            onCreateListClick = { onCreateListClick(ListEntity.Type.EMPTY) },
             title = stringResource(id = R.string.lists_main_empty_list_title),
             subtitle = stringResource(id = R.string.lists_main_empty_list_description)
         )
         ListDisclaimer(
             isEmpty = isEmpty,
+            onCreateListClick = { onCreateListClick(ListEntity.Type.TODO) },
             title = stringResource(id = R.string.lists_main_todo_list_title),
             subtitle = stringResource(id = R.string.lists_main_todo_list_description)
         )
         ListDisclaimer(
             isEmpty = isEmpty,
+            onCreateListClick = { onCreateListClick(ListEntity.Type.BUY) },
             title = stringResource(id = R.string.lists_main_buying_list_title),
             subtitle = stringResource(id = R.string.lists_main_buying_list_description)
         )
         ListDisclaimer(
             isEmpty = isEmpty,
+            onCreateListClick = { onCreateListClick(ListEntity.Type.WISHLIST) },
             title = stringResource(id = R.string.lists_main_wishlist_title),
             subtitle = stringResource(id = R.string.lists_main_wishlist_description)
         )
@@ -160,10 +190,11 @@ private fun ListsHint(
 private fun ListDisclaimer(
     isEmpty: Boolean,
     title: String,
-    subtitle: String
+    subtitle: String,
+    onCreateListClick: () -> Unit
 ) = Column(
     modifier = Modifier
-        .then(if (!isEmpty) Modifier.clickable { } else Modifier)
+        .clickable { onCreateListClick() }
         .fillMaxWidth()
         .clip(TamadaTheme.shapes.mediumSmall)
         .background(getSecondaryColor(scheme = ColorScheme.LISTS))
@@ -207,24 +238,39 @@ private fun ListItem(
                 style = TamadaTheme.typography.caption,
                 color = TamadaTheme.colors.textMain,
             )
-            Icon(
-                painter = if (true) {
-                    painterResource(id = CoreR.drawable.lock_icon)
-                } else {
-                    painterResource(id = CoreR.drawable.baseline_lock_open_24)
-                },
-                tint = TamadaTheme.colors.textMain,
-                contentDescription = ""
-            )
-        }
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            listEntity.tasks.slice(0 until SHOW_TASKS).forEach {
-                TaskItem(
-                    task = it,
-                    onClick = { onTaskClick(listEntity, it) }
+            if (listEntity.managersOnly) {
+                Icon(
+                    painter = painterResource(id = CoreR.drawable.lock_icon),
+                    tint = TamadaTheme.colors.textMain,
+                    contentDescription = ""
                 )
+            }
+        }
+        if (listEntity.tasks.isEmpty()) {
+            Text(
+                text = stringResource(id = R.string.lists_main_tasks_empty),
+                style = TamadaTheme.typography.caption,
+                color = TamadaTheme.colors.textMain,
+            )
+        } else {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                if (listEntity.tasks.size < SHOW_TASKS) {
+                    listEntity.tasks.forEach {
+                        TaskItem(
+                            task = it,
+                            onClick = { onTaskClick(listEntity, it) }
+                        )
+                    }
+                } else {
+                    listEntity.tasks.slice(0 until SHOW_TASKS).forEach {
+                        TaskItem(
+                            task = it,
+                            onClick = { onTaskClick(listEntity, it) }
+                        )
+                    }
+                }
             }
         }
         if (listEntity.tasks.size > SHOW_TASKS) {

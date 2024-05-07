@@ -1,6 +1,7 @@
 package com.github.linkav20.lists.presentation.list
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
@@ -68,7 +69,7 @@ fun ListScreen(
         doneTasks = state.getDoneTasks(),
         notDoneTasks = state.getNotDoneTasks(),
         isManager = state.isManager,
-        onBackClick = { navController.navigateUp() },
+        onBackClick = viewModel::onBackClick,
         onTaskClick = viewModel::onTaskClick,
         onDeleteTaskClick = viewModel::onDeleteTaskClick,
         onAddNewPointClick = viewModel::onAddNewPointClick,
@@ -77,6 +78,16 @@ fun ListScreen(
         onFocusChanged = viewModel::onFocusChanged,
         onFilterChanged = viewModel::onFilterChanged
     )
+
+    LaunchedEffect(state.action) {
+        if (state.action == ListState.Action.BACK) {
+            navController.navigateUp()
+        }
+    }
+
+    BackHandler {
+        viewModel.onBackClick()
+    }
 }
 
 @Composable

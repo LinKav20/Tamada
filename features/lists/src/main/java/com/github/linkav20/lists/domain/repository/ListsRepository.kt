@@ -7,7 +7,7 @@ interface ListsRepository {
 
     suspend fun getLists(partyId: Long): List<ListEntity>
 
-    suspend fun getListById(listId: Long, partyId: Long): ListEntity
+    suspend fun getListById(listId: Long, partyId: Long): ListEntity?
 
     suspend fun createList(partyId: Long, type: ListEntity.Type): Int?
 

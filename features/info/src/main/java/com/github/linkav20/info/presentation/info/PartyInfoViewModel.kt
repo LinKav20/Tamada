@@ -1,17 +1,14 @@
 package com.github.linkav20.info.presentation.info
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.linkav20.core.domain.entity.DomainException
 import com.github.linkav20.core.domain.entity.ReactionStyle
 import com.github.linkav20.core.domain.entity.UserRole
 import com.github.linkav20.core.domain.usecase.GetPartyIdUseCase
 import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.info.R
-import com.github.linkav20.info.domain.model.Party
 import com.github.linkav20.info.domain.usecase.GetPartyUseCase
 import com.github.linkav20.info.domain.usecase.SavePartyUseCase
 import com.github.linkav20.info.domain.usecase.UpdatePartyAddressAdditionalUseCase
@@ -266,7 +263,6 @@ class PartyInfoViewModel @Inject constructor(
                 return@launch
             }
             val party = getPartyUseCase.invoke(id)
-            Log.d("MY_", party.toString())
             val role = getRoleUseCase.invoke()
             _state.update {
                 it.copy(

@@ -9,7 +9,10 @@ data class ListState(
     val guestsAccessGranted: Boolean = false,
     val newTaskPosition: Int? = null,
     val focusedItemPosition: Int? = null,
+    val action: Action? = null
 ) {
+    enum class Action { BACK }
+
     fun getDoneTasks() = list?.tasks?.filter { it.done } ?: emptyList()
 
     fun getNotDoneTasks() = list?.tasks?.filter { !it.done } ?: emptyList()

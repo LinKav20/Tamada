@@ -11,6 +11,7 @@
     <string name="lists_main_buying_list_title">Список покупок</string>
     <string name="lists_main_buying_list_description">Что нужно купить, а что уже куплено? Если нужно, поможем поделить затраты на всех</string>
     <string name="lists_main_wishlist_title">Вишлист</string>
+    <string name="lists_main_tasks_empty">Тут пока пусто</string>
     <string name="lists_main_wishlist_description">Плойка? Наушники? БДСМ набор? Гости отметят галочками, что хотят подарить</string>
     <string name="lists_main_filter_only_for_managers">Только организаторские</string>
     <plurals name="lists_main_more_tasks">
