@@ -25,6 +25,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.core.utils.OnLifecycleStart
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.TamadaCard
@@ -48,13 +49,15 @@ private const val SHOW_TASKS = 6
 @Composable
 fun ListsMainScreen(
     viewModel: ListsMainViewModel,
-    navController: NavController
+    navController: NavController,
+    errorMapper: ErrorMapper
 ) {
     val state = viewModel.state.collectAsState().value
 
     Content(
         isManager = state.isManager,
         managersFilter = state.managersFilter,
+        error = state.error,
         loading = state.loading,
         lists = state.filteredLists(),
         onFilterChange = viewModel::onFilterChange,
@@ -62,6 +65,13 @@ fun ListsMainScreen(
         onCreateListClick = viewModel::onCreateList,
         onListClick = { navController.navigate(ListDestination.createRoute(it)) },
         onBackClick = { navController.navigateUp() },
+        onError = {
+            errorMapper.OnError(
+                throwable = it,
+                onActionClick = viewModel::onRetry,
+                colorScheme = ColorScheme.LISTS
+            )
+        }
     )
 
     OnLifecycleStart {
@@ -80,6 +90,7 @@ fun ListsMainScreen(
 @Composable
 private fun Content(
     isManager: Boolean,
+    error: Throwable?,
     managersFilter: Boolean,
     loading: Boolean,
     lists: List<ListEntity>,
@@ -87,7 +98,8 @@ private fun Content(
     onFilterChange: (Boolean) -> Unit,
     onTaskClick: (ListEntity, TaskEntity) -> Unit,
     onListClick: (Long) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onError: @Composable (Throwable) -> Unit
 ) = Scaffold(
     backgroundColor = getBackgroundColor(scheme = ColorScheme.LISTS),
     topBar = {
@@ -100,6 +112,8 @@ private fun Content(
 ) { paddings ->
     if (loading) {
         TamadaFullscreenLoader(scheme = ColorScheme.LISTS)
+    } else if (error != null) {
+        onError(error)
     } else {
         Column(
             modifier = Modifier

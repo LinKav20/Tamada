@@ -34,7 +34,10 @@ class MainFinanceViewModel @Inject constructor(
         MutableStateFlow(MainFinanceState())
     val state = _state.asStateFlow()
 
-    init {
+    fun onStart() = loadData()
+
+    fun onRetry() {
+        _state.update { it.copy(error = null) }
         loadData()
     }
 
@@ -92,7 +95,7 @@ class MainFinanceViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            reactUseCase.invoke(e)
+            _state.update { it.copy(error = e) }
         } finally {
             _state.update { it.copy(loading = false) }
         }

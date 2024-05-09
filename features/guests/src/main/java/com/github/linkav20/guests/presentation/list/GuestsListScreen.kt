@@ -32,6 +32,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.github.linkav20.core.error.ErrorMapper
+import com.github.linkav20.core.utils.OnLifecycleStart
 import com.github.linkav20.core.utils.copyToClipboard
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
@@ -53,13 +55,15 @@ import com.github.linkav20.guests.domain.model.User
 @Composable
 fun GuestsListScreen(
     viewModel: GuestsListViewModel,
-    navController: NavController
+    navController: NavController,
+    errorMapper: ErrorMapper
 ) {
     val state = viewModel.state.collectAsState().value
 
     Content(
         loading = state.loading,
         link = state.link,
+        error = state.error,
         infoShownCount = state.infoShownCount,
         isUsersEmpty = state.isUsersEmpty,
         canUserEdit = state.isUserEdit,
@@ -73,13 +77,25 @@ fun GuestsListScreen(
         onSaveClick = viewModel::onSaveClick,
         onDeleteClick = viewModel::onDeleteClick,
         onUpdateLink = viewModel::onUpdateLink,
-        onBackClick = { navController.navigateUp() }
+        onBackClick = { navController.navigateUp() },
+        onError = {
+            errorMapper.OnError(
+                throwable = it,
+                onActionClick = viewModel::onRetry,
+                colorScheme = ColorScheme.GUESTS
+            )
+        }
     )
+
+    OnLifecycleStart {
+        viewModel.onStart()
+    }
 }
 
 @Composable
 private fun Content(
     loading: Boolean,
+    error: Exception?,
     link: String?,
     infoShownCount: Int?,
     isUsersEmpty: Boolean,
@@ -94,7 +110,8 @@ private fun Content(
     onDeleteFromAdminClick: (User) -> Unit,
     onAddToAdminClick: (User) -> Unit,
     onDeleteClick: (User) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onError: @Composable (Throwable) -> Unit
 ) = Scaffold(
     backgroundColor = getBackgroundColor(scheme = ColorScheme.GUESTS),
     topBar = {
@@ -107,6 +124,8 @@ private fun Content(
 ) { paddings ->
     if (loading) {
         TamadaFullscreenLoader(scheme = ColorScheme.GUESTS)
+    } else if (error != null) {
+        onError(error)
     } else {
         LazyColumn(
             modifier = Modifier

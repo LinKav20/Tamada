@@ -23,22 +23,15 @@ fun NavGraphBuilder.listsTabGraph(navController: NavController, errorMapper: Err
         composableRoute(ListsMainDestination) {
             ListsMainScreen(
                 viewModel = hiltViewModel(),
-                navController = navController
+                navController = navController,
+                errorMapper = errorMapper
             )
         }
         composableRoute(ListDestination) {
             ListScreen(
                 viewModel = hiltViewModel(),
-                navController = navController
-            )
-        }
-        composable("ListsTabDestination2") {
-            Text(
-                modifier =
-                Modifier.clickable {
-                    navController.navigateUp()
-                },
-                text = "ListsTabDestination2",
+                navController = navController,
+                errorMapper = errorMapper
             )
         }
     }

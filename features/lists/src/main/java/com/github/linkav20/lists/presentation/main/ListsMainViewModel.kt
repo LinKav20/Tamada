@@ -35,6 +35,11 @@ class ListsMainViewModel @Inject constructor(
 
     fun onStart() = loadData()
 
+    fun onRetry(){
+        _state.update { it.copy(error = null) }
+        loadData()
+    }
+
     fun onCreateList(type: ListEntity.Type) = createList(type)
 
     fun onFilterChange(value: Boolean) {
@@ -89,7 +94,7 @@ class ListsMainViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            reactUseCase.invoke(e)
+           _state.update { it.copy(error = e) }
         } finally {
             _state.update { it.copy(loading = false) }
         }

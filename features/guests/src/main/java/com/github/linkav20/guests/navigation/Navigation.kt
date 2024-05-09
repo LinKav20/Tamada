@@ -18,7 +18,8 @@ fun NavGraphBuilder.guestsTabGraph(navController: NavController, errorMapper: Er
         composableRoute(GuestsListDestination) {
             GuestsListScreen(
                 viewModel = hiltViewModel(),
-                navController = navController
+                navController = navController,
+                errorMapper = errorMapper
             )
         }
     }

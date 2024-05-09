@@ -37,6 +37,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
@@ -59,25 +60,34 @@ import com.github.linkav20.coreui.R as CoreR
 @Composable
 fun ListScreen(
     viewModel: ListViewModel,
-    navController: NavController
+    navController: NavController,
+    errorMapper: ErrorMapper
 ) {
     val state = viewModel.state.collectAsState().value
-    Content(
-        focusedItemPosition = state.focusedItemPosition,
-        guestsAccessGranted = state.guestsAccessGranted,
-        listEntity = state.list,
-        doneTasks = state.getDoneTasks(),
-        notDoneTasks = state.getNotDoneTasks(),
-        isManager = state.isManager,
-        onBackClick = viewModel::onBackClick,
-        onTaskClick = viewModel::onTaskClick,
-        onDeleteTaskClick = viewModel::onDeleteTaskClick,
-        onAddNewPointClick = viewModel::onAddNewPointClick,
-        onValueChanged = viewModel::onValueChanged,
-        onNextClick = viewModel::onNextClick,
-        onFocusChanged = viewModel::onFocusChanged,
-        onFilterChanged = viewModel::onFilterChanged
-    )
+    if (state.error != null) {
+        errorMapper.OnError(
+            throwable = state.error,
+            onActionClick = viewModel::onRetry,
+            colorScheme = ColorScheme.LISTS
+        )
+    } else {
+        Content(
+            focusedItemPosition = state.focusedItemPosition,
+            guestsAccessGranted = state.guestsAccessGranted,
+            listEntity = state.list,
+            doneTasks = state.getDoneTasks(),
+            notDoneTasks = state.getNotDoneTasks(),
+            isManager = state.isManager,
+            onBackClick = viewModel::onBackClick,
+            onTaskClick = viewModel::onTaskClick,
+            onDeleteTaskClick = viewModel::onDeleteTaskClick,
+            onAddNewPointClick = viewModel::onAddNewPointClick,
+            onValueChanged = viewModel::onValueChanged,
+            onNextClick = viewModel::onNextClick,
+            onFocusChanged = viewModel::onFocusChanged,
+            onFilterChanged = viewModel::onFilterChanged
+        )
+    }
 
     LaunchedEffect(state.action) {
         if (state.action == ListState.Action.BACK) {

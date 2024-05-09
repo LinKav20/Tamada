@@ -26,7 +26,8 @@ fun NavGraphBuilder.financeTabGraph(navController: NavController, errorMapper: E
         composableRoute(MainFinanceDestination) {
             MainFinanceScreen(
                 viewModel = hiltViewModel(),
-                navController = navController
+                navController = navController,
+                errorMapper = errorMapper
             )
         }
         composableRoute(Step1Destination) {

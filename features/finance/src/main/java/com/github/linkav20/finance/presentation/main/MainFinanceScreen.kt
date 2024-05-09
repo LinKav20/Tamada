@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
@@ -42,7 +43,8 @@ import com.github.linkav20.finance.presentation.dialog.Dialog
 @Composable
 fun MainFinanceScreen(
     viewModel: MainFinanceViewModel,
-    navController: NavController
+    navController: NavController,
+    errorMapper: ErrorMapper
 ) {
     val state = viewModel.state.collectAsState().value
 
@@ -63,6 +65,12 @@ fun MainFinanceScreen(
         Box(modifier = Modifier.padding(paddings)) {
             if (state.loading) {
                 TamadaFullscreenLoader(scheme = ColorScheme.FINANCE)
+            } else if (state.error != null) {
+                errorMapper.OnError(
+                    throwable = state.error,
+                    onActionClick = viewModel::onRetry,
+                    colorScheme = ColorScheme.FINANCE
+                )
             } else {
                 BasicContent(
                     state = state,

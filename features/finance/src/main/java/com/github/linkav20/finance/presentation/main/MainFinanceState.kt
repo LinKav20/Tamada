@@ -5,7 +5,8 @@ data class MainFinanceState(
     val showDialog: Boolean = false,
     val loading: Boolean = true,
     val throwable: Throwable? = null,
-    val tab: Tab? = null
+    val tab: Tab? = null,
+    val error: Throwable? = null
 ) {
     enum class Tab(val index: Int) {
         STEP1(0),

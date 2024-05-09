@@ -47,6 +47,11 @@ class ListViewModel @Inject constructor(
         loadData()
     }
 
+    fun onRetry() {
+        _state.update { it.copy(error = null) }
+        loadData()
+    }
+
     fun onAddNewPointClick() {
         addEmptyTask(EMPTY_TASK_ID.toInt())
     }
@@ -158,7 +163,7 @@ class ListViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            reactUseCase.invoke(e)
+            _state.update { it.copy(error = e) }
         } finally {
             _state.update { it.copy(loading = false) }
         }

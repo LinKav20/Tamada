@@ -31,7 +31,10 @@ class GuestsListViewModel @Inject constructor(
     private val _state = MutableStateFlow(GuestsListState())
     val state = _state.asStateFlow()
 
-    init {
+    fun onStart() = loadData()
+
+    fun onRetry() {
+        _state.update { it.copy(error = null) }
         loadData()
     }
 
@@ -118,7 +121,7 @@ class GuestsListViewModel @Inject constructor(
             val inviteLink = getInviteLinkUseCase.invoke(partyId)
             _state.update { it.copy(link = inviteLink) }
         } catch (e: Exception) {
-            reactUseCase.invoke(e)
+            _state.update { it.copy(error = e) }
         } finally {
             _state.update { it.copy(loading = false) }
         }
