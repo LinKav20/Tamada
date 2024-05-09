@@ -75,11 +75,8 @@ fun Step1Screen(
             subtitle = stringResource(id = R.string.dialog_subtitle_delete_next_step),
             onClose = viewModel::onCloseDialog,
             onConfirm = {
-                navController.navigate(Step2Destination.route()) {
-                    popUpTo(Step1Destination.route()) {
-                        inclusive = true
-                    }
-                }
+                viewModel.onEndStep()
+                navController.navigateUp()
             }
         )
     }

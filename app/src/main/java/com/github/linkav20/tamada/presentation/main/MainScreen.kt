@@ -1,13 +1,12 @@
 package com.github.linkav20.tamada.presentation.main
 
-import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +28,9 @@ import com.github.linkav20.tamada.navigation.AppNavHost
 import com.github.linkav20.tamada.notification.SnackbarHost
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import com.google.firebase.Firebase
+import com.google.firebase.app
+import com.google.firebase.messaging.messaging
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
@@ -42,6 +44,15 @@ fun MainScreen(
     val state = viewModel.state.collectAsState().value
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
+
+    Firebase.messaging.subscribeToTopic("test_Artem")
+        .addOnCompleteListener { task ->
+            var msg = "Subscribed"
+            if (!task.isSuccessful) {
+                msg = "Subscribe failed"
+            }
+            Log.d("MY_", msg)
+        }
 
     Scaffold(
         modifier = Modifier

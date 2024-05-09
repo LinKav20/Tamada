@@ -28,7 +28,6 @@ import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaCard
 import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
-import com.github.linkav20.coreui.ui.TamadaRoadMap
 import com.github.linkav20.coreui.ui.TamadaTopBar
 import com.github.linkav20.coreui.utils.ColorScheme
 import com.github.linkav20.coreui.utils.getBackgroundColor
@@ -67,13 +66,12 @@ fun MainFinanceScreen(
             } else {
                 BasicContent(
                     state = state,
-                    onClose = viewModel::onCloseDialog,
+                    onCloseDialog = viewModel::onCloseDialog,
                     onConfirm = viewModel::onConfirmDialog,
-                    onOpen = viewModel::onOpenDialog,
+                    onOpenDialog = viewModel::onOpenDialog,
                     onOnboardingClick = { navController.navigate(OnboardingDestination.route()) }
                 )
             }
-            //ExpensesContent()
         }
     }
 
@@ -105,9 +103,9 @@ fun MainFinanceScreen(
 @Composable
 private fun BasicContent(
     state: MainFinanceState,
-    onClose: () -> Unit,
+    onCloseDialog: () -> Unit,
     onConfirm: () -> Unit,
-    onOpen: () -> Unit,
+    onOpenDialog: () -> Unit,
     onOnboardingClick: () -> Unit
 ) = Column(
     modifier = Modifier.padding(16.dp),
@@ -116,7 +114,7 @@ private fun BasicContent(
     if (state.showDialog) {
         Dialog(
             subtitle = stringResource(id = R.string.dialog_subtitle_turn_on_finance),
-            onClose = onClose,
+            onClose = onCloseDialog,
             onConfirm = onConfirm
         )
     }
@@ -164,27 +162,9 @@ private fun BasicContent(
                 TamadaButton(
                     title = stringResource(id = R.string.basic_finance_turn_on_button),
                     colorScheme = ColorScheme.FINANCE,
-                    onClick = onOpen
+                    onClick = onOpenDialog
                 )
             }
         }
     }
-}
-
-@Composable
-private fun ExpensesContent(
-) = Column(
-    modifier = Modifier.padding(24.dp),
-) {
-    TamadaRoadMap(
-        colorScheme = ColorScheme.FINANCE,
-        currentIndex = 0,
-        stepsCount = 3,
-        onPointClick = listOf({}, {}, {}),
-        titles = listOf(
-            R.string.main_finance_road_map_step_1,
-            R.string.main_finance_road_map_step_2,
-            R.string.main_finance_road_map_step_3,
-        ),
-    )
 }

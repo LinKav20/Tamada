@@ -1,15 +1,20 @@
 package com.github.linkav20.finance.data
 
 import android.net.Uri
+import com.github.linkav20.core.utils.DateTimeUtils
 import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.domain.model.FinanceState
 import com.github.linkav20.finance.domain.model.User
 import com.github.linkav20.finance.domain.repository.FinanceRepository
 import com.github.linkav20.network.data.api.AuthApi
 import com.github.linkav20.network.data.api.EventApi
+import com.github.linkav20.network.data.models.CommonGetPartyExpensesDeadlineIn
+import com.github.linkav20.network.data.models.CommonUpdatePartyExpensesDeadlineIn
 import com.github.linkav20.network.utils.RetrofitErrorHandler
 import ru.ozon.ozon_pvz.network.my.models.CommonLoadFinanceStateIn
+import ru.ozon.ozon_pvz.network.my.models.CommonUpdateFinanceStateIn
 import java.io.InputStream
+import java.time.OffsetDateTime
 import javax.inject.Inject
 
 class FinanceRepositoryImpl @Inject constructor(
@@ -109,6 +114,45 @@ class FinanceRepositoryImpl @Inject constructor(
 
     override suspend fun deleteExpense(id: Long) {
 
+    }
+
+    override suspend fun updateDeadline(deadline: OffsetDateTime?, partyId: Long) {
+        retrofitErrorHandler.apiCall {
+            eventApi.updatePartyExepensesDeadline(
+                CommonUpdatePartyExpensesDeadlineIn(
+                    expensesDeadline = if (deadline == null) "" else DateTimeUtils.toString(deadline),
+                    partyID = partyId.toInt()
+                )
+            )
+        }
+    }
+
+    override suspend fun getDeadline(partyId: Long): OffsetDateTime? {
+        val deadline = retrofitErrorHandler.apiCall {
+            eventApi.getExpensesDeadline(
+                CommonGetPartyExpensesDeadlineIn(
+                    partyID = partyId.toInt()
+                )
+            )
+        }?.deadlineExpenses
+        return if (deadline == null) null else DateTimeUtils.fromString(deadline)
+    }
+
+    override suspend fun updateFinanceState(state: FinanceState, partyId: Long, userId: Long) {
+        retrofitErrorHandler.apiCall {
+            eventApi.updateFinanceState(
+                CommonUpdateFinanceStateIn(
+                    financeState = when (state) {
+                        FinanceState.STEP_1 -> 1
+                        FinanceState.STEP_2 -> 2
+                        FinanceState.STEP_3 -> 3
+                        else -> 0
+                    },
+                    partyID = partyId.toInt(),
+                    userID = userId.toInt()
+                )
+            )
+        }
     }
 
     override suspend fun getExpenseReceipt(id: Long): InputStream {

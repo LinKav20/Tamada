@@ -11,7 +11,7 @@ import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.FinanceState
 import com.github.linkav20.finance.domain.usecase.LoadFinanceStateUseCase
-import com.github.linkav20.finance.domain.usecase.TurnOnFinanceUseCase
+import com.github.linkav20.finance.domain.usecase.UpdateFinanceStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ class MainFinanceViewModel @Inject constructor(
     private val loadFinanceStateUseCase: LoadFinanceStateUseCase,
     private val getPartyIdUseCase: GetPartyIdUseCase,
     private val getRoleUseCase: GetRoleUseCase,
-    private val turnOnFinanceUseCase: TurnOnFinanceUseCase,
+    private val turnOnFinanceUseCase: UpdateFinanceStateUseCase,
     private val reactUseCase: ReactUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
@@ -49,7 +49,10 @@ class MainFinanceViewModel @Inject constructor(
         _state.update { it.copy(loading = true) }
         try {
             val id = getPartyIdUseCase.invoke() ?: return@launch
-            turnOnFinanceUseCase.invoke(id)
+            turnOnFinanceUseCase.invoke(
+                state = FinanceState.STEP_1,
+                id = id
+            )
             _state.update { it.copy(tab = MainFinanceState.Tab.STEP1) }
             reactUseCase.invoke(
                 title = context.getString(R.string.basic_finance_turn_on_push_title),
@@ -62,7 +65,6 @@ class MainFinanceViewModel @Inject constructor(
             )
         } finally {
             _state.update { it.copy(loading = false) }
-            //loadData()
         }
     }
 

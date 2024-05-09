@@ -1,5 +1,6 @@
 package com.github.linkav20.tamada.notification
 
+import androidx.compose.material.SnackbarData
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable

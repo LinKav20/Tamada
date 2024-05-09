@@ -9,8 +9,11 @@ import com.github.linkav20.core.domain.usecase.GetPartyIdUseCase
 import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.finance.R
+import com.github.linkav20.finance.domain.model.FinanceState
+import com.github.linkav20.finance.domain.usecase.EndFinanceStepUseCase
 import com.github.linkav20.finance.domain.usecase.GetMyExpenseUseCase
 import com.github.linkav20.finance.domain.usecase.SaveWalletDataUseCase
+import com.github.linkav20.finance.domain.usecase.UpdateFinanceStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +30,9 @@ class Step1ViewModel @Inject constructor(
     private val reactUseCase: ReactUseCase,
     private val getMyExpenseUseCase: GetMyExpenseUseCase,
     private val saveWalletDataUseCase: SaveWalletDataUseCase,
-    @ApplicationContext private val context: Context
+    private val endFinanceStepUseCase: EndFinanceStepUseCase,
+    @ApplicationContext
+    private val context: Context
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(Step1State())
@@ -35,6 +40,18 @@ class Step1ViewModel @Inject constructor(
 
     init {
         loadData()
+    }
+
+    fun onEndStep() = viewModelScope.launch {
+        try {
+            val id = getPartyIdUseCase.invoke() ?: return@launch
+            endFinanceStepUseCase.invoke(
+                newState = FinanceState.STEP_2,
+                partyId = id
+            )
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        }
     }
 
     fun onDeadlineEditClick() = _state.update { it.copy(canDeadlineEdit = true) }
