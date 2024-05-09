@@ -6,4 +6,6 @@ android {
 }
 
 dependencies {
+    implementation platform(libs.firebase.platform)
+    implementation libs.firebase.messaging
 }

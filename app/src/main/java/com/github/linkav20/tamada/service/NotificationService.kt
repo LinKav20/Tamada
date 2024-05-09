@@ -5,14 +5,11 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.github.linkav20.tamada.R
 import com.github.linkav20.tamada.presentation.MainActivity
-import com.google.firebase.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.firebase.messaging.messaging
 import timber.log.Timber
 
 const val CHANNEL_ID = "NOTIFICATIONS"

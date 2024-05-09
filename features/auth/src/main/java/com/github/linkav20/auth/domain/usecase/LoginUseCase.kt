@@ -8,7 +8,8 @@ import javax.inject.Inject
 class LoginUseCase @Inject constructor(
     private val repository: AuthRepository,
     private val tokenRepository: TokenRepository,
-    private val setUserInformationUseCase: SetUserInformationUseCase
+    private val setUserInformationUseCase: SetUserInformationUseCase,
+    private val subscribeOnNotificationUseCase: SubscribeOnNotificationUseCase
 ) {
 
     suspend fun invoke(login: String, password: String) {
@@ -17,5 +18,6 @@ class LoginUseCase @Inject constructor(
         setUserInformationUseCase.invoke(data.user)
         tokenRepository.accessToken = tokens?.accessToken
         tokenRepository.refreshToken = tokens?.refreshToken
+        subscribeOnNotificationUseCase.invoke(data.user.id.toLong())
     }
 }

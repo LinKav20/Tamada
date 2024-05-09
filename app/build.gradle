@@ -143,7 +143,6 @@ dependencies {
     // FCM
     implementation platform(libs.firebase.platform)
     implementation libs.firebase.messaging
-    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     implementation project(path: ':core')
     implementation project(path: ':coreui')
