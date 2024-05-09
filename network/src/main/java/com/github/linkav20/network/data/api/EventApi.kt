@@ -11,6 +11,7 @@ import com.github.linkav20.network.data.models.CommonCalculateExpensesIn
 import com.github.linkav20.network.data.models.CommonCalculateExpensesOut
 import com.github.linkav20.network.data.models.CommonCreateEventIn
 import com.github.linkav20.network.data.models.CommonDeleteListIn
+import com.github.linkav20.network.data.models.CommonDeleteTaskFromListIn
 import com.github.linkav20.network.data.models.CommonDeleteUserFromPartyIn
 import com.github.linkav20.network.data.models.CommonGetEventIn
 import com.github.linkav20.network.data.models.CommonGetEventOut
@@ -68,6 +69,19 @@ interface EventApi {
      */
     @POST("api/add_user_to_party")
     suspend fun addUserToEvent(@Body input: CommonAddUserToPartyIn): Response<Unit>
+
+
+    /**
+     * DeleteTaskFromList
+     * Удаление таски
+     * Responses:
+     *  - 204: No Content
+     *
+     * @param input event info
+     * @return [Unit]
+     */
+    @POST("api/delete_task_from_list")
+    suspend fun deleteTaskFromList(@Body input: CommonDeleteTaskFromListIn): Response<Unit>
 
     /**
      * CreateEvent

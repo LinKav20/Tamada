@@ -22,18 +22,18 @@ import com.squareup.moshi.JsonClass
 /**
  * 
  *
- * @param partyID 
- * @param expensesDeadline 
+ * @param listID 
+ * @param taskID 
  */
 
 
-data class CommonUpdatePartyExpensesDeadlineIn (
+data class CommonDeleteTaskFromListIn (
 
-    @Json(name = "partyID")
-    val partyID: kotlin.Int,
+    @Json(name = "listID")
+    val listID: kotlin.Int,
 
-    @Json(name = "ExpensesDeadline")
-    val expensesDeadline: kotlin.String? = null
+    @Json(name = "taskID")
+    val taskID: kotlin.Int
 
 )
 
