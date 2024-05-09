@@ -13,7 +13,7 @@
     "UnusedImport"
 )
 
-package ru.ozon.ozon_pvz.network.my.models
+package com.github.linkav20.network.data.models
 
 
 import com.squareup.moshi.Json

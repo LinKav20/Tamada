@@ -9,20 +9,20 @@ import com.github.linkav20.network.data.models.CommonLoginOut
 import com.github.linkav20.network.data.models.CommonRefreshOut
 import com.github.linkav20.network.data.models.CommonRegisterIn
 import com.github.linkav20.network.data.models.CommonRegisterOut
-import ru.ozon.ozon_pvz.network.my.models.CommonGetPartySummaryExpensesIn
-import ru.ozon.ozon_pvz.network.my.models.CommonGetPartySummaryExpensesOut
-import ru.ozon.ozon_pvz.network.my.models.CommonGetPartyWalletIn
-import ru.ozon.ozon_pvz.network.my.models.CommonGetPartyWalletOut
-import ru.ozon.ozon_pvz.network.my.models.CommonGetUserExpenseInfoByIDIn
-import ru.ozon.ozon_pvz.network.my.models.CommonGetUserExpenseInfoByIDOut
-import ru.ozon.ozon_pvz.network.my.models.CommonGetUserWalletIn
-import ru.ozon.ozon_pvz.network.my.models.CommonGetUserWalletOut
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserAvatarIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserPasswordIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserWalletBankIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserWalletCardIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserWalletOwnerIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserWalletPhoneIn
+import com.github.linkav20.network.data.models.CommonGetPartySummaryExpensesIn
+import com.github.linkav20.network.data.models.CommonGetPartySummaryExpensesOut
+import com.github.linkav20.network.data.models.CommonGetPartyWalletIn
+import com.github.linkav20.network.data.models.CommonGetPartyWalletOut
+import com.github.linkav20.network.data.models.CommonGetUserExpenseInfoByIDIn
+import com.github.linkav20.network.data.models.CommonGetUserExpenseInfoByIDOut
+import com.github.linkav20.network.data.models.CommonGetUserWalletIn
+import com.github.linkav20.network.data.models.CommonGetUserWalletOut
+import com.github.linkav20.network.data.models.CommonUpdateUserAvatarIn
+import com.github.linkav20.network.data.models.CommonUpdateUserPasswordIn
+import com.github.linkav20.network.data.models.CommonUpdateUserWalletBankIn
+import com.github.linkav20.network.data.models.CommonUpdateUserWalletCardIn
+import com.github.linkav20.network.data.models.CommonUpdateUserWalletOwnerIn
+import com.github.linkav20.network.data.models.CommonUpdateUserWalletPhoneIn
 
 interface AuthApi {
     /**

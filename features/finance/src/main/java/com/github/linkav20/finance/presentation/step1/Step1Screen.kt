@@ -28,10 +28,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaCard
+import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
 import com.github.linkav20.coreui.ui.TamadaGradientDisclaimer
 import com.github.linkav20.coreui.ui.TamadaRoadMap
 import com.github.linkav20.coreui.ui.TamadaTopBar
@@ -64,7 +66,8 @@ private const val SHOW_EXPENSES = 3
 fun Step1Screen(
     viewModel: Step1ViewModel,
     dialogViewModel: AddExpenseViewModel,
-    navController: NavController
+    navController: NavController,
+    errorMapper: ErrorMapper
 ) {
     val scope = rememberCoroutineScope()
     val state = viewModel.state.collectAsState().value
@@ -116,7 +119,14 @@ fun Step1Screen(
             onCardNumberChanged = viewModel::onCardNumberChange,
             onPhoneNumberChanged = viewModel::onPhoneNumberChange,
             onCardOwnerChanged = viewModel::onCardOwnerChange,
-            onBankChanged = viewModel::onBankChange
+            onBankChanged = viewModel::onBankChange,
+            onError = { throwable ->
+                errorMapper.OnError(
+                    throwable,
+                    viewModel::onRetry,
+                    ColorScheme.MAIN
+                )
+            }
         )
     }
 }
@@ -138,7 +148,8 @@ private fun Content(
     onCardNumberChanged: (String) -> Unit,
     onPhoneNumberChanged: (String) -> Unit,
     onCardOwnerChanged: (String) -> Unit,
-    onBankChanged: (String) -> Unit
+    onBankChanged: (String) -> Unit,
+    onError: @Composable (Throwable) -> Unit
 ) = Scaffold(
     modifier = Modifier
         .statusBarsPadding()
@@ -159,88 +170,94 @@ private fun Content(
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        TamadaRoadMap(
-            currentIndex = 0,
-            stepsCount = 3,
-            onPointClick = listOf({}, {}, {}),
-            titles = listOf(
-                R.string.main_finance_road_map_step_1,
-                R.string.main_finance_road_map_step_2,
-                R.string.main_finance_road_map_step_3
-            ),
-            colorScheme = ColorScheme.FINANCE
-        )
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            TamadaGradientDisclaimer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onDisclaimerClick() },
+        if (state.loading) {
+            TamadaFullscreenLoader(scheme = ColorScheme.FINANCE)
+        } else if (state.error != null) {
+            onError(state.error)
+        } else {
+            TamadaRoadMap(
+                currentIndex = 0,
+                stepsCount = 3,
+                onPointClick = listOf({}, {}, {}),
+                titles = listOf(
+                    R.string.main_finance_road_map_step_1,
+                    R.string.main_finance_road_map_step_2,
+                    R.string.main_finance_road_map_step_3
+                ),
                 colorScheme = ColorScheme.FINANCE
+            )
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.step1_disclaimer_title),
-                        style = TamadaTheme.typography.body,
-                        color = TamadaTheme.colors.textWhite,
-                        textDecoration = TextDecoration.Underline
+                Spacer(modifier = Modifier.height(16.dp))
+                TamadaGradientDisclaimer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onDisclaimerClick() },
+                    colorScheme = ColorScheme.FINANCE
+                ) {
+                    Column {
+                        Text(
+                            text = stringResource(R.string.step1_disclaimer_title),
+                            style = TamadaTheme.typography.body,
+                            color = TamadaTheme.colors.textWhite,
+                            textDecoration = TextDecoration.Underline
+                        )
+                        Text(
+                            text = stringResource(id = R.string.step1_disclaimer_subtitle),
+                            style = TamadaTheme.typography.body,
+                            color = TamadaTheme.colors.textWhite
+                        )
+                    }
+                }
+                if (state.isDeadlineEditable) {
+                    EditableDeadlineComponent(
+                        deadline = state.deadline,
+                        onDeadlineChanged = onDeadlineChanged,
+                        onDeadlineSet = onDeadlineSet
                     )
-                    Text(
-                        text = stringResource(id = R.string.step1_disclaimer_subtitle),
-                        style = TamadaTheme.typography.body,
-                        color = TamadaTheme.colors.textWhite
+                } else {
+                    DeadlineComponent(
+                        isManager = state.isManager,
+                        deadline = state.deadline,
+                        onEditDeadlineClick = onDeadlineEditClick,
+                        onEndStepClick = onEndStepClick
                     )
                 }
+                PartySumComponent(
+                    sum = state.sum ?: 0.0,
+                    onClick = onShowProgressClick
+                )
+                MyExpensesList(
+                    expenses = state.expenses,
+                    onAddExpenseClick = onAddExpenseClick,
+                    onMyExpensesClick = onMyExpensesClick
+                )
+                if (state.isWalletEditable) {
+                    EditableWalletComponent(
+                        cartNumber = state.cardNumber,
+                        phoneNumber = state.phoneNumber,
+                        bank = state.bank,
+                        cardOwner = state.cardOwner,
+                        onCardNumberChanged = onCardNumberChanged,
+                        onPhoneNumberChanged = onPhoneNumberChanged,
+                        onCardOwnerChanged = onCardOwnerChanged,
+                        onBankChanged = onBankChanged,
+                        onSaveDataClick = onSaveDataClick
+                    )
+                } else {
+                    WalletComponent(
+                        isManager = state.isManager,
+                        cartNumber = state.cardNumber,
+                        phoneNumber = state.phoneNumber,
+                        owner = state.cardOwner,
+                        bank = state.bank,
+                        onEditClick = onWalletEditClick
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
             }
-            if (state.isDeadlineEditable) {
-                EditableDeadlineComponent(
-                    deadline = state.deadline,
-                    onDeadlineChanged = onDeadlineChanged,
-                    onDeadlineSet = onDeadlineSet
-                )
-            } else {
-                DeadlineComponent(
-                    isManager = state.isManager,
-                    deadline = state.deadline,
-                    onEditDeadlineClick = onDeadlineEditClick,
-                    onEndStepClick = onEndStepClick
-                )
-            }
-            PartySumComponent(
-                sum = state.sum ?: 0.0,
-                onClick = onShowProgressClick
-            )
-            MyExpensesList(
-                expenses = state.expenses,
-                onAddExpenseClick = onAddExpenseClick,
-                onMyExpensesClick = onMyExpensesClick
-            )
-            if (state.isWalletEditable) {
-                EditableWalletComponent(
-                    cartNumber = state.cardNumber,
-                    phoneNumber = state.phoneNumber,
-                    bank = state.bank,
-                    cardOwner = state.cardOwner,
-                    onCardNumberChanged = onCardNumberChanged,
-                    onPhoneNumberChanged = onPhoneNumberChanged,
-                    onCardOwnerChanged = onCardOwnerChanged,
-                    onBankChanged = onBankChanged,
-                    onSaveDataClick = onSaveDataClick
-                )
-            } else {
-                WalletComponent(
-                    isManager = state.isManager,
-                    cartNumber = state.cardNumber,
-                    phoneNumber = state.phoneNumber,
-                    owner = state.cardOwner,
-                    bank = state.bank,
-                    onEditClick = onWalletEditClick
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

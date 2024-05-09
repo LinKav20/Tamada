@@ -38,6 +38,7 @@
     <string name="creation_party_screen_theme_link_title">Ссылка на мудборд</string>
     <string name="creation_party_screen_theme_link_description">Больше примеров — больше вероятность, что гости придут в костюмах</string>
     <string name="creation_party_screen_theme_link_hint">https://pin.it/your-board-address</string>
+    <string name="creation_party_screen_address_link_hint">https://maps/your-address</string>
     <string name="creation_party_start_time_error">Дата начала не может быть позже даты конца</string>
     <string name="creation_party_end_time_error">Дата конца не может быть раньше даты начала</string>
     <string name="creation_party_result_success">Вечеринка создана!</string>
@@ -57,4 +58,5 @@
     <string name="info_party_save_party_error_title">Не удалось сохранить изменения</string>
     <string name="info_party_start_time_error">Дата начала не может быть позже даты конца</string>
     <string name="info_party_end_time_error">Дата конца не может быть раньше даты начала</string>
-></resources>
+    <string name="info_party_empty_form_error">Заполните форму перед сохранением</string>
+    ></resources>

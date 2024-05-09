@@ -111,5 +111,3 @@ private fun getException(
 
 private fun Request.isAuthRequest() =
     this.url.encodedPath.contains("/register") || this.url.encodedPath.contains("/login")
-
-object NoContentException : RuntimeException()

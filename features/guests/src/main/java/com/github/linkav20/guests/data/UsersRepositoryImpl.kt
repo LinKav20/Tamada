@@ -1,6 +1,5 @@
 package com.github.linkav20.guests.data
 
-import android.util.Log
 import com.github.linkav20.guests.domain.model.User
 import com.github.linkav20.guests.domain.repository.UsersRepository
 import com.github.linkav20.network.data.api.EventApi
@@ -9,7 +8,7 @@ import com.github.linkav20.network.data.models.CommonGetPartiesGuestsIn
 import com.github.linkav20.network.data.models.CommonGetPartiesGuestsOut
 import com.github.linkav20.network.data.models.CommonUpdateUserRoleOnPartyIn
 import com.github.linkav20.network.utils.RetrofitErrorHandler
-import ru.ozon.ozon_pvz.network.my.models.CommonGetInviteLinkIn
+import com.github.linkav20.network.data.models.CommonGetInviteLinkIn
 import javax.inject.Inject
 
 class UsersRepositoryImpl @Inject constructor(

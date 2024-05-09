@@ -52,7 +52,7 @@ fun EditableAddressComponent(
             Spacer(modifier = Modifier.height(16.dp))
             TamadaTextFiled(
                 value = addressLink ?: "",
-                placeholder = stringResource(id = R.string.creation_party_screen_theme_link_hint),
+                placeholder = stringResource(id = R.string.creation_party_screen_address_link_hint),
                 onValueChange = onAddressLinkChanged,
             )
             if (showButton) {

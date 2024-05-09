@@ -67,12 +67,9 @@ class ListsMainViewModel @Inject constructor(
 
     private fun updateTaskOnServer(task: TaskEntity) = viewModelScope.launch {
         try {
-            _state.update { it.copy(loading = true) }
             updateTaskDoneUseCase.invoke(task)
         } catch (e: Exception) {
             reactUseCase.invoke(e)
-        } finally {
-            _state.update { it.copy(loading = false) }
         }
     }
 

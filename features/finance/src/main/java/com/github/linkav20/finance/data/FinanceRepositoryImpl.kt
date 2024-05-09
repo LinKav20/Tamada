@@ -8,12 +8,15 @@ import com.github.linkav20.finance.domain.model.User
 import com.github.linkav20.finance.domain.repository.FinanceRepository
 import com.github.linkav20.network.data.api.AuthApi
 import com.github.linkav20.network.data.api.EventApi
+import com.github.linkav20.network.data.models.CommonCalculateExpensesOut
 import com.github.linkav20.network.data.models.CommonGetPartyExpensesDeadlineIn
 import com.github.linkav20.network.data.models.CommonUpdatePartyExpensesDeadlineIn
 import com.github.linkav20.network.utils.RetrofitErrorHandler
-import ru.ozon.ozon_pvz.network.my.models.CommonLoadFinanceStateIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateFinanceStateIn
+import com.github.linkav20.network.data.models.CommonGetPartySummaryExpensesIn
+import com.github.linkav20.network.data.models.CommonLoadFinanceStateIn
+import com.github.linkav20.network.data.models.CommonUpdateFinanceStateIn
 import java.io.InputStream
+import java.math.BigDecimal
 import java.time.OffsetDateTime
 import javax.inject.Inject
 
@@ -111,6 +114,15 @@ class FinanceRepositoryImpl @Inject constructor(
     ) {
 
     }
+
+    override suspend fun getTotalSum(partyId: Long) = retrofitErrorHandler.apiCall {
+        authApi.getPartySummaryExpenses(
+            CommonGetPartySummaryExpensesIn(
+                partyID = partyId.toInt()
+            )
+        )
+    }?.totalSum
+
 
     override suspend fun deleteExpense(id: Long) {
 

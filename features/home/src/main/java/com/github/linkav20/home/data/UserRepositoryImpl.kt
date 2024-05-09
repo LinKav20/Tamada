@@ -4,15 +4,14 @@ import com.github.linkav20.home.domain.model.Wallet
 import com.github.linkav20.home.domain.model.User
 import com.github.linkav20.home.domain.repository.UserRepository
 import com.github.linkav20.network.data.api.AuthApi
-import com.github.linkav20.network.data.api.EventApi
 import com.github.linkav20.network.utils.RetrofitErrorHandler
-import ru.ozon.ozon_pvz.network.my.models.CommonGetUserWalletIn
-import ru.ozon.ozon_pvz.network.my.models.CommonGetUserWalletOut
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserAvatarIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserWalletBankIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserWalletCardIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserWalletOwnerIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateUserWalletPhoneIn
+import com.github.linkav20.network.data.models.CommonGetUserWalletIn
+import com.github.linkav20.network.data.models.CommonGetUserWalletOut
+import com.github.linkav20.network.data.models.CommonUpdateUserAvatarIn
+import com.github.linkav20.network.data.models.CommonUpdateUserWalletBankIn
+import com.github.linkav20.network.data.models.CommonUpdateUserWalletCardIn
+import com.github.linkav20.network.data.models.CommonUpdateUserWalletOwnerIn
+import com.github.linkav20.network.data.models.CommonUpdateUserWalletPhoneIn
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(

@@ -12,6 +12,7 @@ import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.FinanceState
 import com.github.linkav20.finance.domain.usecase.EndFinanceStepUseCase
 import com.github.linkav20.finance.domain.usecase.GetMyExpenseUseCase
+import com.github.linkav20.finance.domain.usecase.GetTotalPartySumUseCase
 import com.github.linkav20.finance.domain.usecase.SaveWalletDataUseCase
 import com.github.linkav20.finance.domain.usecase.UpdateFinanceStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +32,7 @@ class Step1ViewModel @Inject constructor(
     private val getMyExpenseUseCase: GetMyExpenseUseCase,
     private val saveWalletDataUseCase: SaveWalletDataUseCase,
     private val endFinanceStepUseCase: EndFinanceStepUseCase,
+    private val getTotalPartySumUseCase: GetTotalPartySumUseCase,
     @ApplicationContext
     private val context: Context
 ) : ViewModel() {
@@ -41,6 +43,8 @@ class Step1ViewModel @Inject constructor(
     init {
         loadData()
     }
+
+    fun onRetry() = loadData()
 
     fun onEndStep() = viewModelScope.launch {
         try {
@@ -107,15 +111,24 @@ class Step1ViewModel @Inject constructor(
     fun onWalletEditClick() = _state.update { it.copy(canWalletEdit = true) }
 
     private fun loadData() = viewModelScope.launch {
-        val id = getPartyIdUseCase.invoke() ?: return@launch
-        val role = getUserRoleUseCase.invoke()
-        val expenses = getMyExpenseUseCase.invoke(id)
-        _state.update {
-            it.copy(
-                loading = false,
-                isManager = role == UserRole.MANAGER,
-                expenses = expenses
-            )
+        try {
+            _state.update { it.copy(loading = true) }
+            val id = getPartyIdUseCase.invoke() ?: return@launch
+            val role = getUserRoleUseCase.invoke()
+            val expenses = getMyExpenseUseCase.invoke(id)
+            val total = getTotalPartySumUseCase.invoke(id)
+            _state.update {
+                it.copy(
+                    loading = false,
+                    isManager = role == UserRole.MANAGER,
+                    expenses = expenses,
+                    sum = total
+                )
+            }
+        } catch (e: Exception) {
+            _state.update { it.copy(error = e) }
+        } finally {
+            _state.update { it.copy(loading = false) }
         }
     }
 }

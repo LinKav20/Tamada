@@ -5,6 +5,7 @@ import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.domain.model.FinanceState
 import com.github.linkav20.finance.domain.model.User
 import java.io.InputStream
+import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 interface FinanceRepository {
@@ -22,13 +23,15 @@ interface FinanceRepository {
         receipt: Uri
     )
 
+    suspend fun getTotalSum(partyId: Long): Long?
+
     suspend fun deleteExpense(id: Long)
 
     suspend fun updateDeadline(deadline: OffsetDateTime?, partyId: Long)
 
     suspend fun getDeadline(partyId: Long): OffsetDateTime?
 
-    suspend fun updateFinanceState(state: FinanceState, partyId: Long,  userId: Long)
+    suspend fun updateFinanceState(state: FinanceState, partyId: Long, userId: Long)
 
     suspend fun getExpenseReceipt(id: Long): InputStream
 

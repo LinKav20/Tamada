@@ -13,7 +13,7 @@
     "UnusedImport"
 )
 
-package ru.ozon.ozon_pvz.network.my.models
+package com.github.linkav20.network.data.models
 
 
 import com.squareup.moshi.Json
@@ -29,7 +29,7 @@ import com.squareup.moshi.JsonClass
 data class CommonGetPartySummaryExpensesOut (
 
     @Json(name = "totalSum")
-    val totalSum: java.math.BigDecimal? = null
+    val totalSum: kotlin.Long? = null,
 
 )
 

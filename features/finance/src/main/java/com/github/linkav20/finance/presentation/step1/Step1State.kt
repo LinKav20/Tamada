@@ -2,6 +2,7 @@ package com.github.linkav20.finance.presentation.step1
 
 import com.github.linkav20.finance.domain.model.Expense
 import java.time.OffsetDateTime
+import kotlin.jvm.Throws
 
 data class Step1State(
     val loading: Boolean = true,
@@ -15,7 +16,8 @@ data class Step1State(
     val phoneNumber: String = "",
     val bank: String? = null,
     val cardOwner: String? = null,
-    val showDialog: Boolean = false
+    val showDialog: Boolean = false,
+    val error: Throwable? = null
 ) {
     val isDeadlineEditable: Boolean = canDeadlineEdit && isManager
     val isWalletEditable: Boolean = canWalletEdit && isManager

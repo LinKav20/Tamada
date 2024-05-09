@@ -58,30 +58,88 @@ class PartyInfoViewModel @Inject constructor(
 
     fun onEditInfoClick() = _state.update { it.copy(canInfoEdit = true) }
 
-    fun onSaveInfoClick() = _state.update { it.copy(canInfoEdit = false) }
+    fun onSaveInfoClick() {
+        val name = state.value.party?.name
+        if (name.isNullOrEmpty()) {
+            emptyFormReact()
+            return
+        }
+        invokeUseCase {
+            updatePartyNameUseCase.invoke(name = name)
+        }
+        val startTime = state.value.party?.startTime
+        if (startTime != null) {
+            invokeUseCase {
+                updatePartyStartTimeUseCase.invoke(startTime = startTime)
+            }
+        }
+        val endTime = state.value.party?.endTime
+        if (endTime != null) {
+            invokeUseCase {
+                updatePartyEndTimeUseCase.invoke(endTime = endTime)
+            }
+        }
+        _state.update { it.copy(canInfoEdit = false) }
+    }
 
     fun onEditAddressClick() = _state.update { it.copy(canAddressEdit = true) }
 
-    fun onSaveAddressClick() = _state.update { it.copy(canAddressEdit = false) }
+    fun onSaveAddressClick() {
+        _state.update { it.copy(canAddressEdit = false) }
+        val address = state.value.party?.address
+        if (!address.isNullOrEmpty()) {
+            invokeUseCase { updatePartyAddressUseCase.invoke(address = address) }
+        }
+        val addressAdditional = state.value.party?.addressAdditional
+        if (!addressAdditional.isNullOrEmpty()) {
+            invokeUseCase {
+                updatePartyAddressAdditionalUseCase.invoke(
+                    address = addressAdditional
+                )
+            }
+        }
+    }
 
     fun onEditImportantClick() = _state.update { it.copy(canImportantEdit = true) }
 
-    fun onSaveImportantClick() = _state.update { it.copy(canImportantEdit = false) }
+    fun onSaveImportantClick() {
+        _state.update { it.copy(canImportantEdit = false) }
+        val importance = state.value.party?.important
+        if (!importance.isNullOrEmpty()) {
+            invokeUseCase {
+                updatePartyImportantUseCase.invoke(important = importance)
+            }
+        }
+    }
 
     fun onEditThemeClick() = _state.update { it.copy(canThemeEdit = true) }
 
-    fun onSaveThemeClick() = _state.update { it.copy(canThemeEdit = false) }
+    fun onSaveThemeClick() {
+        _state.update { it.copy(canThemeEdit = false) }
+        val moodboard = state.value.party?.moodboadLink
+        if (!moodboard.isNullOrEmpty()) {
+            invokeUseCase {
+                updatePartyMoodboardLinkUseCase.invoke(link = moodboard)
+            }
+        }
+        val theme = state.value.party?.theme
+        if (!theme.isNullOrEmpty()) {
+            invokeUseCase {
+                updatePartyThemeUseCase.invoke(theme = theme)
+            }
+        }
+        val dresscode = state.value.party?.dressCode
+        if (!dresscode.isNullOrEmpty()) {
+            invokeUseCase {
+                updatePartyDresscodeUseCase.invoke(dresscode = dresscode)
+            }
+        }
+    }
 
     fun onNameChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(name = value)
         _state.update { it.copy(party = newParty) }
-        invokeUseCase {
-            updatePartyNameUseCase.invoke(
-                partyId = party.id,
-                name = value
-            )
-        }
     }
 
     fun onStartDateChanged(value: OffsetDateTime) {
@@ -90,12 +148,6 @@ class PartyInfoViewModel @Inject constructor(
         if (endTime == null) {
             val newParty = party.copy(startTime = value)
             _state.update { it.copy(party = newParty) }
-            invokeUseCase {
-                updatePartyStartTimeUseCase.invoke(
-                    partyId = party.id,
-                    startTime = value
-                )
-            }
         } else {
             if (value >= endTime) {
                 reactUseCase.invoke(
@@ -105,12 +157,6 @@ class PartyInfoViewModel @Inject constructor(
             } else {
                 val newParty = party.copy(startTime = value)
                 _state.update { it.copy(party = newParty) }
-                invokeUseCase {
-                    updatePartyStartTimeUseCase.invoke(
-                        partyId = party.id,
-                        startTime = value
-                    )
-                }
             }
         }
     }
@@ -121,12 +167,6 @@ class PartyInfoViewModel @Inject constructor(
         if (startTime == null) {
             val newParty = party.copy(endTime = value)
             _state.update { it.copy(party = newParty) }
-            invokeUseCase {
-                updatePartyEndTimeUseCase.invoke(
-                    partyId = party.id,
-                    endTime = value
-                )
-            }
         } else {
             if (value <= startTime) {
                 reactUseCase.invoke(
@@ -136,12 +176,6 @@ class PartyInfoViewModel @Inject constructor(
             } else {
                 val newParty = party.copy(endTime = value)
                 _state.update { it.copy(party = newParty) }
-                invokeUseCase {
-                    updatePartyEndTimeUseCase.invoke(
-                        partyId = party.id,
-                        endTime = value
-                    )
-                }
             }
         }
     }
@@ -150,72 +184,36 @@ class PartyInfoViewModel @Inject constructor(
         val party = state.value.party ?: return
         val newParty = party.copy(address = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        invokeUseCase {
-            updatePartyAddressUseCase.invoke(
-                partyId = party.id,
-                address = value
-            )
-        }
     }
 
     fun onAddressAdditionalChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(addressAdditional = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        invokeUseCase {
-            updatePartyAddressAdditionalUseCase.invoke(
-                partyId = party.id,
-                address = value
-            )
-        }
     }
 
     fun onImportantChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(important = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        invokeUseCase {
-            updatePartyImportantUseCase.invoke(
-                partyId = party.id,
-                important = value
-            )
-        }
     }
 
     fun onMoodboardinkChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(moodboadLink = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        invokeUseCase {
-            updatePartyMoodboardLinkUseCase.invoke(
-                partyId = party.id,
-                link = value
-            )
-        }
     }
 
     fun onThemeChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(theme = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        invokeUseCase {
-            updatePartyThemeUseCase.invoke(
-                partyId = party.id,
-                theme = value
-            )
-        }
     }
 
     fun onDressCodeChanged(value: String) {
         val party = state.value.party ?: return
         val newParty = party.copy(dressCode = value.ifEmpty { null })
         _state.update { it.copy(party = newParty) }
-        invokeUseCase {
-            updatePartyDresscodeUseCase.invoke(
-                partyId = party.id,
-                dresscode = value
-            )
-        }
     }
 
     fun onAddressLinkChanged(value: String) {
@@ -245,13 +243,10 @@ class PartyInfoViewModel @Inject constructor(
     }
 
     private fun invokeUseCase(action: suspend () -> Unit) = viewModelScope.launch {
-        _state.update { it.copy(loading = true) }
         try {
             action.invoke()
         } catch (e: Exception) {
             reactUseCase.invoke(e)
-        } finally {
-            _state.update { it.copy(loading = false) }
         }
     }
 
@@ -275,4 +270,9 @@ class PartyInfoViewModel @Inject constructor(
         }
         _state.update { it.copy(loading = false) }
     }
+
+    private fun emptyFormReact() = reactUseCase.invoke(
+        title = context.getString(R.string.info_party_empty_form_error),
+        style = ReactionStyle.ERROR
+    )
 }

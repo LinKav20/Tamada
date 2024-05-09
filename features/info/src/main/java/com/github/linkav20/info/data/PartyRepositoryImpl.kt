@@ -17,8 +17,7 @@ import com.github.linkav20.network.data.models.CommonUpdateEventMoodboardLinkIn
 import com.github.linkav20.network.data.models.CommonUpdateEventStartTimeIn
 import com.github.linkav20.network.data.models.CommonUpdateEventThemeIn
 import com.github.linkav20.network.utils.RetrofitErrorHandler
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateEventNameIn
-import timber.log.Timber
+import com.github.linkav20.network.data.models.CommonUpdateEventNameIn
 import java.time.OffsetDateTime
 import javax.inject.Inject
 

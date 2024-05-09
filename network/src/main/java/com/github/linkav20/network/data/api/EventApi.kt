@@ -43,18 +43,18 @@ import com.github.linkav20.network.data.models.CommonUpdateUserRoleOnPartyIn
 import com.github.linkav20.network.data.models.CommonUploadReceiptInfoNameIn
 import com.github.linkav20.network.data.models.CommonUploadReceiptInfoSumIn
 import com.github.linkav20.network.data.models.CommonUserExpenses
-import ru.ozon.ozon_pvz.network.my.models.CommonGetAllUserReceiptIn
-import ru.ozon.ozon_pvz.network.my.models.CommonGetInviteLinkIn
-import ru.ozon.ozon_pvz.network.my.models.CommonGetInviteLinkOut
-import ru.ozon.ozon_pvz.network.my.models.CommonGetUserReceiptIn
-import ru.ozon.ozon_pvz.network.my.models.CommonLoadFinanceStateIn
-import ru.ozon.ozon_pvz.network.my.models.CommonLoadFinanceStateOut
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateEventNameIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdateFinanceStateIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdatePartyWalletBankIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdatePartyWalletCardIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdatePartyWalletOwnerIn
-import ru.ozon.ozon_pvz.network.my.models.CommonUpdatePartyWalletPhoneIn
+import com.github.linkav20.network.data.models.CommonGetAllUserReceiptIn
+import com.github.linkav20.network.data.models.CommonGetInviteLinkIn
+import com.github.linkav20.network.data.models.CommonGetInviteLinkOut
+import com.github.linkav20.network.data.models.CommonGetUserReceiptIn
+import com.github.linkav20.network.data.models.CommonLoadFinanceStateIn
+import com.github.linkav20.network.data.models.CommonLoadFinanceStateOut
+import com.github.linkav20.network.data.models.CommonUpdateEventNameIn
+import com.github.linkav20.network.data.models.CommonUpdateFinanceStateIn
+import com.github.linkav20.network.data.models.CommonUpdatePartyWalletBankIn
+import com.github.linkav20.network.data.models.CommonUpdatePartyWalletCardIn
+import com.github.linkav20.network.data.models.CommonUpdatePartyWalletOwnerIn
+import com.github.linkav20.network.data.models.CommonUpdatePartyWalletPhoneIn
 
 interface EventApi {
     /**
