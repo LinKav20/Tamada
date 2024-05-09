@@ -4,6 +4,7 @@ import android.net.Uri
 import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.domain.model.FinanceState
 import com.github.linkav20.finance.domain.model.User
+import com.github.linkav20.finance.domain.model.Wallet
 import java.io.InputStream
 import java.math.BigDecimal
 import java.time.OffsetDateTime
@@ -14,7 +15,7 @@ interface FinanceRepository {
 
     suspend fun getAllExpanses(id: Long): List<User>
 
-    suspend fun getExpenses(id: Long): User
+    suspend fun getExpenses(userId: Long, partyId: Long): List<Expense>
 
     suspend fun sendExpense(
         type: Expense.Type,
@@ -35,5 +36,13 @@ interface FinanceRepository {
 
     suspend fun getExpenseReceipt(id: Long): InputStream
 
-    suspend fun saveWalletData(partyId: Long, cardNumber: String, phoneNumber: String)
+    suspend fun saveWalletDataCardNumber(partyId: Long, cardNumber: String)
+
+    suspend fun saveWalletDataPhoneNumber(partyId: Long, phoneNumber: String)
+
+    suspend fun saveWalletDataOwner(partyId: Long, owner: String)
+
+    suspend fun saveWalletDataBank(partyId: Long, bank: String)
+
+    suspend fun getPartyWallet(partyId: Long): Wallet?
 }

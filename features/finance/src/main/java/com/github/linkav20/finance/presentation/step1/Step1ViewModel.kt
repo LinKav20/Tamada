@@ -12,9 +12,13 @@ import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.FinanceState
 import com.github.linkav20.finance.domain.usecase.EndFinanceStepUseCase
 import com.github.linkav20.finance.domain.usecase.GetMyExpenseUseCase
+import com.github.linkav20.finance.domain.usecase.GetPartyWalletUseCase
 import com.github.linkav20.finance.domain.usecase.GetTotalPartySumUseCase
-import com.github.linkav20.finance.domain.usecase.SaveWalletDataUseCase
-import com.github.linkav20.finance.domain.usecase.UpdateFinanceStateUseCase
+import com.github.linkav20.finance.domain.usecase.UpdateDeadlineUseCase
+import com.github.linkav20.finance.domain.usecase.UpdatePartyWalletBankUseCase
+import com.github.linkav20.finance.domain.usecase.UpdatePartyWalletCardNumberUseCase
+import com.github.linkav20.finance.domain.usecase.UpdatePartyWalletOwnerUseCase
+import com.github.linkav20.finance.domain.usecase.UpdatePartyWalletPhoneNumberUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,19 +34,21 @@ class Step1ViewModel @Inject constructor(
     private val getUserRoleUseCase: GetRoleUseCase,
     private val reactUseCase: ReactUseCase,
     private val getMyExpenseUseCase: GetMyExpenseUseCase,
-    private val saveWalletDataUseCase: SaveWalletDataUseCase,
     private val endFinanceStepUseCase: EndFinanceStepUseCase,
     private val getTotalPartySumUseCase: GetTotalPartySumUseCase,
-    @ApplicationContext
-    private val context: Context
+    private val updateDeadlineUseCase: UpdateDeadlineUseCase,
+    private val updatePartyWalletBankUseCase: UpdatePartyWalletBankUseCase,
+    private val updatePartyWalletOwnerUseCase: UpdatePartyWalletOwnerUseCase,
+    private val updatePartyWalletPhoneNumberUseCase: UpdatePartyWalletPhoneNumberUseCase,
+    private val updatePartyWalletCardNumberUseCase: UpdatePartyWalletCardNumberUseCase,
+    private val getPartyWalletUseCase: GetPartyWalletUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(Step1State())
     val state = _state.asStateFlow()
 
-    init {
-        loadData()
-    }
+    fun onStart() = loadData()
 
     fun onRetry() = loadData()
 
@@ -68,7 +74,7 @@ class Step1ViewModel @Inject constructor(
             )
         } else {
             _state.update { it.copy(deadline = value) }
-            // go to server?
+            updateDeadline()
         }
     }
 
@@ -95,16 +101,10 @@ class Step1ViewModel @Inject constructor(
             return@launch
         }
         _state.update { it.copy(canWalletEdit = false, loading = true) }
-        try {
-            val id = getPartyIdUseCase.invoke() ?: return@launch
-            saveWalletDataUseCase.invoke(
-                id,
-                cardNumber = state.value.cardNumber,
-                phoneNumber = state.value.cardNumber
-            )
-        } catch (_: Exception) {
-
-        }
+        invokeUseCase { updatePartyWalletPhoneNumberUseCase.invoke(state.value.phoneNumber) }
+        invokeUseCase { updatePartyWalletCardNumberUseCase.invoke(state.value.cardNumber) }
+        invokeUseCase { updatePartyWalletOwnerUseCase.invoke(state.value.cardOwner.orEmpty()) }
+        invokeUseCase { updatePartyWalletBankUseCase.invoke(state.value.bank.orEmpty()) }
         _state.update { it.copy(loading = false) }
     }
 
@@ -115,14 +115,19 @@ class Step1ViewModel @Inject constructor(
             _state.update { it.copy(loading = true) }
             val id = getPartyIdUseCase.invoke() ?: return@launch
             val role = getUserRoleUseCase.invoke()
-            val expenses = getMyExpenseUseCase.invoke(id)
+            val expenses = getMyExpenseUseCase.invoke()
             val total = getTotalPartySumUseCase.invoke(id)
+            val wallet = getPartyWalletUseCase.invoke()
             _state.update {
                 it.copy(
                     loading = false,
                     isManager = role == UserRole.MANAGER,
                     expenses = expenses,
-                    sum = total
+                    sum = total,
+                    cardNumber = wallet?.cardNumber.orEmpty(),
+                    phoneNumber = wallet?.cardPhone.orEmpty(),
+                    cardOwner = wallet?.owner,
+                    bank = wallet?.bank
                 )
             }
         } catch (e: Exception) {
@@ -131,4 +136,28 @@ class Step1ViewModel @Inject constructor(
             _state.update { it.copy(loading = false) }
         }
     }
+
+    private fun updateDeadline() = viewModelScope.launch {
+        _state.update { it.copy(loading = true) }
+        try {
+            val partyId = getPartyIdUseCase.invoke() ?: return@launch
+            updateDeadlineUseCase.invoke(
+                partyId = partyId,
+                deadline = state.value.deadline
+            )
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
+    private fun invokeUseCase(action: suspend () -> Unit) = viewModelScope.launch {
+        try {
+            action.invoke()
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        }
+    }
+
 }

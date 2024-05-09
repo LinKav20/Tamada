@@ -34,7 +34,7 @@ import com.squareup.moshi.JsonClass
 data class CommonUserExpenses (
 
     @Json(name = "expensesID")
-    val expensesID: kotlin.Int? = null,
+    val expensesID: kotlin.Int,
 
     @Json(name = "name")
     val name: kotlin.String? = null,
@@ -43,7 +43,7 @@ data class CommonUserExpenses (
     val partyID: kotlin.Int? = null,
 
     @Json(name = "sum")
-    val sum: java.math.BigDecimal? = null,
+    val sum: kotlin.Long? = null,
 
     @Json(name = "type")
     val type: kotlin.String? = null,

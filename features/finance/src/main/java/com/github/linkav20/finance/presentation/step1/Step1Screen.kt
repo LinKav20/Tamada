@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.github.linkav20.core.error.ErrorMapper
+import com.github.linkav20.core.utils.OnLifecycleStart
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
@@ -47,6 +48,7 @@ import com.github.linkav20.finance.navigation.OnboardingDestination
 import com.github.linkav20.finance.navigation.ProgressDestination
 import com.github.linkav20.finance.navigation.Step1Destination
 import com.github.linkav20.finance.navigation.Step2Destination
+import com.github.linkav20.finance.navigation.Step3Destination
 import com.github.linkav20.finance.presentation.addexpense.AddExpenseDialog
 import com.github.linkav20.finance.presentation.addexpense.AddExpenseViewModel
 import com.github.linkav20.finance.presentation.dialog.Dialog
@@ -79,7 +81,11 @@ fun Step1Screen(
             onClose = viewModel::onCloseDialog,
             onConfirm = {
                 viewModel.onEndStep()
-                navController.navigateUp()
+                navController.navigate(Step2Destination.route()) {
+                    popUpTo(Step2Destination.route()) {
+                        inclusive = true
+                    }
+                }
             }
         )
     }
@@ -124,10 +130,14 @@ fun Step1Screen(
                 errorMapper.OnError(
                     throwable,
                     viewModel::onRetry,
-                    ColorScheme.MAIN
+                    ColorScheme.FINANCE
                 )
             }
         )
+    }
+
+    OnLifecycleStart {
+        viewModel.onStart()
     }
 }
 

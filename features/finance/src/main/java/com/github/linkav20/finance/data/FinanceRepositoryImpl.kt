@@ -5,16 +5,25 @@ import com.github.linkav20.core.utils.DateTimeUtils
 import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.domain.model.FinanceState
 import com.github.linkav20.finance.domain.model.User
+import com.github.linkav20.finance.domain.model.Wallet
 import com.github.linkav20.finance.domain.repository.FinanceRepository
 import com.github.linkav20.network.data.api.AuthApi
 import com.github.linkav20.network.data.api.EventApi
 import com.github.linkav20.network.data.models.CommonCalculateExpensesOut
+import com.github.linkav20.network.data.models.CommonGetAllUserReceiptIn
 import com.github.linkav20.network.data.models.CommonGetPartyExpensesDeadlineIn
 import com.github.linkav20.network.data.models.CommonUpdatePartyExpensesDeadlineIn
 import com.github.linkav20.network.utils.RetrofitErrorHandler
 import com.github.linkav20.network.data.models.CommonGetPartySummaryExpensesIn
+import com.github.linkav20.network.data.models.CommonGetPartyWalletIn
+import com.github.linkav20.network.data.models.CommonGetPartyWalletOut
 import com.github.linkav20.network.data.models.CommonLoadFinanceStateIn
 import com.github.linkav20.network.data.models.CommonUpdateFinanceStateIn
+import com.github.linkav20.network.data.models.CommonUpdatePartyWalletBankIn
+import com.github.linkav20.network.data.models.CommonUpdatePartyWalletCardIn
+import com.github.linkav20.network.data.models.CommonUpdatePartyWalletOwnerIn
+import com.github.linkav20.network.data.models.CommonUpdatePartyWalletPhoneIn
+import com.github.linkav20.network.data.models.CommonUserExpenses
 import java.io.InputStream
 import java.math.BigDecimal
 import java.time.OffsetDateTime
@@ -89,22 +98,15 @@ class FinanceRepositoryImpl @Inject constructor(
             )
     }
 
-    override suspend fun getExpenses(id: Long): User {
-        return User(
-            id = 3,
-            "Lina",
-            listOf(
-                Expense(id = 1, "Firsayth", 12.4),
-                Expense(id = 2, "kjdhiusokl", 333.3),
-                Expense(id = 3, "56", 546.0),
-                Expense(id = 4, "lollilol", 0.0),
-                Expense(id = 5, "lollilol", 0.0),
-                Expense(id = 6, "lollilol", 0.0),
-                Expense(id = 7, "lollilol", 0.0),
-                Expense(id = 8, "lollilol", 0.0)
+    override suspend fun getExpenses(userId: Long, partyId: Long): List<Expense> =
+        retrofitErrorHandler.apiCall {
+            eventApi.getAllUserExpenses(
+                CommonGetAllUserReceiptIn(
+                    partyID = partyId.toInt(),
+                    userID = userId.toInt()
+                )
             )
-        )
-    }
+        }?.map { it.toDomain() } ?: emptyList()
 
     override suspend fun sendExpense(
         type: Expense.Type,
@@ -171,7 +173,69 @@ class FinanceRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveWalletData(partyId: Long, cardNumber: String, phoneNumber: String) {
-
+    override suspend fun saveWalletDataCardNumber(partyId: Long, cardNumber: String) {
+        retrofitErrorHandler.apiCall {
+            eventApi.updatePartyWalletCard(
+                CommonUpdatePartyWalletCardIn(
+                    cardNumber = cardNumber.toInt(),
+                    partyID = partyId.toInt()
+                )
+            )
+        }
     }
+
+    override suspend fun saveWalletDataPhoneNumber(partyId: Long, phoneNumber: String) {
+        retrofitErrorHandler.apiCall {
+            eventApi.updatePartyWalletPhone(
+                CommonUpdatePartyWalletPhoneIn(
+                    partyID = partyId.toInt(),
+                    phoneNumber = phoneNumber
+                )
+            )
+        }
+    }
+
+    override suspend fun saveWalletDataOwner(partyId: Long, owner: String) {
+        retrofitErrorHandler.apiCall {
+            eventApi.updatePartyWalletOwner(
+                CommonUpdatePartyWalletOwnerIn(
+                    owner = owner,
+                    partyID = partyId.toInt()
+                )
+            )
+        }
+    }
+
+    override suspend fun saveWalletDataBank(partyId: Long, bank: String) {
+        retrofitErrorHandler.apiCall {
+            eventApi.updatePartyWalletBank(
+                CommonUpdatePartyWalletBankIn(
+                    bank = bank,
+                    partyID = partyId.toInt()
+                )
+            )
+        }
+    }
+
+    override suspend fun getPartyWallet(partyId: Long) = retrofitErrorHandler.apiCall {
+        authApi.getPartyWallet(
+            CommonGetPartyWalletIn(
+                partyID = partyId.toInt()
+            )
+        )
+    }?.toDomain()
+
 }
+
+private fun CommonUserExpenses.toDomain() = Expense(
+    id = expensesID.toLong(),
+    name = name ?: "",
+    sum = sum?.toDouble() ?: 0.0
+)
+
+private fun CommonGetPartyWalletOut.toDomain() = Wallet(
+    cardNumber = cardNumber.orEmpty(),
+    cardPhone = phoneNumber.orEmpty(),
+    owner = cardOwner.orEmpty(),
+    bank = bank.orEmpty()
+)

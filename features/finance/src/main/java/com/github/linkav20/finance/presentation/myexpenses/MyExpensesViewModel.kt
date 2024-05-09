@@ -93,8 +93,7 @@ class MyExpensesViewModel @Inject constructor(
     private fun loadData() = viewModelScope.launch {
         _state.update { it.copy(loading = true) }
         try {
-            val id = getPartyIdUseCase.invoke() ?: return@launch
-            val expenses = getMyExpenseUseCase.invoke(id)
+            val expenses = getMyExpenseUseCase.invoke()
             _state.update { it.copy(expenses = expenses) }
         } catch (_: Exception) {
 

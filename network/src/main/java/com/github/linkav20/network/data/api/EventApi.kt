@@ -525,7 +525,7 @@ interface EventApi {
      * @return [CommonUserExpenses]
      */
     @POST("api/get_all_user_expenses")
-    suspend fun getAllUserExpenses(@Body input: CommonGetAllUserReceiptIn): Response<CommonUserExpenses>
+    suspend fun getAllUserExpenses(@Body input: CommonGetAllUserReceiptIn): Response<List<CommonUserExpenses>>
 
     /**
      * GetPartyExpensesDeadline

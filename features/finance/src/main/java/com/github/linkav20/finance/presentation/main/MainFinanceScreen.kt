@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.github.linkav20.core.error.ErrorMapper
+import com.github.linkav20.core.utils.OnLifecycleStart
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
@@ -39,6 +40,7 @@ import com.github.linkav20.finance.navigation.Step1Destination
 import com.github.linkav20.finance.navigation.Step2Destination
 import com.github.linkav20.finance.navigation.Step3Destination
 import com.github.linkav20.finance.presentation.dialog.Dialog
+import com.github.linkav20.finance.presentation.onboarding.OnboardingScreen
 
 @Composable
 fun MainFinanceScreen(
@@ -81,6 +83,10 @@ fun MainFinanceScreen(
                 )
             }
         }
+    }
+
+    OnLifecycleStart {
+        viewModel.onStart()
     }
 
     LaunchedEffect(state.tab) {

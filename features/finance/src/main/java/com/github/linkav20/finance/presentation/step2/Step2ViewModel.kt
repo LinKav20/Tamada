@@ -11,7 +11,6 @@ import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.usecase.GetMyExpenseUseCase
-import com.github.linkav20.finance.domain.usecase.SaveWalletDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +26,6 @@ class Step2ViewModel @Inject constructor(
     private val getPartyIdUseCase: GetPartyIdUseCase,
     private val getUserRoleUseCase: GetRoleUseCase,
     private val getMyExpenseUseCase: GetMyExpenseUseCase,
-    private val saveWalletDataUseCase: SaveWalletDataUseCase,
     @ApplicationContext private val context: Context
 ): ViewModel() {
 
@@ -79,11 +77,11 @@ class Step2ViewModel @Inject constructor(
         _state.update { it.copy(canWalletEdit = false, loading = true) }
         try {
             val id = getPartyIdUseCase.invoke() ?: return@launch
-            saveWalletDataUseCase.invoke(
-                id,
-                cardNumber = state.value.cardNumber,
-                phoneNumber = state.value.cardNumber
-            )
+//            saveWalletDataUseCase.invoke(
+//                id,
+//                cardNumber = state.value.cardNumber,
+//                phoneNumber = state.value.cardNumber
+//            )
         } catch (_: Exception) {
 
         }
@@ -95,7 +93,7 @@ class Step2ViewModel @Inject constructor(
     private fun loadData() = viewModelScope.launch {
         val id = getPartyIdUseCase.invoke() ?: return@launch
         val role = getUserRoleUseCase.invoke()
-        val expenses = getMyExpenseUseCase.invoke(id)
+        val expenses = getMyExpenseUseCase.invoke()
         _state.update {
             it.copy(
                 loading = false,
