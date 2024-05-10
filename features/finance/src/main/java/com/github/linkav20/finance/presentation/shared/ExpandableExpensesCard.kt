@@ -46,6 +46,7 @@ import com.github.linkav20.finance.domain.model.UserUI
 
 @Composable
 fun ExpandableExpensesCard(
+    isDone: Boolean,
     user: UserUI,
     isManager: Boolean,
     isAccent: Boolean,
@@ -79,7 +80,11 @@ fun ExpandableExpensesCard(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                text = user.name,
+                text = if (user.isMe) {
+                    stringResource(R.string.step1_is_me_name, user.name)
+                } else {
+                    user.name
+                },
                 style = TamadaTheme.typography.head,
                 color = getPrimaryColor(scheme = ColorScheme.FINANCE),
                 maxLines = 1,
@@ -103,7 +108,7 @@ fun ExpandableExpensesCard(
                 contentDescription = ""
             )
         }
-        if (step == 1 && isManager) {
+        if (step == 1 && isManager && isDone) {
             Spacer(modifier = Modifier.height(12.dp))
             TamadaButton(
                 title = stringResource(id = R.string.progress_step2_money_send),
@@ -187,7 +192,12 @@ fun ExpandableExpensesCard(
                 thickness = 2.dp
             )
             Spacer(modifier = Modifier.height(12.dp))
-            ExpenseItem(expense = user.focusSum)
+            ExpenseItem(
+                expense = Expense(
+                    name = stringResource(id = R.string.progress_user_total_sum),
+                    sum = user.expenses.sumOf { it.sum }
+                )
+            )
             Spacer(modifier = Modifier.height(24.dp))
             if (user.isMe) {
                 TamadaButton(
@@ -248,6 +258,7 @@ fun ExpenseItem(expense: Expense) {
 private fun Preview() {
     TamadaTheme {
         ExpandableExpensesCard(
+            isDone = true,
             isAccent = false,
             step = 2,
             isManager = false,
@@ -256,7 +267,7 @@ private fun Preview() {
                 name = "Lina",
                 expenses = listOf(Expense(id = 231312, "lol", 456.0)),
                 focusSum = Expense(id = 876543, "Итого", 567.0),
-                isExpanded = false,
+                isExpanded = true,
                 cardBank = "Bank",
                 cardPhoneNumber = "+78758",
                 cardNumber = "2345 3245 24356",

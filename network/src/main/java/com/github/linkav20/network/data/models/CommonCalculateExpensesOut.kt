@@ -31,13 +31,13 @@ import com.squareup.moshi.JsonClass
 data class CommonCalculateExpensesOut (
 
     @Json(name = "expenseForUser")
-    val expenseForUser: kotlin.String? = null,
+    val expenseForUser: kotlin.String,
 
     @Json(name = "userDebt")
-    val userDebt: java.math.BigDecimal? = null,
+    val userDebt: kotlin.Double,
 
     @Json(name = "userDebtString")
-    val userDebtString: kotlin.String? = null
+    val userDebtString: kotlin.String
 
 )
 

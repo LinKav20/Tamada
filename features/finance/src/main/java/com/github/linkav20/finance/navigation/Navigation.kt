@@ -7,7 +7,6 @@ import androidx.navigation.navigation
 import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.core.navigation.common.ExpensesTabDestination
 import com.github.linkav20.core.navigation.composableRoute
-import com.github.linkav20.finance.presentation.addexpense.AddExpenseDialog
 import com.github.linkav20.finance.presentation.main.MainFinanceScreen
 import com.github.linkav20.finance.presentation.myexpenses.MyExpensesScreen
 import com.github.linkav20.finance.presentation.onboarding.OnboardingScreen
@@ -15,8 +14,6 @@ import com.github.linkav20.finance.presentation.progress.ProgressScreen
 import com.github.linkav20.finance.presentation.step1.Step1Screen
 import com.github.linkav20.finance.presentation.step2.Step2Screen
 import com.github.linkav20.finance.presentation.step3.Step3Screen
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.bottomSheet
 
 fun NavGraphBuilder.financeTabGraph(navController: NavController, errorMapper: ErrorMapper) {
     navigation(
@@ -42,7 +39,8 @@ fun NavGraphBuilder.financeTabGraph(navController: NavController, errorMapper: E
             Step2Screen(
                 viewModel = hiltViewModel(),
                 dialogViewModel = hiltViewModel(),
-                navController = navController
+                navController = navController,
+                errorMapper = errorMapper
             )
         }
         composableRoute(OnboardingDestination) {

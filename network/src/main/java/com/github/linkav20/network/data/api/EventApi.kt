@@ -10,6 +10,7 @@ import com.github.linkav20.network.data.models.CommonAddUserToPartyIn
 import com.github.linkav20.network.data.models.CommonCalculateExpensesIn
 import com.github.linkav20.network.data.models.CommonCalculateExpensesOut
 import com.github.linkav20.network.data.models.CommonCreateEventIn
+import com.github.linkav20.network.data.models.CommonCreateReceiptOut
 import com.github.linkav20.network.data.models.CommonDeleteListIn
 import com.github.linkav20.network.data.models.CommonDeleteTaskFromListIn
 import com.github.linkav20.network.data.models.CommonDeleteUserFromPartyIn
@@ -56,6 +57,8 @@ import com.github.linkav20.network.data.models.CommonUpdatePartyWalletBankIn
 import com.github.linkav20.network.data.models.CommonUpdatePartyWalletCardIn
 import com.github.linkav20.network.data.models.CommonUpdatePartyWalletOwnerIn
 import com.github.linkav20.network.data.models.CommonUpdatePartyWalletPhoneIn
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
 
 interface EventApi {
     /**
@@ -150,10 +153,10 @@ interface EventApi {
      *  - 200: Success
      *
      * @param input event info
-     * @return [Unit]
+     * @return [ResponseBody]
      */
     @POST("api/get_all_user_receipts")
-    suspend fun getAllUserReceipt(@Body input: CommonGetAllUserReceiptIn): Response<Unit>
+    suspend fun getAllUserReceipt(@Body input: CommonGetAllUserReceiptIn): Response<ResponseBody>
 
     /**
      * GetEvent
@@ -237,7 +240,7 @@ interface EventApi {
      * @return [Unit]
      */
     @POST("api/get_user_receipt")
-    suspend fun getUserReceipt(@Body input: CommonGetUserReceiptIn): Response<Unit>
+    suspend fun getUserReceipt(@Body input: CommonGetUserReceiptIn): Response<ResponseBody>
 
     /**
      * UpdateListVisibility
@@ -574,5 +577,16 @@ interface EventApi {
      */
     @POST("api/update_receipt_info_sum")
     suspend fun updateReceiptSum(@Body input: CommonUploadReceiptInfoSumIn): Response<Unit>
+
+    @Multipart
+    @POST("api/update_receipt")
+    suspend fun createReceipt(
+        @Part file: MultipartBody.Part,
+        @Part("userID") userId: kotlin.String,
+        @Part("partyID") partyId: kotlin.String,
+        @Part("name") name: kotlin.String,
+        @Part("sum") sum: kotlin.String,
+        @Part("type") type: kotlin.String,
+    ): Response<CommonCreateReceiptOut>
 
 }

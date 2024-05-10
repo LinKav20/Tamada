@@ -29,7 +29,7 @@ import com.squareup.moshi.JsonClass
 data class CommonGetPartySummaryExpensesOut (
 
     @Json(name = "totalSum")
-    val totalSum: kotlin.Long? = null,
+    val totalSum: kotlin.Double? = null,
 
 )
 

@@ -101,7 +101,10 @@ fun Step1Screen(
         sheetContent = {
             AddExpenseDialog(
                 viewModel = dialogViewModel,
-                onAddClick = { scope.launch { sheetState.hide() } }
+                onAddClick = {
+                    viewModel.onStart()
+                    scope.launch { sheetState.hide() }
+                }
             )
         },
         scrimColor = getBackgroundColor(scheme = ColorScheme.FINANCE).copy(alpha = 0.75f)
@@ -119,7 +122,7 @@ fun Step1Screen(
                 dialogViewModel.clearState()
                 scope.launch { sheetState.show() }
             },
-            onMyExpensesClick = { navController.navigate(MyExpensesDestination.route()) },
+            onMyExpensesClick = { navController.navigate(MyExpensesDestination.createRoute(0)) },
             onWalletEditClick = viewModel::onWalletEditClick,
             onSaveDataClick = viewModel::onSaveWalletData,
             onCardNumberChanged = viewModel::onCardNumberChange,
@@ -306,7 +309,7 @@ private fun MyExpensesList(
             Text(
                 text = pluralStringResource(
                     R.plurals.step1_my_expenses_show_more_items,
-                    count = expenses.size,
+                    count = expenses.size - SHOW_EXPENSES,
                     expenses.size - SHOW_EXPENSES
                 ),
                 style = TamadaTheme.typography.caption,

@@ -291,7 +291,7 @@ private fun ListItem(
             Text(
                 text = pluralStringResource(
                     R.plurals.lists_main_more_tasks,
-                    count = listEntity.tasks.size,
+                    count = listEntity.tasks.size - SHOW_TASKS,
                     listEntity.tasks.size - SHOW_TASKS
                 ),
                 style = TamadaTheme.typography.caption,

@@ -64,6 +64,7 @@ dependencies {
     debugImplementation libs.compose.ui.tooling
     debugImplementation libs.compose.ui.test.manifest
     androidTestImplementation libs.compose.ui.test
+    implementation libs.logging.interceptor
 
     // Accompanist
     implementation libs.navigation.material

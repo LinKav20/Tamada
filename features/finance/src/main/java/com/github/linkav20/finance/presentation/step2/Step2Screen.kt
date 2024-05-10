@@ -27,10 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaCard
+import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
 import com.github.linkav20.coreui.ui.TamadaRoadMap
 import com.github.linkav20.coreui.ui.TamadaTopBar
 import com.github.linkav20.coreui.utils.ColorScheme
@@ -39,7 +41,6 @@ import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.navigation.MyExpensesDestination
 import com.github.linkav20.finance.navigation.ProgressDestination
-import com.github.linkav20.finance.navigation.Step1Destination
 import com.github.linkav20.finance.navigation.Step2Destination
 import com.github.linkav20.finance.navigation.Step3Destination
 import com.github.linkav20.finance.presentation.addexpense.AddExpenseDialog
@@ -52,13 +53,15 @@ import com.github.linkav20.finance.presentation.shared.PartySumComponent
 import com.github.linkav20.finance.presentation.shared.WalletComponent
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Step2Screen(
     viewModel: Step2ViewModel,
     dialogViewModel: AddExpenseViewModel,
-    navController: NavController
+    navController: NavController,
+    errorMapper: ErrorMapper
 ) {
     val scope = rememberCoroutineScope()
     val state = viewModel.state.collectAsState().value
@@ -69,6 +72,7 @@ fun Step2Screen(
             subtitle = stringResource(id = R.string.dialog_subtitle_delete_next_step),
             onClose = viewModel::onCloseDialog,
             onConfirm = {
+                viewModel.onEndStep()
                 navController.navigate(Step3Destination.route()) {
                     popUpTo(Step2Destination.route()) {
                         inclusive = true
@@ -110,13 +114,20 @@ fun Step2Screen(
                 dialogViewModel.clearState()
                 scope.launch { sheetState.show() }
             },
-            onMyExpensesClick = { navController.navigate(MyExpensesDestination.route()) },
+            onMyExpensesClick = { navController.navigate(MyExpensesDestination.createRoute(1)) },
             onWalletEditClick = viewModel::onWalletEditClick,
             onSaveDataClick = viewModel::onSaveWalletData,
             onCardNumberChanged = viewModel::onCardNumberChange,
             onPhoneNumberChanged = viewModel::onPhoneNumberChange,
             onCardOwnerChanged = viewModel::onCardOwnerChange,
-            onBankChanged = viewModel::onBankChange
+            onBankChanged = viewModel::onBankChange,
+            onError = {
+                errorMapper.OnError(
+                    throwable = it,
+                    onActionClick = viewModel::onRetry,
+                    colorScheme = ColorScheme.FINANCE
+                )
+            }
         )
     }
 }
@@ -137,7 +148,8 @@ private fun Content(
     onCardNumberChanged: (String) -> Unit,
     onPhoneNumberChanged: (String) -> Unit,
     onCardOwnerChanged: (String) -> Unit,
-    onBankChanged: (String) -> Unit
+    onBankChanged: (String) -> Unit,
+    onError: @Composable (Throwable) -> Unit
 ) = Scaffold(
     modifier = Modifier
         .statusBarsPadding()
@@ -169,107 +181,125 @@ private fun Content(
             ),
             colorScheme = ColorScheme.FINANCE
         )
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            if (state.isDeadlineEditable) {
-                EditableDeadlineComponent(
-                    deadline = state.deadline,
-                    onDeadlineChanged = onDeadlineChanged,
-                    onDeadlineSet = onDeadlineSet
-                )
-            } else {
-                DeadlineComponent(
-                    isManager = state.isManager,
-                    deadline = state.deadline,
-                    onEditDeadlineClick = onDeadlineEditClick,
-                    onEndStepClick = onEndStepClick
-                )
-            }
-            PartySumComponent(
-                sum = state.sum ?: 0.0,
-                subtitle = "Bla bla bla bla bla",
-                onClick = onShowProgressClick
-            )
-            TamadaCard(colorScheme = ColorScheme.FINANCE) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        Text(
-                            text = if (!state.isDept) {
-                                stringResource(id = R.string.step2_dept_title)
-                            } else {
-                                stringResource(id = R.string.step2_dept_title_done)
-                            },
-                            style = TamadaTheme.typography.head,
-                            color = TamadaTheme.colors.textHeader
-                        )
-                        Text(
-                            text = stringResource(
-                                id = R.string.step1_sum_formatter,
-                                state.dept ?: 0.0
-                            ),
-                            style = TamadaTheme.typography.body,
-                            color = TamadaTheme.colors.textMain,
-                        )
-                    }
-                    Text(
-                        text = stringResource(id = R.string.step2_dept_subtitle),
-                        style = TamadaTheme.typography.caption,
-                        color = TamadaTheme.colors.textMain
+        if (state.loading) {
+            TamadaFullscreenLoader(scheme = ColorScheme.FINANCE)
+        } else if (state.error != null) {
+            onError(state.error)
+        } else {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                if (state.isDeadlineEditable) {
+                    EditableDeadlineComponent(
+                        deadline = state.deadline,
+                        onDeadlineChanged = onDeadlineChanged,
+                        onDeadlineSet = onDeadlineSet
                     )
-                    TamadaButton(
-                        title = stringResource(id = R.string.step2_dept_button),
-                        type = if (state.isDept) {
-                            ButtonType.SECONDARY
-                        } else {
-                            ButtonType.PRIMARY
-                        },
-                        colorScheme = ColorScheme.FINANCE,
-                        onClick = if (!state.isDept) {
-                            onAddExpenseClick
-                        } else {
-                            {}
-                        }
+                } else {
+                    DeadlineComponent(
+                        isManager = state.isManager,
+                        deadline = state.deadline,
+                        onEditDeadlineClick = onDeadlineEditClick,
+                        onEndStepClick = onEndStepClick
                     )
                 }
-            }
-            if (state.isWalletEditable) {
-                EditableWalletComponent(
-                    cartNumber = state.cardNumber,
-                    phoneNumber = state.phoneNumber,
-                    bank = state.bank,
-                    cardOwner = state.cardOwner,
-                    onCardNumberChanged = onCardNumberChanged,
-                    onPhoneNumberChanged = onPhoneNumberChanged,
-                    onCardOwnerChanged = onCardOwnerChanged,
-                    onBankChanged = onBankChanged,
-                    onSaveDataClick = onSaveDataClick
+                PartySumComponent(
+                    sum = state.sum ?: 0.0,
+                    subtitle = stringResource(
+                        R.string.step2_total_sum_subtitle,
+                        state.calculation?.forPerson ?: "",
+                        state.calculation?.personDept ?: ""
+                    ),
+                    onClick = onShowProgressClick
                 )
-            } else {
-                WalletComponent(
-                    isManager = state.isManager,
-                    cartNumber = state.cardNumber,
-                    phoneNumber = state.phoneNumber,
-                    owner = state.cardOwner,
-                    bank = state.bank,
-                    onEditClick = onWalletEditClick
+                TamadaCard(colorScheme = ColorScheme.FINANCE) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            Text(
+                                text = if (!state.isDept) {
+                                    stringResource(id = R.string.step2_dept_title_dept)
+                                } else {
+                                    if (state.dept != null && state.dept > 0) {
+                                        stringResource(id = R.string.step2_dept_title_done)
+                                    } else {
+                                        stringResource(id = R.string.step2_dept_title_not_dept)
+                                    }
+                                },
+                                style = TamadaTheme.typography.head,
+                                color = TamadaTheme.colors.textHeader
+                            )
+                            Text(
+                                text = stringResource(
+                                    id = R.string.step1_sum_formatter,
+                                    state.dept?.let { abs(it) } ?: 0.0
+                                ),
+                                style = TamadaTheme.typography.body,
+                                color = TamadaTheme.colors.textMain,
+                            )
+                        }
+                        Text(
+                            text = stringResource(id = R.string.step2_dept_subtitle),
+                            style = TamadaTheme.typography.caption,
+                            color = TamadaTheme.colors.textMain
+                        )
+                        TamadaButton(
+                            title = if (state.dept != null && state.dept > 0) {
+                                stringResource(id = R.string.step2_dept_button)
+                            } else {
+                                stringResource(id = R.string.step2_dept_button_no_dept)
+                            },
+                            type = if ((state.dept != null && state.dept <= 0) || state.isDept) {
+                                ButtonType.SECONDARY
+                            } else {
+                                ButtonType.PRIMARY
+                            },
+                            colorScheme = ColorScheme.FINANCE,
+                            onClick = if (!state.isDept) {
+                                onAddExpenseClick
+                            } else {
+                                {}
+                            }
+                        )
+                    }
+                }
+                if (state.isWalletEditable) {
+                    EditableWalletComponent(
+                        cartNumber = state.cardNumber,
+                        phoneNumber = state.phoneNumber,
+                        bank = state.bank,
+                        cardOwner = state.cardOwner,
+                        onCardNumberChanged = onCardNumberChanged,
+                        onPhoneNumberChanged = onPhoneNumberChanged,
+                        onCardOwnerChanged = onCardOwnerChanged,
+                        onBankChanged = onBankChanged,
+                        onSaveDataClick = onSaveDataClick
+                    )
+                } else {
+                    WalletComponent(
+                        isManager = state.isManager,
+                        cartNumber = state.cardNumber,
+                        phoneNumber = state.phoneNumber,
+                        owner = state.cardOwner,
+                        bank = state.bank,
+                        onEditClick = onWalletEditClick
+                    )
+                }
+                MyExpenses(
+                    total = state.myTotal ?: 0.0,
+                    onMyExpensesClick = onMyExpensesClick
                 )
+                Spacer(modifier = Modifier.height(16.dp))
             }
-            MyExpenses(
-                total = state.myTotal ?: 0.0,
-                onMyExpensesClick = onMyExpensesClick
-            )
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

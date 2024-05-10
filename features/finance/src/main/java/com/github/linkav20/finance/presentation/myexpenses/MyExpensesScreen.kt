@@ -1,6 +1,5 @@
 package com.github.linkav20.finance.presentation.myexpenses
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,15 +28,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.github.linkav20.core.utils.printPdf
+import com.github.linkav20.core.utils.saveTempFileAndGetUri
 import com.github.linkav20.coreui.theme.TamadaTheme
+import com.github.linkav20.coreui.ui.ButtonTextAlign
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaCard
-import com.github.linkav20.coreui.ui.TamadaTextWithBackground
 import com.github.linkav20.coreui.ui.TamadaTopBar
 import com.github.linkav20.coreui.utils.ColorScheme
 import com.github.linkav20.coreui.utils.getBackgroundColor
-import com.github.linkav20.coreui.utils.getPrimaryColor
 import com.github.linkav20.coreui.R as CoreR
 import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.Expense
@@ -45,6 +44,8 @@ import com.github.linkav20.finance.presentation.addexpense.AddExpenseDialog
 import com.github.linkav20.finance.presentation.addexpense.AddExpenseViewModel
 import com.github.linkav20.finance.presentation.dialog.Dialog
 import kotlinx.coroutines.launch
+
+const val FILE_FORMAT = ".pdf"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -70,7 +71,10 @@ fun MyExpensesScreen(
                 viewModel = dialogViewModel,
                 expense = state.selectExpense,
                 expenseType = state.selectExpense?.type ?: Expense.Type.SUM,
-                onAddClick = { scope.launch { sheetState.hide() } }
+                onAddClick = {
+                    viewModel.onAddExpense()
+                    scope.launch { sheetState.hide() }
+                }
             )
         },
         scrimColor = getBackgroundColor(scheme = ColorScheme.FINANCE).copy(alpha = 0.75f)
@@ -83,6 +87,7 @@ fun MyExpensesScreen(
             )
         }
         Content(
+            canAddButton = state.step == 0,
             expenses = state.expenses,
             onBackClick = { navController.navigateUp() },
             onSelectExpense = viewModel::onSelectExpense,
@@ -96,16 +101,21 @@ fun MyExpensesScreen(
     }
 
     val context = LocalContext.current
-    LaunchedEffect(state.uri) {
-        if (state.uri != null) {
-            printPdf(context, state.uri)
-            viewModel.nullifyUri()
+    LaunchedEffect(state.receipt) {
+        if (state.receipt != null) {
+            saveTempFileAndGetUri(
+                context = context,
+                data = state.receipt,
+                extension = FILE_FORMAT
+            )?.let { printPdf(context, it) }
         }
+        viewModel.nullifyUri()
     }
 }
 
 @Composable
 private fun Content(
+    canAddButton: Boolean,
     expenses: List<Expense>,
     onBackClick: () -> Unit,
     onAddExpenseClick: () -> Unit,
@@ -122,18 +132,20 @@ private fun Content(
         )
     },
     bottomBar = {
-        TamadaCard(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            colorScheme = ColorScheme.FINANCE
-        ) {
-            TamadaButton(
-                title = stringResource(id = R.string.my_expenses_add_button),
-                colorScheme = ColorScheme.FINANCE,
-                onClick = {
-                    onSelectExpense(null)
-                    onAddExpenseClick()
-                }
-            )
+        if (canAddButton) {
+            TamadaCard(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                colorScheme = ColorScheme.FINANCE
+            ) {
+                TamadaButton(
+                    title = stringResource(id = R.string.my_expenses_add_button),
+                    colorScheme = ColorScheme.FINANCE,
+                    onClick = {
+                        onSelectExpense(null)
+                        onAddExpenseClick()
+                    }
+                )
+            }
         }
     }
 ) {
@@ -143,16 +155,20 @@ private fun Content(
             .padding(24.dp)
     ) {
         item { Spacer(modifier = Modifier.height(16.dp)) }
-        items(expenses) {
-            ExpenseItem(
-                expense = it,
-                onDeleteButtonClick = onDeleteButtonClick,
-                onReceiptClick = onReceiptClick,
-                onEditExpenseClick = {
-                    onSelectExpense(it)
-                    onAddExpenseClick()
-                }
-            )
+        if (expenses.isEmpty()) {
+            //  TODO add empty state
+        } else {
+            items(expenses) {
+                ExpenseItem(
+                    expense = it,
+                    onDeleteButtonClick = onDeleteButtonClick,
+                    onReceiptClick = onReceiptClick,
+                    onEditExpenseClick = {
+                        onSelectExpense(it)
+                        onAddExpenseClick()
+                    }
+                )
+            }
         }
         item { Spacer(modifier = Modifier.height(16.dp)) }
     }
@@ -204,20 +220,12 @@ private fun ExpenseItem(
                 style = TamadaTheme.typography.body
             )
             Spacer(modifier = Modifier.weight(1f))
-            TamadaTextWithBackground(
-                modifier = Modifier.clickable {
-                    if (expense.uri?.lastPathSegment.isNullOrEmpty()) {
-                        onReceiptClick(expense)
-                    }
-                },
-                textColor = if (expense.uri?.lastPathSegment.isNullOrEmpty()) {
-                    TamadaTheme.colors.textHint
-                } else {
-                    getPrimaryColor(scheme = ColorScheme.FINANCE)
-                },
-                text = expense.uri?.lastPathSegment
-                    ?: stringResource(id = R.string.my_expenses_receipt_value),
-                colorScheme = ColorScheme.FINANCE
+            TamadaButton(
+                onClick = { onReceiptClick(expense) },
+                type = ButtonType.OUTLINE,
+                colorScheme = ColorScheme.FINANCE,
+                textAlign = ButtonTextAlign.END,
+                title = stringResource(id = R.string.my_expenses_receipt_value)
             )
         }
         Spacer(modifier = Modifier.height(8.dp))

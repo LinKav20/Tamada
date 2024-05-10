@@ -11,6 +11,7 @@ import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.FinanceState
 import com.github.linkav20.finance.domain.usecase.EndFinanceStepUseCase
+import com.github.linkav20.finance.domain.usecase.GetDeadlineUseCase
 import com.github.linkav20.finance.domain.usecase.GetMyExpenseUseCase
 import com.github.linkav20.finance.domain.usecase.GetPartyWalletUseCase
 import com.github.linkav20.finance.domain.usecase.GetTotalPartySumUseCase
@@ -42,6 +43,7 @@ class Step1ViewModel @Inject constructor(
     private val updatePartyWalletPhoneNumberUseCase: UpdatePartyWalletPhoneNumberUseCase,
     private val updatePartyWalletCardNumberUseCase: UpdatePartyWalletCardNumberUseCase,
     private val getPartyWalletUseCase: GetPartyWalletUseCase,
+    private val getDeadlineUseCase: GetDeadlineUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -113,14 +115,15 @@ class Step1ViewModel @Inject constructor(
     private fun loadData() = viewModelScope.launch {
         try {
             _state.update { it.copy(loading = true) }
-            val id = getPartyIdUseCase.invoke() ?: return@launch
             val role = getUserRoleUseCase.invoke()
             val expenses = getMyExpenseUseCase.invoke()
-            val total = getTotalPartySumUseCase.invoke(id)
+            val total = getTotalPartySumUseCase.invoke()
             val wallet = getPartyWalletUseCase.invoke()
+            val deadline = getDeadlineUseCase.invoke()
             _state.update {
                 it.copy(
                     loading = false,
+                    deadline = deadline,
                     isManager = role == UserRole.MANAGER,
                     expenses = expenses,
                     sum = total,

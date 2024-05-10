@@ -1,12 +1,12 @@
 package com.github.linkav20.network.di
 
-import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.IntoSet
 import okhttp3.Interceptor
+import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber
@@ -21,8 +21,15 @@ class LoggingModule {
     fun providesConsoleLoggingInterceptor(interceptor: HttpLoggingInterceptor): Interceptor =
         Interceptor { chain ->
             val request: Request = chain.request()
+            val isMultipart: Boolean = request.body is MultipartBody
             Timber.tag("NETWORK").d(request.url.toString())
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+            interceptor.setLevel(
+                if (isMultipart) {
+                    HttpLoggingInterceptor.Level.HEADERS
+                } else {
+                    HttpLoggingInterceptor.Level.BODY
+                }
+            )
             chain.proceed(request)
         }
 

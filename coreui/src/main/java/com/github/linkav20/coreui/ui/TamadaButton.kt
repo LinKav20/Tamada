@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -50,6 +51,10 @@ enum class ButtonType {
     ERROR
 }
 
+enum class ButtonTextAlign {
+    CENTER, START, END
+}
+
 @Composable
 fun TamadaButton(
     onClick: () -> Unit,
@@ -63,6 +68,7 @@ fun TamadaButton(
     type: ButtonType = ButtonType.PRIMARY,
     elevation: Dp = 0.dp,
     colorScheme: ColorScheme = ColorScheme.MAIN,
+    textAlign: ButtonTextAlign = ButtonTextAlign.CENTER
 ) {
     val hasText = title != null
 
@@ -121,10 +127,16 @@ fun TamadaButton(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 if (title != null) {
                     Text(
+                        modifier = Modifier.fillMaxWidth(),
                         text = title,
                         style = TamadaTheme.typography.caption,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        textAlign = when (textAlign) {
+                            ButtonTextAlign.END -> TextAlign.End
+                            ButtonTextAlign.START -> TextAlign.Start
+                            else -> TextAlign.Center
+                        }
                     )
                 }
             }

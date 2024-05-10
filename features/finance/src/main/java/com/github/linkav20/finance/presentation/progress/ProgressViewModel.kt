@@ -10,7 +10,8 @@ import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.domain.model.UserUI
-import com.github.linkav20.finance.domain.usecase.GetAllExpensesUseCase
+import com.github.linkav20.finance.domain.usecase.GetAllUsersWithExpenses
+import com.github.linkav20.finance.domain.usecase.GetTotalPartySumUseCase
 import com.github.linkav20.finance.navigation.ProgressDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,9 +23,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProgressViewModel @Inject constructor(
-    private val getPartyIdUseCase: GetPartyIdUseCase,
+    private val getTotalPartySumUseCase: GetTotalPartySumUseCase,
     private val getRoleUseCase: GetRoleUseCase,
-    private val getAllExpensesUseCase: GetAllExpensesUseCase,
+    private val getAllUsersWithExpenses: GetAllUsersWithExpenses,
     private val savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
@@ -46,20 +47,26 @@ class ProgressViewModel @Inject constructor(
     }
 
     private fun loadData() = viewModelScope.launch {
-        val id = getPartyIdUseCase.invoke() ?: return@launch
-        val role = getRoleUseCase.invoke()
-        val expanses = getAllExpensesUseCase.invoke(id)
-        _state.update {
-            it.copy(
-                isManager = role == UserRole.MANAGER,
-                loading = false,
-                users = expanses,
-                total = Expense(
-                    id = 23456789876,
-                    name = context.getString(R.string.progress_total_sum_of_party),
-                    sum = expanses.sumOf { it.expenses.sumOf { it.sum } } ?: 0.0
+        try {
+            _state.update { it.copy(loading = true) }
+            val role = getRoleUseCase.invoke()
+            val users = getAllUsersWithExpenses.invoke(state.value.step)
+            val total = getTotalPartySumUseCase.invoke()
+            _state.update {
+                it.copy(
+                    isManager = role == UserRole.MANAGER,
+                    loading = false,
+                    users = users,
+                    total = Expense(
+                        name = context.getString(R.string.progress_total_sum_of_party),
+                        sum = total ?: 0.0
+                    )
                 )
-            )
+            }
+        } catch (e: Exception) {
+
+        } finally {
+            _state.update { it.copy(loading = false) }
         }
     }
 }

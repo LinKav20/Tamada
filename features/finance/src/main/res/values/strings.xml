@@ -47,6 +47,7 @@
     <string name="step1_deadline_error_title">Дедлайн не может быть раньше текущей даты</string>
     <string name="step1_party_progress_title">Стоимость вечеринки</string>
     <string name="step1_sum_formatter">%,.2f руб</string>
+    <string name="step1_is_me_name">%s (я)</string>
     <string name="step1_party_progress_button">Посмотреть прогресс</string>
     <string name="step1_my_expenses_title">Мои расходы</string>
     <string name="step1_my_expenses_subtitle">Все, на что вы потратились лично. Будет доступно после первого внесения</string>
@@ -54,15 +55,18 @@
         <item quantity="zero">+%d пунктов</item>
         <item quantity="one">+%d пункт</item>
         <item quantity="two">+%d пункта</item>
-        <item quantity="few">+%d пунктов</item>
+        <item quantity="few">+%d пункта</item>
         <item quantity="many">+%d пунктов</item>
         <item quantity="other">+%d пунктов</item>
     </plurals>
     <string name="step1_my_expenses_add_expense">Добавить расход</string>
     <string name="step1_my_expenses_open_full">Открыть Мои расходы</string>
-    <string name="step2_dept_title">Вы должны</string>
+    <string name="step2_total_sum_subtitle">%s\n%s</string>
+    <string name="step2_dept_title_dept">Вы должны</string>
+    <string name="step2_dept_title_not_dept">Вам должны</string>
     <string name="step2_dept_title_done">Перевод выполнен</string>
     <string name="step2_dept_button">Я перевел(а)</string>
+    <string name="step2_dept_button_no_dept">Вы ничего не должны!</string>
     <string name="step2_dept_subtitle">Отправьте эту сумму по номеру карты ответственного за распределение администратора</string>
     <string name="step3_dept_title">Вам должны</string>
     <string name="step3_dept_title_done">Вам перевели</string>
@@ -105,7 +109,8 @@
     <string name="progress_step2_money_send">Деньги пришли</string>
 
     <!--AddExpense Dialog-->
-    <string name="add_expense_dialog_title">Добавление расхода</string>
+    <string name="add_expense_dialog_title">Добавить расход</string>
+    <string name="update_expense_dialog_title">Изменить расход</string>
     <string name="add_expense_dialog_name_title">Название</string>
     <string name="add_expense_dialog_name_hint">Название покупки</string>
     <string name="add_expense_dialog_sum_title">Сколько потрачено</string>
@@ -120,7 +125,7 @@
     <!-- MyExpenses Screen-->
     <string name="my_expenses_title">Мои расходы</string>
     <string name="my_expenses_receipt_title">Чек</string>
-    <string name="my_expenses_receipt_value">Чек не найден</string>
+    <string name="my_expenses_receipt_value">Загрузить</string>
     <string name="my_expenses_add_button">Добавить расход</string>
     <string name="my_expenses_edit_button">Редактировать</string>
     <string name="my_expenses_sum_formatter">%,.2f руб</string>

@@ -72,5 +72,5 @@ private fun CommonGetPartiesGuestsOut.toDomain() = User(
         "uncertain" -> User.ArriveStatus.PROBABLY
         else -> User.ArriveStatus.PROBABLY
     },
-    avatar = avatarID ?: 10
+    avatar = avatarID ?: 0
 )

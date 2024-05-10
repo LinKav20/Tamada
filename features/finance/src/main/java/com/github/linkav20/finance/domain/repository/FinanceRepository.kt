@@ -1,30 +1,51 @@
 package com.github.linkav20.finance.domain.repository
 
-import android.net.Uri
+import com.github.linkav20.finance.domain.model.Calculate
 import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.domain.model.FinanceState
 import com.github.linkav20.finance.domain.model.User
 import com.github.linkav20.finance.domain.model.Wallet
+import okhttp3.MultipartBody
 import java.io.InputStream
-import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 interface FinanceRepository {
 
     suspend fun loadFinanceState(id: Long): FinanceState
 
-    suspend fun getAllExpanses(id: Long): List<User>
-
     suspend fun getExpenses(userId: Long, partyId: Long): List<Expense>
 
-    suspend fun sendExpense(
+    suspend fun createExpense(
         type: Expense.Type,
         name: String,
         sum: Double,
-        receipt: Uri
+        receipt: MultipartBody.Part,
+        partyId: Long,
+        userId: Long
     )
 
-    suspend fun getTotalSum(partyId: Long): Long?
+    suspend fun updateExpenseName(
+        expenseId: Long,
+        name: String,
+        partyId: Long,
+        userId: Long
+    )
+
+    suspend fun updateExpenseSum(
+        expenseId: Long,
+        sum: Double,
+        partyId: Long,
+        userId: Long
+    )
+
+    suspend fun updateExpenseReceipt(
+        expenseId: Long,
+        receipt: MultipartBody.Part,
+        partyId: Long,
+        userId: Long
+    )
+
+    suspend fun getTotalSum(partyId: Long): Double?
 
     suspend fun deleteExpense(id: Long)
 
@@ -34,7 +55,11 @@ interface FinanceRepository {
 
     suspend fun updateFinanceState(state: FinanceState, partyId: Long, userId: Long)
 
-    suspend fun getExpenseReceipt(id: Long): InputStream
+    suspend fun getExpenseReceipt(
+        expenseId: Long,
+        partyId: Long,
+        userId: Long
+    ): InputStream?
 
     suspend fun saveWalletDataCardNumber(partyId: Long, cardNumber: String)
 
@@ -45,4 +70,8 @@ interface FinanceRepository {
     suspend fun saveWalletDataBank(partyId: Long, bank: String)
 
     suspend fun getPartyWallet(partyId: Long): Wallet?
+
+    suspend fun getUsers(partyId: Long): List<User>
+
+    suspend fun calculateExpenses(partyId: Long, userId: Long) : Calculate?
 }

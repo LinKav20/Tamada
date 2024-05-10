@@ -23,6 +23,7 @@ class TempFileProvider : FileProvider() {
         const val PATH_FOLDER_TEMP_FILES = "temp"
     }
 }
+
 fun printPdf(
     context: Context,
     uri: Uri
@@ -95,6 +96,9 @@ suspend fun saveTempFileAndGetUri(context: Context, data: InputStream, extension
         )
     }
 }
+
+suspend fun saveTempFile(context: Context, data: InputStream, extension: String): File? =
+    createTempFileAndOptionallyWriteToIt(context, data, extension)
 
 suspend fun createTempFileAndOptionallyWriteToIt(
     context: Context,

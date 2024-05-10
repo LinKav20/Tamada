@@ -43,7 +43,7 @@ data class CommonUserExpenses (
     val partyID: kotlin.Int? = null,
 
     @Json(name = "sum")
-    val sum: kotlin.Long? = null,
+    val sum: kotlin.Double? = null,
 
     @Json(name = "type")
     val type: kotlin.String? = null,

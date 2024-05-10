@@ -1,6 +1,5 @@
 package com.github.linkav20.finance.presentation.addexpense
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -18,22 +17,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.core.content.FileProvider
-import com.github.linkav20.core.utils.TempFileProvider
-import com.github.linkav20.core.utils.appendAll
-import com.github.linkav20.core.utils.createTempFileAndOptionallyWriteToIt
-import com.github.linkav20.core.utils.printPdf
-import com.github.linkav20.core.utils.saveTempFileAndGetUri
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaLoader
@@ -43,12 +34,8 @@ import com.github.linkav20.coreui.utils.ColorScheme
 import com.github.linkav20.coreui.utils.getPrimaryColor
 import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.Expense
-import kotlinx.coroutines.launch
-import java.io.File
-
 
 private const val PDF_FORMAT = "application/pdf"
-private const val IMAGE_FORMAT = "image/*"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -85,7 +72,10 @@ fun AddExpenseDialog(
     } else {
         Column(modifier = Modifier.padding(24.dp)) {
             Text(
-                text = stringResource(id = R.string.add_expense_dialog_title),
+                text = when (state.actionType) {
+                    AddExpenseState.ActionType.ADD -> stringResource(id = R.string.add_expense_dialog_title)
+                    AddExpenseState.ActionType.UPDATE -> stringResource(id = R.string.update_expense_dialog_title)
+                },
                 color = TamadaTheme.colors.textHeader,
                 style = TamadaTheme.typography.head
             )

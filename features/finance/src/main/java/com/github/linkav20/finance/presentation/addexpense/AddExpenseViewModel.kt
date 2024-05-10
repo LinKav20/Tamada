@@ -10,6 +10,8 @@ import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.domain.usecase.AddExpenseUseCase
+import com.github.linkav20.finance.domain.usecase.UpdateExpenseNameUseCase
+import com.github.linkav20.finance.domain.usecase.UpdateExpenseSumUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
@@ -23,6 +25,8 @@ import javax.inject.Inject
 class AddExpenseViewModel @Inject constructor(
     private val reactUseCase: ReactUseCase,
     private val addExpenseUseCase: AddExpenseUseCase,
+    private val updateExpenseSumUseCase: UpdateExpenseSumUseCase,
+    private val updateExpenseNameUseCase: UpdateExpenseNameUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -36,7 +40,8 @@ class AddExpenseViewModel @Inject constructor(
                     id = expense.id,
                     name = expense.name,
                     sum = expense.sum.toString(),
-                    receipt = expense.uri
+                    receipt = expense.uri,
+                    actionType = AddExpenseState.ActionType.UPDATE
                 )
             }
         }
@@ -55,7 +60,9 @@ class AddExpenseViewModel @Inject constructor(
     fun onReceiptChange(value: Uri?) = _state.update { it.copy(receipt = value) }
 
     fun onAddClick() {
-        if (state.value.sum.isEmpty() || state.value.name.isEmpty() || state.value.receipt == null) {
+        if (state.value.sum.isEmpty() || state.value.name.isEmpty() ||
+            (state.value.actionType == AddExpenseState.ActionType.ADD && state.value.receipt == null)
+        ) {
             reactUseCase.invoke(
                 title = context.getString(R.string.add_expense_popup_unfilled),
                 style = ReactionStyle.ERROR
@@ -68,7 +75,6 @@ class AddExpenseViewModel @Inject constructor(
     private fun saveExpense() = viewModelScope.launch {
         _state.update { it.copy(loading = true) }
         try {
-            //TODO
             if (state.value.receipt == null) return@launch
             if (state.value.id == null) {
                 addExpenseUseCase.invoke(
@@ -78,7 +84,18 @@ class AddExpenseViewModel @Inject constructor(
                     receipt = state.value.receipt!!,
                 )
             } else {
-                //todo update current expense
+                invokeUseCase {
+                    updateExpenseSumUseCase.invoke(
+                        id = state.value.id!!,
+                        sum = state.value.sum.toDouble()
+                    )
+                }
+                invokeUseCase {
+                    updateExpenseNameUseCase.invoke(
+                        id = state.value.id!!,
+                        name = state.value.name
+                    )
+                }
             }
             clearState()
             reactUseCase.invoke(
@@ -87,11 +104,16 @@ class AddExpenseViewModel @Inject constructor(
             )
             _state.update { it.copy(action = AddExpenseState.Action.BACK) }
         } catch (e: Exception) {
-            reactUseCase.invoke(
-                title = context.getString(R.string.add_expense_popup_error),
-                style = ReactionStyle.SUCCESS
-            )
+            reactUseCase.invoke(e)
         }
         _state.update { it.copy(loading = false) }
+    }
+
+    private fun invokeUseCase(action: suspend () -> Unit) = viewModelScope.launch {
+        try {
+            action()
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        }
     }
 }

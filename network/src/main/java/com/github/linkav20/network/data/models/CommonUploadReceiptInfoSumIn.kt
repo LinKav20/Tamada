@@ -35,7 +35,7 @@ data class CommonUploadReceiptInfoSumIn (
     val expenseID: kotlin.Int,
 
     @Json(name = "newSum")
-    val newSum: java.math.BigDecimal,
+    val newSum: kotlin.Long,
 
     @Json(name = "partyID")
     val partyID: kotlin.Int,

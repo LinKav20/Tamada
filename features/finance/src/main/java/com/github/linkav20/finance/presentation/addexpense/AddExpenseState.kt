@@ -10,7 +10,10 @@ data class AddExpenseState(
     val sum: String = "",
     val receipt: Uri? = null,
     val action: Action? = null,
-    val type: Expense.Type = Expense.Type.SUM
+    val type: Expense.Type = Expense.Type.SUM,
+    val actionType: ActionType = ActionType.ADD
 ) {
     enum class Action { BACK }
+
+    enum class ActionType { UPDATE, ADD }
 }

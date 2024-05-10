@@ -10,7 +10,7 @@ data class ProgressState(
     val users: List<UserUI> = emptyList(),
     val total: Expense? = null
 ) {
-    val getUsersDone: List<UserUI> = users.filter { it.expenses.isNotEmpty() }
+    val getUsersDone: List<UserUI> = users.filter { it.focusSum.sum > 0.0 }
 
-    val getUsersNotDone: List<UserUI> = users.filter { it.expenses.isEmpty() }
+    val getUsersNotDone: List<UserUI> = users.filter { it.focusSum.sum <= 0.0 }
 }

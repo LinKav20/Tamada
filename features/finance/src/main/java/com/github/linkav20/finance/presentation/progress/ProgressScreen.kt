@@ -42,6 +42,7 @@ import com.github.linkav20.coreui.utils.getPrimaryColor
 import com.github.linkav20.coreui.utils.getUserAvatar
 import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.UserUI
+import com.github.linkav20.finance.navigation.MyExpensesDestination
 import com.github.linkav20.finance.presentation.shared.ExpandableExpensesCard
 import com.github.linkav20.finance.presentation.shared.ExpenseItem
 
@@ -55,7 +56,11 @@ fun ProgressScreen(
     Content(
         state = state,
         onExpandUserExpenseClick = viewModel::onExpandUserExpenseClick,
-        onBackClick = { navController.navigateUp() }
+        onBackClick = { navController.navigateUp() },
+        onMyExpensesClick = { navController.navigate(MyExpensesDestination.createRoute(state.step)) },
+        onReceiptClick = {  },
+        onSpecificButtonClick = {  },
+        onErrorInExpensesClick = {  }
     )
 }
 
@@ -63,7 +68,11 @@ fun ProgressScreen(
 private fun Content(
     state: ProgressState,
     onExpandUserExpenseClick: (UserUI) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onMyExpensesClick: () -> Unit,
+    onReceiptClick: () -> Unit,
+    onSpecificButtonClick: () -> Unit,
+    onErrorInExpensesClick: () -> Unit
 ) = Scaffold(
     modifier = Modifier
         .statusBarsPadding()
@@ -137,7 +146,11 @@ private fun Content(
                             step = state.step,
                             users = state.getUsersDone,
                             isManager = state.isManager,
-                            onExpandUserExpenseClick = onExpandUserExpenseClick
+                            onExpandUserExpenseClick = onExpandUserExpenseClick,
+                            onMyExpensesClick = onMyExpensesClick,
+                            onReceiptClick = onReceiptClick,
+                            onSpecificButtonClick = onSpecificButtonClick,
+                            onErrorInExpensesClick = onErrorInExpensesClick
                         )
                     }
                 }
@@ -168,7 +181,11 @@ private fun Content(
                             isManager = state.isManager,
                             step = state.step,
                             users = state.getUsersNotDone,
-                            onExpandUserExpenseClick = onExpandUserExpenseClick
+                            onExpandUserExpenseClick = onExpandUserExpenseClick,
+                            onMyExpensesClick = onMyExpensesClick,
+                            onReceiptClick = onReceiptClick,
+                            onSpecificButtonClick = onSpecificButtonClick,
+                            onErrorInExpensesClick = onErrorInExpensesClick
                         )
                     }
                 }
@@ -184,20 +201,25 @@ private fun NotDoneUsers(
     isManager: Boolean,
     step: Int,
     users: List<UserUI>,
-    onExpandUserExpenseClick: (UserUI) -> Unit
+    onExpandUserExpenseClick: (UserUI) -> Unit,
+    onMyExpensesClick: () -> Unit,
+    onReceiptClick: () -> Unit,
+    onSpecificButtonClick: () -> Unit,
+    onErrorInExpensesClick: () -> Unit
 ) {
     users.forEach {
         if (step != 0) {
             ExpandableExpensesCard(
+                isDone = false,
                 user = it,
                 isManager = isManager,
                 isAccent = false,
-                step = 0,
+                step = step,
                 onExpand = onExpandUserExpenseClick,
-                onErrorInExpensesClick = {},
-                onReceiptClick = {},
-                onMyExpensesClick = {},
-                onSpecificButtonClick = {}
+                onErrorInExpensesClick = onErrorInExpensesClick,
+                onReceiptClick = onReceiptClick,
+                onMyExpensesClick = onMyExpensesClick,
+                onSpecificButtonClick = onSpecificButtonClick
             )
         } else {
             TamadaCard(colorScheme = ColorScheme.FINANCE) {
@@ -217,7 +239,11 @@ private fun NotDoneUsers(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = it.name,
+                        text = if (it.isMe) {
+                            stringResource(R.string.step1_is_me_name, it.name)
+                        } else {
+                            it.name
+                        },
                         style = TamadaTheme.typography.head,
                         color = getPrimaryColor(scheme = ColorScheme.FINANCE),
                         maxLines = 1,
@@ -234,19 +260,24 @@ private fun DoneUsers(
     step: Int,
     isManager: Boolean,
     users: List<UserUI>,
-    onExpandUserExpenseClick: (UserUI) -> Unit
+    onExpandUserExpenseClick: (UserUI) -> Unit,
+    onMyExpensesClick: () -> Unit,
+    onReceiptClick: () -> Unit,
+    onSpecificButtonClick: () -> Unit,
+    onErrorInExpensesClick: () -> Unit
 ) = Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
     users.forEach {
         ExpandableExpensesCard(
+            isDone = true,
             isAccent = step != 0,
             step = step,
             isManager = isManager,
             user = it,
             onExpand = onExpandUserExpenseClick,
-            onErrorInExpensesClick = {},
-            onReceiptClick = {},
-            onMyExpensesClick = {},
-            onSpecificButtonClick = {}
+            onErrorInExpensesClick = onErrorInExpensesClick,
+            onReceiptClick = onReceiptClick,
+            onMyExpensesClick = onMyExpensesClick,
+            onSpecificButtonClick = onSpecificButtonClick
         )
     }
 }

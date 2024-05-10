@@ -45,7 +45,7 @@ fun Step3Screen(
     Content(
         state = state,
         onBackClick = { navController.navigateUp() },
-        onMyExpensesClick = { navController.navigate(MyExpensesDestination.route()) },
+        onMyExpensesClick = { navController.navigate(MyExpensesDestination.createRoute(2)) },
         onShowProgressClick = { navController.navigate(ProgressDestination.createRoute(2)) },
         onDeptDoneClick = viewModel::onDeptDoneClick
     )
