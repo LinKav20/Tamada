@@ -75,7 +75,7 @@ class ListsMainViewModel @Inject constructor(
             val newTasks = list.tasks.minus(task).toMutableList()
             newTasks.add(index, newTask)
             updateTaskOnServer(newTask)
-            sendNotifications(list.managersOnly, task)
+            sendNotifications(list.managersOnly, newTask)
             return list.copy(tasks = newTasks)
         }
         return null
