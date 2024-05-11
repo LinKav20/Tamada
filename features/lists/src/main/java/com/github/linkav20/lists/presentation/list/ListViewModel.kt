@@ -282,8 +282,8 @@ class ListViewModel @Inject constructor(
                     subtitle = context.getString(
                         R.string.list_screen_notify_task_subtitle,
                         userInformationRepository.login,
-                        getPartyIdUseCase.invoke() ?: "",
-                        task.name
+                        task.name,
+                        getPartyNameUseCase.invoke() ?: "",
                     )
                 )
             }

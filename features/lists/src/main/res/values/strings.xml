@@ -33,6 +33,6 @@
 
     <!-- Notify -->
     <string name="list_screen_notify_task_title">Задание выполнено</string>
-    <string name="list_screen_notify_task_subtitle">Пользователь %s выполнил задачние %s для мерояприятия %s</string>
+    <string name="list_screen_notify_task_subtitle">Пользователь %s выполнил задание %s для мероприятия %s</string>
 
 </resources>
