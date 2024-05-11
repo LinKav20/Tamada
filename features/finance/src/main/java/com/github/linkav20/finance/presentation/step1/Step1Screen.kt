@@ -82,7 +82,7 @@ fun Step1Screen(
             onConfirm = {
                 viewModel.onEndStep()
                 navController.navigate(Step2Destination.route()) {
-                    popUpTo(Step2Destination.route()) {
+                    popUpTo(Step1Destination.route()) {
                         inclusive = true
                     }
                 }
