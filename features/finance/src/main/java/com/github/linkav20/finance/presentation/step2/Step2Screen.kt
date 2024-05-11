@@ -93,7 +93,7 @@ fun Step2Screen(
         sheetContent = {
             AddExpenseDialog(
                 viewModel = dialogViewModel,
-                expenseType = Expense.Type.DEPT,
+                expenseType = Expense.Type.DEBT,
                 onAddClick = {
                     viewModel.onAddClick()
                     scope.launch { sheetState.hide() }

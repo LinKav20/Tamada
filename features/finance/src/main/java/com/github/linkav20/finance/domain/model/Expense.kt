@@ -10,6 +10,6 @@ data class Expense(
     val type: Type = Type.SUM
 ) {
     enum class Type {
-        DEPT, SUM
+        DEBT, SUM
     }
 }

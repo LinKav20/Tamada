@@ -107,6 +107,8 @@
     <string name="progress_empty_list_not_done_users">Тут пока пусто :(</string>
     <string name="progress_step3_money_send">Деньги отправлены</string>
     <string name="progress_step2_money_send">Деньги пришли</string>
+    <string name="progress_error_in_expenses_title">Обнаружена ошибка в расходах</string>
+    <string name="progress_error_in_expenses_subtitle">Пожалуйста, перепроверьте внесенные расходы</string>
 
     <!--AddExpense Dialog-->
     <string name="add_expense_dialog_title">Добавить расход</string>

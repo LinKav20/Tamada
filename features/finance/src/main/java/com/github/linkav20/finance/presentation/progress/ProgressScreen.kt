@@ -65,7 +65,7 @@ fun ProgressScreen(
         onMyExpensesClick = { navController.navigate(MyExpensesDestination.createRoute(state.step)) },
         onReceiptClick = viewModel::onReceiptClick,
         onSpecificButtonClick = {  },
-        onErrorInExpensesClick = {  }
+        onErrorInExpensesClick = viewModel::onErrorInExpensesClick
     )
 
     val context = LocalContext.current
@@ -89,7 +89,7 @@ private fun Content(
     onMyExpensesClick: () -> Unit,
     onReceiptClick: (Long) -> Unit,
     onSpecificButtonClick: () -> Unit,
-    onErrorInExpensesClick: () -> Unit
+    onErrorInExpensesClick: (Long) -> Unit
 ) = Scaffold(
     modifier = Modifier
         .statusBarsPadding()
@@ -222,7 +222,7 @@ private fun NotDoneUsers(
     onMyExpensesClick: () -> Unit,
     onReceiptClick: (Long) -> Unit,
     onSpecificButtonClick: () -> Unit,
-    onErrorInExpensesClick: () -> Unit
+    onErrorInExpensesClick: (Long) -> Unit
 ) {
     users.forEach {
         if (step != 0) {
@@ -281,7 +281,7 @@ private fun DoneUsers(
     onMyExpensesClick: () -> Unit,
     onReceiptClick: (Long) -> Unit,
     onSpecificButtonClick: () -> Unit,
-    onErrorInExpensesClick: () -> Unit
+    onErrorInExpensesClick: (Long) -> Unit
 ) = Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
     users.forEach {
         ExpandableExpensesCard(

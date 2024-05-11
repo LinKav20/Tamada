@@ -117,5 +117,6 @@ subprojects { subproject ->
         implementation project(path: ':core')
         implementation project(path: ':coreui')
         implementation project(path: ':network')
+        implementation project(path: ':notifications')
     }
 }

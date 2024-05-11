@@ -52,7 +52,7 @@ fun ExpandableExpensesCard(
     isAccent: Boolean,
     step: Int,
     onExpand: (UserUI) -> Unit,
-    onErrorInExpensesClick: () -> Unit,
+    onErrorInExpensesClick: (Long) -> Unit,
     onReceiptClick: (Long) -> Unit,
     onMyExpensesClick: () -> Unit,
     onSpecificButtonClick: () -> Unit
@@ -221,7 +221,7 @@ fun ExpandableExpensesCard(
                         type = ButtonType.ERROR,
                         title = stringResource(R.string.error_in_expenses_button),
                         colorScheme = ColorScheme.FINANCE,
-                        onClick = onErrorInExpensesClick
+                        onClick = { onErrorInExpensesClick(user.id) }
                     )
                 }
             }

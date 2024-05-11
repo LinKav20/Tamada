@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.linkav20.core.domain.entity.DomainException
 import com.github.linkav20.core.domain.entity.ReactionStyle
 import com.github.linkav20.core.domain.entity.UserRole
-import com.github.linkav20.core.domain.usecase.GetPartyIdUseCase
 import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.finance.R
@@ -17,6 +16,7 @@ import com.github.linkav20.finance.domain.usecase.GetAllUserReceipts
 import com.github.linkav20.finance.domain.usecase.GetAllUsersWithExpenses
 import com.github.linkav20.finance.domain.usecase.GetTotalPartySumUseCase
 import com.github.linkav20.finance.navigation.ProgressDestination
+import com.github.linkav20.notifications.domain.usecase.NotifyUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +33,7 @@ class ProgressViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getAllUserReceipts: GetAllUserReceipts,
     private val reactUseCase: ReactUseCase,
+    private val notifyUseCase: NotifyUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(ProgressState())
@@ -53,6 +54,7 @@ class ProgressViewModel @Inject constructor(
     }
 
     fun onNullifyReceipt() = _state.update { it.copy(receipt = null) }
+
     fun onReceiptClick(userId: Long) = viewModelScope.launch {
         _state.update { it.copy(loading = true) }
         try {
@@ -66,6 +68,18 @@ class ProgressViewModel @Inject constructor(
             )
         }
         _state.update { it.copy(loading = false) }
+    }
+
+    fun onErrorInExpensesClick(userId: Long) = viewModelScope.launch {
+        try {
+            notifyUseCase.invoke(
+                toUserId = userId,
+                title = context.getString(R.string.progress_error_in_expenses_title),
+                subtitle = context.getString(R.string.progress_error_in_expenses_subtitle)
+            )
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        }
     }
 
     private fun loadData() = viewModelScope.launch {

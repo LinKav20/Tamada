@@ -86,7 +86,7 @@ class FinanceRepositoryImpl @Inject constructor(
                 userId = userId.toString(),
                 type = when (type) {
                     Expense.Type.SUM -> "SUM"
-                    else -> "DEPT"
+                    else -> "DEBT"
                 }
             )
         }
