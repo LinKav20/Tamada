@@ -26,8 +26,9 @@ class GetAllUsersWithExpenses @Inject constructor(
         for (user in users) {
             val expenses = repository.getExpenses(userId = user.id, partyId = partyId)
             val calculation = getCalculateResultUseCase.invoke(user.id)
-            val userUI = UserUI(
+            var userUI = UserUI(
                 id = user.id,
+                avatar = user.avatar,
                 name = user.name,
                 expenses = expenses,
                 focusSum = Expense(
@@ -41,6 +42,17 @@ class GetAllUsersWithExpenses @Inject constructor(
                 ),
                 isMe = user.id == userInformationRepository.userId.toLong()
             )
+            if (step == 2) {
+                val card = repository.getUserWalletInfo(userId = user.id)
+                if (card != null) {
+                    userUI = userUI.copy(
+                        cardNumber = card.cardNumber,
+                        cardUser = card.owner,
+                        cardBank = card.bank,
+                        cardPhoneNumber = card.cardPhone
+                    )
+                }
+            }
             usersUI.add(userUI)
         }
         return usersUI.sortedByDescending { it.isMe }

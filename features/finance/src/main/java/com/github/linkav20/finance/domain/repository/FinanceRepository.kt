@@ -73,5 +73,7 @@ interface FinanceRepository {
 
     suspend fun getUsers(partyId: Long): List<User>
 
-    suspend fun calculateExpenses(partyId: Long, userId: Long) : Calculate?
+    suspend fun calculateExpenses(partyId: Long, userId: Long): Calculate?
+
+    suspend fun getUserWalletInfo(userId: Long): Wallet?
 }

@@ -145,12 +145,16 @@ private fun Content(
                 }
             }
             PartySumComponent(
-                sum = 4000.0,
-                subtitle = "1) 4000 ÷ 4 = 1000 (стоимость с человека)\n2) 1000 - 4000 = -3000 (вам должны)",
+                sum = state.sum ?: 0.0,
+                subtitle = stringResource(
+                    R.string.step2_total_sum_subtitle,
+                    state.calculation?.forPerson ?: "",
+                    state.calculation?.personDept ?: ""
+                ),
                 onClick = onShowProgressClick
             )
             MyExpenses(
-                total = 4000.0,
+                total = state.myTotal ?: 0.0,
                 onMyExpensesClick = onMyExpensesClick
             )
             Spacer(modifier = Modifier.height(16.dp))

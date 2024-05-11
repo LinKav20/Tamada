@@ -23,6 +23,8 @@ import com.github.linkav20.network.data.models.CommonGetPartySummaryExpensesIn
 import com.github.linkav20.network.data.models.CommonGetPartyWalletIn
 import com.github.linkav20.network.data.models.CommonGetPartyWalletOut
 import com.github.linkav20.network.data.models.CommonGetUserReceiptIn
+import com.github.linkav20.network.data.models.CommonGetUserWalletIn
+import com.github.linkav20.network.data.models.CommonGetUserWalletOut
 import com.github.linkav20.network.data.models.CommonLoadFinanceStateIn
 import com.github.linkav20.network.data.models.CommonUpdateFinanceStateIn
 import com.github.linkav20.network.data.models.CommonUpdatePartyWalletBankIn
@@ -271,6 +273,9 @@ class FinanceRepositoryImpl @Inject constructor(
             )
         }?.toDomain()
 
+    override suspend fun getUserWalletInfo(userId: Long): Wallet? = retrofitErrorHandler.apiCall {
+        authApi.getUserWallet(CommonGetUserWalletIn(userID = userId.toInt()))
+    }?.toDomain()
 
 }
 
@@ -304,3 +309,11 @@ private fun CommonGetPartyWalletOut.toDomain() = Wallet(
     owner = cardOwner.orEmpty(),
     bank = bank.orEmpty()
 )
+
+private fun CommonGetUserWalletOut.toDomain() = Wallet(
+    cardNumber = if (cardNumber == "0") "" else cardNumber.orEmpty(),
+    cardPhone = phoneNumber.orEmpty(),
+    owner = cardOwner.orEmpty(),
+    bank = bank.orEmpty()
+)
+

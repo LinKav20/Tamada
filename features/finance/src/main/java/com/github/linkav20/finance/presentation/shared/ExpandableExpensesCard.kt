@@ -117,7 +117,7 @@ fun ExpandableExpensesCard(
                 onClick = onSpecificButtonClick
             )
         }
-        if (step == 2 && isManager) {
+        if (step == 2 && isManager && isDone) {
             if (user.cardNumber.isNotEmpty() && user.cardPhoneNumber.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(12.dp))
                 val context = LocalContext.current
