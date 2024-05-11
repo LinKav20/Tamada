@@ -36,7 +36,7 @@ val DefaultTamadaTypography
             small = TextStyle(
                 fontFamily = Font(R.font.golos_text_regular).toFontFamily(),
                 fontWeight = FontWeight.Medium,
-                fontSize = 12.sp,
+                fontSize = 10.sp,
                 lineHeight = 14.sp,
                 letterSpacing = 0.2.sp,
             ),
