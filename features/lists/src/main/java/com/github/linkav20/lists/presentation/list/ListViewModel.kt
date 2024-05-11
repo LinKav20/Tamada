@@ -11,6 +11,7 @@ import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.lists.domain.entity.TaskEntity
 import com.github.linkav20.lists.domain.usecase.CreateTasksUseCase
+import com.github.linkav20.lists.domain.usecase.DeleteTaskFromListUseCase
 import com.github.linkav20.lists.domain.usecase.GetListByIdUseCase
 import com.github.linkav20.lists.domain.usecase.UpdateListVisibilityUseCase
 import com.github.linkav20.lists.domain.usecase.UpdateTaskDoneUseCase
@@ -35,6 +36,7 @@ class ListViewModel @Inject constructor(
     private val updateTaskNameUseCase: UpdateTaskNameUseCase,
     private val updateTaskDoneUseCase: UpdateTaskDoneUseCase,
     private val createTasksUseCase: CreateTasksUseCase,
+    private val deleteTaskFromListUseCase: DeleteTaskFromListUseCase,
     private val reactUseCase: ReactUseCase
 ) : ViewModel() {
 
@@ -115,6 +117,18 @@ class ListViewModel @Inject constructor(
             val newTasks = state.value.list!!.tasks.minus(task)
             val newList = state.value.list!!.copy(tasks = newTasks)
             _state.update { it.copy(list = newList) }
+            deleteTask(task)
+        }
+    }
+
+    private fun deleteTask(task: TaskEntity) = viewModelScope.launch {
+        try {
+            deleteTaskFromListUseCase.invoke(
+                listId = id,
+                taskId = task.id
+            )
+        } catch (_: Exception) {
+
         }
     }
 

@@ -20,4 +20,6 @@ interface ListsRepository {
     suspend fun updateTaskName(taskEntity: TaskEntity)
 
     suspend fun updateTaskState(taskEntity: TaskEntity)
+
+    suspend fun deleteTask(listId: Long, taskId: Long)
 }

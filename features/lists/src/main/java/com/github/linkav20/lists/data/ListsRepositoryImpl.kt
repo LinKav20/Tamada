@@ -8,6 +8,7 @@ import com.github.linkav20.network.data.api.EventApi
 import com.github.linkav20.network.data.models.CommonAddListToEventIn
 import com.github.linkav20.network.data.models.CommonAddTasksToListIn
 import com.github.linkav20.network.data.models.CommonDeleteListIn
+import com.github.linkav20.network.data.models.CommonDeleteTaskFromListIn
 import com.github.linkav20.network.data.models.CommonGetListInfoIn
 import com.github.linkav20.network.data.models.CommonGetListInfoOut
 import com.github.linkav20.network.data.models.CommonGetPartyListsIn
@@ -103,6 +104,17 @@ class ListsRepositoryImpl @Inject constructor(
                 CommonUpdateTaskStatusIn(
                     taskID = taskEntity.id.toInt(),
                     isDone = taskEntity.done
+                )
+            )
+        }
+    }
+
+    override suspend fun deleteTask(listId: Long, taskId: Long) {
+        retrofitErrorHandler.apiCall {
+            eventApi.deleteTaskFromList(
+                CommonDeleteTaskFromListIn(
+                    listID = listId.toInt(),
+                    taskID = taskId.toInt()
                 )
             )
         }
