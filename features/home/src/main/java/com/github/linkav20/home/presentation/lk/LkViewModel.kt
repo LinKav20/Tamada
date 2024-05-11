@@ -82,6 +82,8 @@ class LkViewModel @Inject constructor(
         }
     }
 
+    fun onShowPasswordClick() = _state.update { it.copy(showPassword = !state.value.showPassword) }
+
     fun onCardPhoneNumberChanged(value: String) {
         val user = state.value.user
         if (user != null) {
@@ -114,7 +116,10 @@ class LkViewModel @Inject constructor(
         try {
             val user = state.value.user
             if (user != null) {
-                deleteUserUseCase.invoke(state.value.user!!)
+                deleteUserUseCase.invoke(
+                    user = user,
+                    password = state.value.password
+                )
             }
             onLogoutClick()
         } catch (_: Exception) {
@@ -122,6 +127,12 @@ class LkViewModel @Inject constructor(
         }
         _state.update { it.copy(loading = false) }
     }
+
+    fun onShowDialog() = _state.update { it.copy(showDialog = true) }
+
+    fun onCloseDialog() = _state.update { it.copy(showDialog = false) }
+
+    fun onPasswordChanged(value: String) = _state.update { it.copy(password = value) }
 
     private fun loadData() = viewModelScope.launch {
         _state.update { it.copy(loading = true) }

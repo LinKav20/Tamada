@@ -10,7 +10,8 @@ data class ListState(
     val newTaskPosition: Int? = null,
     val focusedItemPosition: Int? = null,
     val action: Action? = null,
-    val error: Throwable? = null
+    val error: Throwable? = null,
+    val showDialog: Boolean = false
 ) {
     enum class Action { BACK }
 

@@ -83,7 +83,7 @@ private fun Content(
                     title = stringResource(id = R.string.onboarding_start_title),
                     subtitle = stringResource(id = R.string.onboarding_start_subtitle),
                     painter = painterResource(id = R.drawable.onboarding_step_start),
-                    imageHeight = 504.dp
+                    imageHeight = 300.dp
                 )
             }
 
@@ -91,7 +91,7 @@ private fun Content(
                 CardComponent(
                     title = stringResource(id = R.string.onboarding_step1_title),
                     subtitle = stringResource(id = R.string.onboarding_step1_subtitle),
-                    painter = painterResource(id = R.drawable.onboarding_start)
+                    painter = painterResource(id = R.drawable.onboarding_step_1)
                 )
             }
 
@@ -99,7 +99,7 @@ private fun Content(
                 CardComponent(
                     title = stringResource(id = R.string.onboarding_step2_title),
                     subtitle = stringResource(id = R.string.onboarding_step2_subtitle),
-                    painter = painterResource(id = R.drawable.onboarding_start)
+                    painter = painterResource(id = R.drawable.onboarding_step2_2)
                 )
             }
 
@@ -107,15 +107,15 @@ private fun Content(
                 CardComponent(
                     title = stringResource(id = R.string.onboarding_step3_title),
                     subtitle = stringResource(id = R.string.onboarding_step3_subtitle),
-                    painter = painterResource(id = R.drawable.onboarding_start)
+                    painter = painterResource(id = R.drawable.onboarding_step_3)
                 )
             }
 
             OnboardingState.Step.FINISH -> {
                 CardComponent(
                     title = stringResource(id = R.string.onboarding_finish_title),
-                    painter = painterResource(id = R.drawable.onboarding_step_start),
-                    imageHeight = 404.dp
+                    painter = painterResource(id = R.drawable.onboarding_start),
+                    imageHeight = 300.dp
                 )
             }
         }
@@ -149,7 +149,7 @@ private fun CardComponent(
     title: String,
     subtitle: String? = null,
     painter: Painter,
-    imageHeight: Dp = 264.dp
+    imageHeight: Dp = 200.dp
 ) = Column {
     TamadaCard(
         colorScheme = ColorScheme.FINANCE

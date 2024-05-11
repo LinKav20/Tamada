@@ -9,7 +9,7 @@ interface UserRepository {
 
     suspend fun saveUser(user: User)
 
-    suspend fun deleteUser(user: User)
+    suspend fun deleteUser(userId: Long, password: String)
 
     suspend fun updateUserAvatar(avatar: Int, userId: Int)
 

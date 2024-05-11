@@ -1,6 +1,7 @@
 package com.github.linkav20.finance.presentation.myexpenses
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,7 @@ import com.github.linkav20.coreui.ui.ButtonTextAlign
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaCard
+import com.github.linkav20.coreui.ui.TamadaDialog
 import com.github.linkav20.coreui.ui.TamadaTopBar
 import com.github.linkav20.coreui.utils.ColorScheme
 import com.github.linkav20.coreui.utils.getBackgroundColor
@@ -42,7 +44,6 @@ import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.presentation.addexpense.AddExpenseDialog
 import com.github.linkav20.finance.presentation.addexpense.AddExpenseViewModel
-import com.github.linkav20.finance.presentation.dialog.Dialog
 import kotlinx.coroutines.launch
 
 const val FILE_FORMAT = ".pdf"
@@ -80,8 +81,16 @@ fun MyExpensesScreen(
         scrimColor = getBackgroundColor(scheme = ColorScheme.FINANCE).copy(alpha = 0.75f)
     ) {
         if (state.showDialog) {
-            Dialog(
-                subtitle = stringResource(id = R.string.dialog_subtitle_delete_expense),
+            TamadaDialog(
+                title = stringResource(id = R.string.dialog_title),
+                colorScheme = ColorScheme.FINANCE,
+                body = {
+                    Text(
+                        text = stringResource(id = R.string.dialog_subtitle_delete_expense),
+                        style = TamadaTheme.typography.caption,
+                        color = TamadaTheme.colors.textMain
+                    )
+                },
                 onClose = viewModel::onCloseDialogClick,
                 onConfirm = viewModel::onDeleteExpenseClick
             )
@@ -156,7 +165,7 @@ private fun Content(
     ) {
         item { Spacer(modifier = Modifier.height(16.dp)) }
         if (expenses.isEmpty()) {
-            //  TODO add empty state
+            item { EmptyState() }
         } else {
             items(expenses) {
                 ExpenseItem(
@@ -173,6 +182,26 @@ private fun Content(
         item { Spacer(modifier = Modifier.height(16.dp)) }
     }
 }
+
+@Composable
+private fun EmptyState() = TamadaCard(
+    modifier = Modifier.padding(vertical = 8.dp),
+    colorScheme = ColorScheme.FINANCE
+) {
+    Row(
+        modifier = Modifier.padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            modifier = Modifier,
+            text = stringResource(id = R.string.my_expenses_empty_state),
+            color = TamadaTheme.colors.textMain,
+            style = TamadaTheme.typography.head
+        )
+    }
+}
+
 
 @Composable
 private fun ExpenseItem(

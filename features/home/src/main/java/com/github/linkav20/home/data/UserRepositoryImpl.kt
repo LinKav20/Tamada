@@ -4,6 +4,8 @@ import com.github.linkav20.home.domain.model.Wallet
 import com.github.linkav20.home.domain.model.User
 import com.github.linkav20.home.domain.repository.UserRepository
 import com.github.linkav20.network.data.api.AuthApi
+import com.github.linkav20.network.data.api.EventApi
+import com.github.linkav20.network.data.models.CommonDeleteUserIn
 import com.github.linkav20.network.utils.RetrofitErrorHandler
 import com.github.linkav20.network.data.models.CommonGetUserWalletIn
 import com.github.linkav20.network.data.models.CommonGetUserWalletOut
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val retrofitErrorHandler: RetrofitErrorHandler,
-    private val authApi: AuthApi
+    private val authApi: AuthApi,
+    eventApi: EventApi
 ) : UserRepository {
     override suspend fun getUserWalletInfo(userId: Int): Wallet? = retrofitErrorHandler.apiCall {
         authApi.getUserWallet(CommonGetUserWalletIn(userID = userId))
@@ -26,10 +29,15 @@ class UserRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun deleteUser(user: User) {
-//        retrofitErrorHandler.apiCall {
-//            authApi.deleteUser(CommonDeleteUserIn())
-//        }
+    override suspend fun deleteUser(userId: Long, password: String) {
+        retrofitErrorHandler.apiCall {
+            authApi.deleteUser(
+                CommonDeleteUserIn(
+                    password = password,
+                    userID = userId.toInt()
+                )
+            )
+        }
     }
 
     override suspend fun updateUserAvatar(avatar: Int, userId: Int) {
@@ -44,11 +52,11 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updatePassword(currentPassword: String, newPassword: String) {
-
+        // todo
     }
 
     override suspend fun updateLogin(login: String, userId: Int) {
-
+        // todo
     }
 
     override suspend fun updateCardNumber(number: String, userId: Int) {

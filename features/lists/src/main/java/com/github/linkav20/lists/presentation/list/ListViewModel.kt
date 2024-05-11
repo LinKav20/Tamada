@@ -1,23 +1,30 @@
 package com.github.linkav20.lists.presentation.list
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.linkav20.core.domain.entity.ReactionStyle
 import com.github.linkav20.core.domain.entity.UserRole
+import com.github.linkav20.core.domain.repository.UserInformationRepository
 import com.github.linkav20.core.domain.usecase.GetPartyIdUseCase
+import com.github.linkav20.core.domain.usecase.GetPartyNameUseCase
 import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.core.notification.ReactUseCase
+import com.github.linkav20.lists.R
 import com.github.linkav20.lists.domain.entity.TaskEntity
 import com.github.linkav20.lists.domain.usecase.CreateTasksUseCase
+import com.github.linkav20.lists.domain.usecase.DeleteListUseCase
 import com.github.linkav20.lists.domain.usecase.DeleteTaskFromListUseCase
 import com.github.linkav20.lists.domain.usecase.GetListByIdUseCase
+import com.github.linkav20.lists.domain.usecase.NotifyListUserUseCase
 import com.github.linkav20.lists.domain.usecase.UpdateListVisibilityUseCase
 import com.github.linkav20.lists.domain.usecase.UpdateTaskDoneUseCase
 import com.github.linkav20.lists.domain.usecase.UpdateTaskNameUseCase
 import com.github.linkav20.lists.navigation.ListDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -37,7 +44,12 @@ class ListViewModel @Inject constructor(
     private val updateTaskDoneUseCase: UpdateTaskDoneUseCase,
     private val createTasksUseCase: CreateTasksUseCase,
     private val deleteTaskFromListUseCase: DeleteTaskFromListUseCase,
-    private val reactUseCase: ReactUseCase
+    private val deleteListUseCase: DeleteListUseCase,
+    private val reactUseCase: ReactUseCase,
+    private val notifyListUserUseCase: NotifyListUserUseCase,
+    private val userInformationRepository: UserInformationRepository,
+    private val getPartyNameUseCase: GetPartyNameUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val id = ListDestination.extractId(savedStateHandle)
@@ -47,6 +59,22 @@ class ListViewModel @Inject constructor(
 
     init {
         loadData()
+    }
+
+    fun onCloseDialog() = _state.update { it.copy(showDialog = false) }
+
+    fun onOpenDialog() = _state.update { it.copy(showDialog = true) }
+
+    fun onDeleteList() = viewModelScope.launch {
+        try {
+            _state.update { it.copy(loading = true) }
+            deleteListUseCase.invoke(listId = id)
+            _state.update { it.copy(action = ListState.Action.BACK) }
+        } catch (e: Exception) {
+            reactUseCase.invoke(e)
+        } finally {
+            _state.update { it.copy(loading = false) }
+        }
     }
 
     fun onRetry() {
@@ -109,6 +137,10 @@ class ListViewModel @Inject constructor(
         updateTaskInList(task, newTask, false)
         if (newTask.isServer) {
             updateTaskDone(newTask)
+            val list = state.value.list
+            if (list != null) {
+                sendNotifications(list.managersOnly, task)
+            }
         }
     }
 
@@ -238,6 +270,25 @@ class ListViewModel @Inject constructor(
                 subtitle = e.message,
                 style = ReactionStyle.ERROR
             )
+        }
+    }
+
+    private fun sendNotifications(isManagers: Boolean, task: TaskEntity) = viewModelScope.launch {
+        try {
+            if (task.done) {
+                notifyListUserUseCase.invoke(
+                    forManagers = isManagers,
+                    title = context.getString(R.string.list_screen_notify_task_title),
+                    subtitle = context.getString(
+                        R.string.list_screen_notify_task_subtitle,
+                        userInformationRepository.login,
+                        getPartyIdUseCase.invoke() ?: "",
+                        task.name
+                    )
+                )
+            }
+        } catch (e: Exception) {
+
         }
     }
 }

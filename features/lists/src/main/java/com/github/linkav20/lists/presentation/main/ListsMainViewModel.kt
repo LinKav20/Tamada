@@ -1,20 +1,26 @@
 package com.github.linkav20.lists.presentation.main
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.linkav20.core.domain.entity.UserRole
+import com.github.linkav20.core.domain.repository.UserInformationRepository
 import com.github.linkav20.core.domain.usecase.GetPartyIdUseCase
+import com.github.linkav20.core.domain.usecase.GetPartyNameUseCase
 import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.core.notification.ReactUseCase
+import com.github.linkav20.lists.R
 import com.github.linkav20.lists.domain.entity.ListEntity
 import com.github.linkav20.lists.domain.entity.TaskEntity
 import com.github.linkav20.lists.domain.usecase.CreateListUseCase
 import com.github.linkav20.lists.domain.usecase.GetListByIdUseCase
 import com.github.linkav20.lists.domain.usecase.GetListsFullInfoUseCase
 import com.github.linkav20.lists.domain.usecase.GetListsUseCase
+import com.github.linkav20.lists.domain.usecase.NotifyListUserUseCase
 import com.github.linkav20.lists.domain.usecase.UpdateTaskDoneUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,14 +34,18 @@ class ListsMainViewModel @Inject constructor(
     private val getListsFullInfoUseCase: GetListsFullInfoUseCase,
     private val updateTaskDoneUseCase: UpdateTaskDoneUseCase,
     private val createListUseCase: CreateListUseCase,
-    private val reactUseCase: ReactUseCase
+    private val reactUseCase: ReactUseCase,
+    private val notifyListUserUseCase: NotifyListUserUseCase,
+    private val userInformationRepository: UserInformationRepository,
+    private val getPartyNameUseCase: GetPartyNameUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(ListsMainState())
     val state = _state.asStateFlow()
 
     fun onStart() = loadData()
 
-    fun onRetry(){
+    fun onRetry() {
         _state.update { it.copy(error = null) }
         loadData()
     }
@@ -65,6 +75,7 @@ class ListsMainViewModel @Inject constructor(
             val newTasks = list.tasks.minus(task).toMutableList()
             newTasks.add(index, newTask)
             updateTaskOnServer(newTask)
+            sendNotifications(list.managersOnly, task)
             return list.copy(tasks = newTasks)
         }
         return null
@@ -94,7 +105,7 @@ class ListsMainViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-           _state.update { it.copy(error = e) }
+            _state.update { it.copy(error = e) }
         } finally {
             _state.update { it.copy(loading = false) }
         }
@@ -122,6 +133,25 @@ class ListsMainViewModel @Inject constructor(
             reactUseCase.invoke(e)
         } finally {
             _state.update { it.copy(loading = false) }
+        }
+    }
+
+    private fun sendNotifications(isManagers: Boolean, task: TaskEntity) = viewModelScope.launch {
+        try {
+            if (task.done) {
+                notifyListUserUseCase.invoke(
+                    forManagers = isManagers,
+                    title = context.getString(R.string.list_screen_notify_task_title),
+                    subtitle = context.getString(
+                        R.string.list_screen_notify_task_subtitle,
+                        userInformationRepository.login,
+                        getPartyIdUseCase.invoke() ?: "",
+                        task.name
+                    )
+                )
+            }
+        } catch (e: Exception) {
+
         }
     }
 }

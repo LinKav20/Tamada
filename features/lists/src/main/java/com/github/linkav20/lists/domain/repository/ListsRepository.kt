@@ -2,6 +2,7 @@ package com.github.linkav20.lists.domain.repository
 
 import com.github.linkav20.lists.domain.entity.ListEntity
 import com.github.linkav20.lists.domain.entity.TaskEntity
+import com.github.linkav20.lists.domain.entity.User
 
 interface ListsRepository {
 
@@ -22,4 +23,6 @@ interface ListsRepository {
     suspend fun updateTaskState(taskEntity: TaskEntity)
 
     suspend fun deleteTask(listId: Long, taskId: Long)
+
+    suspend fun getUsers(partyId: Long): List<User>
 }

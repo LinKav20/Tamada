@@ -108,7 +108,7 @@ class GuestsListViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            reactUseCase.invoke(e)
+            _state.update { it.copy(error = e) }
         } finally {
             _state.update { it.copy(loading = false) }
         }

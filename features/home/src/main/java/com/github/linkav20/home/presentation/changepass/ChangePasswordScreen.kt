@@ -28,6 +28,7 @@ import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
 import com.github.linkav20.coreui.ui.TamadaTextFiled
 import com.github.linkav20.coreui.ui.TamadaTopBar
 import com.github.linkav20.coreui.utils.ColorScheme
+import com.github.linkav20.coreui.utils.getPrimaryColor
 import com.github.linkav20.home.R
 import com.github.linkav20.coreui.R as CoreR
 
@@ -154,7 +155,8 @@ private fun PasswordTextFieldWithTitle(
                 } else {
                     painterResource(id = CoreR.drawable.eyebrow)
                 },
-                contentDescription = null
+                contentDescription = null,
+                tint = getPrimaryColor(scheme = ColorScheme.LISTS)
             )
         }
     )

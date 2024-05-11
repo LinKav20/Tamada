@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.linkav20.core.domain.entity.DomainException
 import com.github.linkav20.core.domain.entity.ReactionStyle
 import com.github.linkav20.core.domain.entity.UserRole
+import com.github.linkav20.core.domain.usecase.GetPartyNameUseCase
 import com.github.linkav20.core.domain.usecase.GetRoleUseCase
 import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.finance.R
@@ -33,6 +34,7 @@ class ProgressViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getAllUserReceipts: GetAllUserReceipts,
     private val reactUseCase: ReactUseCase,
+    private val getPartyNameUseCase: GetPartyNameUseCase,
     private val notifyUseCase: NotifyUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
@@ -44,6 +46,8 @@ class ProgressViewModel @Inject constructor(
         _state.update { it.copy(step = step) }
         loadData()
     }
+
+    fun onRetry() = loadData()
 
     fun onExpandUserExpenseClick(userUI: UserUI) {
         val newUser = userUI.copy(isExpanded = !userUI.isExpanded)
@@ -72,9 +76,10 @@ class ProgressViewModel @Inject constructor(
 
     fun onErrorInExpensesClick(userId: Long) = viewModelScope.launch {
         try {
+            val name = getPartyNameUseCase.invoke()
             notifyUseCase.invoke(
                 toUserId = userId,
-                title = context.getString(R.string.progress_error_in_expenses_title),
+                title = context.getString(R.string.progress_error_in_expenses_title, name),
                 subtitle = context.getString(R.string.progress_error_in_expenses_subtitle)
             )
         } catch (e: Exception) {

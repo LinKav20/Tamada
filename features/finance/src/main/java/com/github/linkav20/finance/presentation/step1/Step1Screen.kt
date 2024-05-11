@@ -34,6 +34,7 @@ import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaCard
+import com.github.linkav20.coreui.ui.TamadaDialog
 import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
 import com.github.linkav20.coreui.ui.TamadaGradientDisclaimer
 import com.github.linkav20.coreui.ui.TamadaRoadMap
@@ -48,10 +49,8 @@ import com.github.linkav20.finance.navigation.OnboardingDestination
 import com.github.linkav20.finance.navigation.ProgressDestination
 import com.github.linkav20.finance.navigation.Step1Destination
 import com.github.linkav20.finance.navigation.Step2Destination
-import com.github.linkav20.finance.navigation.Step3Destination
 import com.github.linkav20.finance.presentation.addexpense.AddExpenseDialog
 import com.github.linkav20.finance.presentation.addexpense.AddExpenseViewModel
-import com.github.linkav20.finance.presentation.dialog.Dialog
 import com.github.linkav20.finance.presentation.shared.DeadlineComponent
 import com.github.linkav20.finance.presentation.shared.EditableDeadlineComponent
 import com.github.linkav20.finance.presentation.shared.EditableWalletComponent
@@ -76,9 +75,17 @@ fun Step1Screen(
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
     if (state.showDialog) {
-        Dialog(
-            subtitle = stringResource(id = R.string.dialog_subtitle_delete_next_step),
+        TamadaDialog(
+            title = stringResource(id = R.string.dialog_title),
+            body = {
+                Text(
+                    text = stringResource(id = R.string.dialog_subtitle_delete_next_step),
+                    style = TamadaTheme.typography.caption,
+                    color = TamadaTheme.colors.textMain
+                )
+            },
             onClose = viewModel::onCloseDialog,
+            colorScheme = ColorScheme.FINANCE,
             onConfirm = {
                 viewModel.onEndStep()
                 navController.navigate(Step2Destination.route()) {

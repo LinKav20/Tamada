@@ -1,8 +1,8 @@
 package com.github.linkav20.lists.data
 
-import android.util.Log
 import com.github.linkav20.lists.domain.entity.ListEntity
 import com.github.linkav20.lists.domain.entity.TaskEntity
+import com.github.linkav20.lists.domain.entity.User
 import com.github.linkav20.lists.domain.repository.ListsRepository
 import com.github.linkav20.network.data.api.EventApi
 import com.github.linkav20.network.data.models.CommonAddListToEventIn
@@ -11,6 +11,8 @@ import com.github.linkav20.network.data.models.CommonDeleteListIn
 import com.github.linkav20.network.data.models.CommonDeleteTaskFromListIn
 import com.github.linkav20.network.data.models.CommonGetListInfoIn
 import com.github.linkav20.network.data.models.CommonGetListInfoOut
+import com.github.linkav20.network.data.models.CommonGetPartiesGuestsIn
+import com.github.linkav20.network.data.models.CommonGetPartiesGuestsOut
 import com.github.linkav20.network.data.models.CommonGetPartyListsIn
 import com.github.linkav20.network.data.models.CommonGetPartyListsOut
 import com.github.linkav20.network.data.models.CommonTaskCreateIn
@@ -120,6 +122,10 @@ class ListsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getUsers(partyId: Long) = retrofitErrorHandler.apiCall {
+        eventApi.getPartiesGuests(CommonGetPartiesGuestsIn(partyID = partyId.toInt()))
+    }?.map { it.toDomain() } ?: emptyList()
+
 }
 
 private fun CommonGetPartyListsOut.toDomain() = ListEntity(
@@ -146,4 +152,12 @@ private fun CommonTaskInfo.toDomain() = TaskEntity(
     name = name,
     done = isDone,
     isServer = true
+)
+
+private fun CommonGetPartiesGuestsOut.toDomain() = User(
+    id = userID?.toLong() ?: 0,
+    isManager = when (role) {
+        "manager", "creator" -> true
+        else -> false
+    }
 )

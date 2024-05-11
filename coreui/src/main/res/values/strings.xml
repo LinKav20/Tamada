@@ -11,4 +11,6 @@
     <string name="dialog_button_next">Далее</string>
     <string name="dialog_button_ok">Ок</string>
     <string name="dialog_button_back">Назад</string>
+    <string name="dialog_turn_on_button">Ок</string>
+    <string name="dialog_cancel_button">Назад</string>
 </resources>

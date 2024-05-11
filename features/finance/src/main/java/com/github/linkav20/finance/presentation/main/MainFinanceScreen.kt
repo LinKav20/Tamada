@@ -29,6 +29,7 @@ import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaCard
+import com.github.linkav20.coreui.ui.TamadaDialog
 import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
 import com.github.linkav20.coreui.ui.TamadaTopBar
 import com.github.linkav20.coreui.utils.ColorScheme
@@ -39,8 +40,6 @@ import com.github.linkav20.finance.navigation.OnboardingDestination
 import com.github.linkav20.finance.navigation.Step1Destination
 import com.github.linkav20.finance.navigation.Step2Destination
 import com.github.linkav20.finance.navigation.Step3Destination
-import com.github.linkav20.finance.presentation.dialog.Dialog
-import com.github.linkav20.finance.presentation.onboarding.OnboardingScreen
 
 @Composable
 fun MainFinanceScreen(
@@ -126,8 +125,16 @@ private fun BasicContent(
     verticalArrangement = Arrangement.spacedBy(16.dp)
 ) {
     if (state.showDialog) {
-        Dialog(
-            subtitle = stringResource(id = R.string.dialog_subtitle_turn_on_finance),
+        TamadaDialog(
+            title = stringResource(id = R.string.dialog_title),
+            colorScheme = ColorScheme.FINANCE,
+            body = {
+                Text(
+                    text = stringResource(id = R.string.dialog_subtitle_turn_on_finance),
+                    style = TamadaTheme.typography.caption,
+                    color = TamadaTheme.colors.textMain
+                )
+            },
             onClose = onCloseDialog,
             onConfirm = onConfirm
         )

@@ -20,8 +20,6 @@
     <string name="dialog_subtitle_turn_on_finance">Выключть расходы будет невозможно</string>
     <string name="dialog_subtitle_delete_expense">Расход восстанвоить невозможно</string>
     <string name="dialog_subtitle_delete_next_step">Вернуться на этот этап расходов будет невозможно</string>
-    <string name="dialog_turn_on_button">Ок</string>
-    <string name="dialog_cancel_button">Назад</string>
 
     <!-- Onboarding Screen -->
     <string name="onboarding_title">Зачем нужен этот раздел</string>
@@ -107,8 +105,8 @@
     <string name="progress_empty_list_not_done_users">Тут пока пусто :(</string>
     <string name="progress_step3_money_send">Деньги отправлены</string>
     <string name="progress_step2_money_send">Деньги пришли</string>
-    <string name="progress_error_in_expenses_title">Обнаружена ошибка в расходах</string>
-    <string name="progress_error_in_expenses_subtitle">Пожалуйста, перепроверьте внесенные расходы</string>
+    <string name="progress_error_in_expenses_title">Мероприятие %s</string>
+    <string name="progress_error_in_expenses_subtitle">Обнаружена ошибка в расходах\nПожалуйста, перепроверьте внесенные расходы</string>
 
     <!--AddExpense Dialog-->
     <string name="add_expense_dialog_title">Добавить расход</string>
@@ -131,6 +129,7 @@
     <string name="my_expenses_add_button">Добавить расход</string>
     <string name="my_expenses_edit_button">Редактировать</string>
     <string name="my_expenses_sum_formatter">%,.2f руб</string>
+    <string name="my_expenses_empty_state">Вы пока не вносили никакие расходы</string>
     <string name="my_expense_popup_expense_delete_success">Расход успешно удален</string>
     <string name="my_expense_popup_expense_delete_error">"Что-то пошло не так"</string>
     <string name="my_expense_popup_receipt_not_loaded">Не получилось загрузить чек</string>

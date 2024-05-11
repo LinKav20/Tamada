@@ -40,8 +40,10 @@ import androidx.navigation.NavController
 import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.ButtonType
+import com.github.linkav20.coreui.ui.DebounceIconButton
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaCard
+import com.github.linkav20.coreui.ui.TamadaDialog
 import com.github.linkav20.coreui.ui.TamadaGradientDisclaimer
 import com.github.linkav20.coreui.ui.TamadaRadioButton
 import com.github.linkav20.coreui.ui.TamadaTextFiled
@@ -64,6 +66,24 @@ fun ListScreen(
     errorMapper: ErrorMapper
 ) {
     val state = viewModel.state.collectAsState().value
+
+    if (state.showDialog) {
+        TamadaDialog(
+            title = stringResource(id = R.string.list_screen_dialog_delete_title),
+            body = {
+                Text(
+                    text = stringResource(id = R.string.list_screen_dialog_delete_subtitle),
+                    style = TamadaTheme.typography.caption,
+                    color = TamadaTheme.colors.textMain
+                )
+            },
+            colorScheme = ColorScheme.LISTS,
+            onClose = viewModel::onCloseDialog,
+            onConfirm = viewModel::onDeleteList
+        )
+    }
+
+
     if (state.error != null) {
         errorMapper.OnError(
             throwable = state.error,
@@ -85,7 +105,8 @@ fun ListScreen(
             onValueChanged = viewModel::onValueChanged,
             onNextClick = viewModel::onNextClick,
             onFocusChanged = viewModel::onFocusChanged,
-            onFilterChanged = viewModel::onFilterChanged
+            onFilterChanged = viewModel::onFilterChanged,
+            onOpenDialog = viewModel::onOpenDialog
         )
     }
 
@@ -116,6 +137,7 @@ private fun Content(
     onNextClick: (TaskEntity) -> Unit,
     onFocusChanged: (Int, TaskEntity) -> Unit,
     onFilterChanged: (Boolean) -> Unit,
+    onOpenDialog: () -> Unit
 ) = Scaffold(
     backgroundColor = getBackgroundColor(scheme = ColorScheme.LISTS),
     topBar = {
@@ -126,7 +148,18 @@ private fun Content(
             } else {
                 getListTitle(listEntity.type)
             },
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            actions = {
+                if (listEntity != null) {
+                    DebounceIconButton(onOpenDialog) {
+                        Icon(
+                            painterResource(CoreR.drawable.delete_icon),
+                            contentDescription = null,
+                            tint = TamadaTheme.colors.textMain,
+                        )
+                    }
+                }
+            }
         )
     },
     bottomBar = {

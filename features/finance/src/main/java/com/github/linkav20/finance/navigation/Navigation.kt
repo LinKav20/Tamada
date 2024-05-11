@@ -52,7 +52,8 @@ fun NavGraphBuilder.financeTabGraph(navController: NavController, errorMapper: E
         composableRoute(ProgressDestination) {
             ProgressScreen(
                 viewModel = hiltViewModel(),
-                navController = navController
+                navController = navController,
+                errorMapper = errorMapper
             )
         }
         composableRoute(MyExpensesDestination) {

@@ -34,6 +34,9 @@
     <string name="lk_info_save">Сохранить</string>
     <string name="lk_change_password_button">Изменить пароль</string>
     <string name="lk_delete_account_button">Удалить аккаунт</string>
+    <string name="lk_delete_account_dialog_title">Удаление аккаунта</string>
+    <string name="lk_delete_account_dialog_password">Для удаления аккаунта введите пароль</string>
+    <string name="lk_delete_account_dialog_password_hint">Пароль</string>
 
     <!-- ChangeAvatar Screen -->
     <string name="change_avatar_title">Изменение аватара</string>

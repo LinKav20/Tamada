@@ -134,6 +134,7 @@ private fun Content(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 //            item { InfoDisclaimer(infoShownCount = infoShownCount) }
+            item { Spacer(modifier = Modifier.height(8.dp)) }
             item {
                 InviteGuestsCard(
                     link = link,

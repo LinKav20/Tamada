@@ -8,5 +8,8 @@ class DeleteUserUseCase @Inject constructor(
     private val repository: UserRepository
 ) {
 
-    suspend fun invoke(user: User) = repository.deleteUser(user)
+    suspend fun invoke(user: User, password: String) = repository.deleteUser(
+        userId = user.id.toLong(),
+        password = password
+    )
 }

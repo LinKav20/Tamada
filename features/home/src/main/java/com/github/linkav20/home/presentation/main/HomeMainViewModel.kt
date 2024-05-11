@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.linkav20.auth.domain.usecase.GetAuthTokensUseCase
 import com.github.linkav20.core.domain.usecase.GetUserInformationUseCase
 import com.github.linkav20.core.domain.usecase.SetPartyIdUseCase
+import com.github.linkav20.core.domain.usecase.SetPartyNameUseCase
 import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.home.domain.model.Party
 import com.github.linkav20.home.domain.usecase.GetAllPartiesUseCase
@@ -21,6 +22,7 @@ class HomeMainViewModel @Inject constructor(
     private val setPartyIdUseCase: SetPartyIdUseCase,
     private val getAuthTokensUseCase: GetAuthTokensUseCase,
     private val getUserInformationUseCase: GetUserInformationUseCase,
+    private val setPartyNameUseCase: SetPartyNameUseCase,
     private val reactUseCase: ReactUseCase
 ) : ViewModel() {
 
@@ -29,6 +31,7 @@ class HomeMainViewModel @Inject constructor(
 
     fun onPartyClick(party: Party) {
         setPartyIdUseCase.invoke(party.id)
+        setPartyNameUseCase.invoke(party.name)
         _state.update { it.copy(action = HomeMainScreenState.Action.PARTY) }
     }
 

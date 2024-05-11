@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.github.linkav20.core.error.ErrorMapper
 import com.github.linkav20.core.utils.printPdf
 import com.github.linkav20.core.utils.saveTempFileAndGetUri
 import com.github.linkav20.coreui.theme.TamadaTheme
@@ -54,7 +55,8 @@ import com.github.linkav20.finance.presentation.shared.ExpenseItem
 @Composable
 fun ProgressScreen(
     viewModel: ProgressViewModel,
-    navController: NavController
+    navController: NavController,
+    errorMapper: ErrorMapper
 ) {
     val state = viewModel.state.collectAsState().value
 
@@ -64,8 +66,15 @@ fun ProgressScreen(
         onBackClick = { navController.navigateUp() },
         onMyExpensesClick = { navController.navigate(MyExpensesDestination.createRoute(state.step)) },
         onReceiptClick = viewModel::onReceiptClick,
-        onSpecificButtonClick = {  },
-        onErrorInExpensesClick = viewModel::onErrorInExpensesClick
+        onSpecificButtonClick = { },
+        onErrorInExpensesClick = viewModel::onErrorInExpensesClick,
+        onError = {
+            errorMapper.OnError(
+                throwable = it,
+                onActionClick = viewModel::onRetry,
+                colorScheme = ColorScheme.FINANCE
+            )
+        }
     )
 
     val context = LocalContext.current
@@ -89,7 +98,8 @@ private fun Content(
     onMyExpensesClick: () -> Unit,
     onReceiptClick: (Long) -> Unit,
     onSpecificButtonClick: () -> Unit,
-    onErrorInExpensesClick: (Long) -> Unit
+    onErrorInExpensesClick: (Long) -> Unit,
+    onError: @Composable (Throwable) -> Unit
 ) = Scaffold(
     modifier = Modifier
         .statusBarsPadding()
@@ -104,113 +114,121 @@ private fun Content(
         )
     }
 ) { paddings ->
-    Box(modifier = Modifier.padding(paddings)) {
-        Column(
-            modifier = Modifier
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            if (state.total != null) {
-                TamadaGradientDisclaimer(
-                    colorScheme = ColorScheme.FINANCE
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+    if (state.loading) {
+        TamadaFullscreenLoader(scheme = ColorScheme.FINANCE)
+    } else if (state.error != null) {
+        onError(state.error)
+    } else {
+        Box(modifier = Modifier.padding(paddings)) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                if (state.total != null) {
+                    TamadaGradientDisclaimer(
+                        colorScheme = ColorScheme.FINANCE
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = state.total.name,
+                                style = TamadaTheme.typography.body,
+                                color = TamadaTheme.colors.textWhite
+                            )
+                            Spacer(
+                                Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                            )
+                            Text(
+                                text = stringResource(
+                                    R.string.step1_sum_formatter,
+                                    state.total.sum
+                                ),
+                                style = TamadaTheme.typography.body,
+                                color = TamadaTheme.colors.textWhite
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+                TamadaCard(colorScheme = ColorScheme.FINANCE) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Text(
-                            text = state.total.name,
-                            style = TamadaTheme.typography.body,
-                            color = TamadaTheme.colors.textWhite
+                            text = when (state.step) {
+                                0 -> stringResource(id = R.string.progress_users_done_title_step1)
+                                1 -> stringResource(id = R.string.progress_users_done_title_step2)
+                                else -> stringResource(id = R.string.progress_users_done_title_step3)
+                            },
+                            style = TamadaTheme.typography.head,
+                            color = TamadaTheme.colors.textHeader
                         )
-                        Spacer(
-                            Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                        )
-                        Text(
-                            text = stringResource(R.string.step1_sum_formatter, state.total.sum),
-                            style = TamadaTheme.typography.body,
-                            color = TamadaTheme.colors.textWhite
-                        )
+                        if (state.getUsersDone.isEmpty()) {
+                            Text(
+                                text = stringResource(id = R.string.progress_empty_list_done_users),
+                                style = TamadaTheme.typography.body,
+                                color = TamadaTheme.colors.textMain
+                            )
+                        } else {
+                            DoneUsers(
+                                step = state.step,
+                                users = state.getUsersDone,
+                                isManager = state.isManager,
+                                onExpandUserExpenseClick = onExpandUserExpenseClick,
+                                onMyExpensesClick = onMyExpensesClick,
+                                onReceiptClick = onReceiptClick,
+                                onSpecificButtonClick = onSpecificButtonClick,
+                                onErrorInExpensesClick = onErrorInExpensesClick
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-            }
-            TamadaCard(colorScheme = ColorScheme.FINANCE) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Text(
-                        text = when (state.step) {
-                            0 -> stringResource(id = R.string.progress_users_done_title_step1)
-                            1 -> stringResource(id = R.string.progress_users_done_title_step2)
-                            else -> stringResource(id = R.string.progress_users_done_title_step3)
-                        },
-                        style = TamadaTheme.typography.head,
-                        color = TamadaTheme.colors.textHeader
-                    )
-                    if (state.getUsersDone.isEmpty()) {
+                TamadaCard(colorScheme = ColorScheme.FINANCE) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
                         Text(
-                            text = stringResource(id = R.string.progress_empty_list_done_users),
-                            style = TamadaTheme.typography.body,
-                            color = TamadaTheme.colors.textMain
+                            text = when (state.step) {
+                                0 -> stringResource(id = R.string.progress_users_not_done_title_step1)
+                                1 -> stringResource(id = R.string.progress_users_not_done_title_step2)
+                                else -> stringResource(id = R.string.progress_users_not_done_title_step3)
+                            },
+                            style = TamadaTheme.typography.head,
+                            color = TamadaTheme.colors.textHeader
                         )
-                    } else {
-                        DoneUsers(
-                            step = state.step,
-                            users = state.getUsersDone,
-                            isManager = state.isManager,
-                            onExpandUserExpenseClick = onExpandUserExpenseClick,
-                            onMyExpensesClick = onMyExpensesClick,
-                            onReceiptClick = onReceiptClick,
-                            onSpecificButtonClick = onSpecificButtonClick,
-                            onErrorInExpensesClick = onErrorInExpensesClick
-                        )
+                        if (state.getUsersNotDone.isEmpty()) {
+                            Text(
+                                text = stringResource(id = R.string.progress_empty_list_not_done_users),
+                                style = TamadaTheme.typography.body,
+                                color = TamadaTheme.colors.textMain
+                            )
+                        } else {
+                            NotDoneUsers(
+                                isManager = state.isManager,
+                                step = state.step,
+                                users = state.getUsersNotDone,
+                                onExpandUserExpenseClick = onExpandUserExpenseClick,
+                                onMyExpensesClick = onMyExpensesClick,
+                                onReceiptClick = onReceiptClick,
+                                onSpecificButtonClick = onSpecificButtonClick,
+                                onErrorInExpensesClick = onErrorInExpensesClick
+                            )
+                        }
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
             }
-            Spacer(modifier = Modifier.height(24.dp))
-            TamadaCard(colorScheme = ColorScheme.FINANCE) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Text(
-                        text = when (state.step) {
-                            0 -> stringResource(id = R.string.progress_users_not_done_title_step1)
-                            1 -> stringResource(id = R.string.progress_users_not_done_title_step2)
-                            else -> stringResource(id = R.string.progress_users_not_done_title_step3)
-                        },
-                        style = TamadaTheme.typography.head,
-                        color = TamadaTheme.colors.textHeader
-                    )
-                    if (state.getUsersNotDone.isEmpty()) {
-                        Text(
-                            text = stringResource(id = R.string.progress_empty_list_not_done_users),
-                            style = TamadaTheme.typography.body,
-                            color = TamadaTheme.colors.textMain
-                        )
-                    } else {
-                        NotDoneUsers(
-                            isManager = state.isManager,
-                            step = state.step,
-                            users = state.getUsersNotDone,
-                            onExpandUserExpenseClick = onExpandUserExpenseClick,
-                            onMyExpensesClick = onMyExpensesClick,
-                            onReceiptClick = onReceiptClick,
-                            onSpecificButtonClick = onSpecificButtonClick,
-                            onErrorInExpensesClick = onErrorInExpensesClick
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
-    if (state.loading) TamadaFullscreenLoader(scheme = ColorScheme.FINANCE)
 }
 
 @Composable

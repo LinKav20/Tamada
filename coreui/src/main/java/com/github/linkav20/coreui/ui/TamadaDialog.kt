@@ -1,4 +1,4 @@
-package com.github.linkav20.finance.presentation.dialog
+package com.github.linkav20.coreui.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
@@ -8,32 +8,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.linkav20.coreui.R
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.utils.ColorScheme
 import com.github.linkav20.coreui.utils.getPrimaryColor
-import com.github.linkav20.finance.R
 
 @Composable
-fun Dialog(
-    subtitle: String,
+fun TamadaDialog(
+    title: String,
+    body: @Composable () -> Unit,
+    colorScheme: ColorScheme = ColorScheme.MAIN,
     onClose: () -> Unit,
     onConfirm: () -> Unit
 ) = AlertDialog(
     onDismissRequest = onClose,
     title = {
         Text(
-            text = stringResource(id = R.string.dialog_title),
+            text = title,
             style = TamadaTheme.typography.head,
             color = TamadaTheme.colors.textHeader
         )
     },
-    text = {
-        Text(
-            text = subtitle,
-            style = TamadaTheme.typography.caption,
-            color = TamadaTheme.colors.textMain
-        )
-    },
+    text = body,
     dismissButton = {
         Text(
             modifier = Modifier
@@ -51,7 +47,7 @@ fun Dialog(
                 .padding(16.dp),
             text = stringResource(id = R.string.dialog_turn_on_button),
             style = TamadaTheme.typography.body,
-            color = getPrimaryColor(scheme = ColorScheme.FINANCE)
+            color = getPrimaryColor(scheme = colorScheme)
         )
     },
     shape = TamadaTheme.shapes.medium,

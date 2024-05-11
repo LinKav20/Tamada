@@ -1,8 +1,7 @@
 package com.github.linkav20.home.presentation.lk
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -31,14 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.github.linkav20.auth.navigation.AuthGraphDestination
@@ -50,6 +49,7 @@ import com.github.linkav20.coreui.ui.ButtonType
 import com.github.linkav20.coreui.ui.DebounceIconButton
 import com.github.linkav20.coreui.ui.TamadaButton
 import com.github.linkav20.coreui.ui.TamadaCard
+import com.github.linkav20.coreui.ui.TamadaDialog
 import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
 import com.github.linkav20.coreui.ui.TamadaTextFiled
 import com.github.linkav20.coreui.ui.TamadaTextWithBackground
@@ -57,13 +57,10 @@ import com.github.linkav20.home.R
 import com.github.linkav20.coreui.R as CoreR
 import com.github.linkav20.coreui.ui.TamadaTopBar
 import com.github.linkav20.coreui.utils.ColorScheme
-import com.github.linkav20.coreui.utils.getBackgroundColor
 import com.github.linkav20.coreui.utils.getPrimaryColor
 import com.github.linkav20.coreui.utils.getUserAvatar
-import com.github.linkav20.home.domain.model.User
 import com.github.linkav20.home.navigation.ChangeAvatarDestination
 import com.github.linkav20.home.navigation.ChangePasswordDestination
-import com.github.linkav20.home.navigation.HomeGraphDestination
 
 
 @Composable
@@ -74,10 +71,51 @@ fun LkScreen(
 ) {
     val state = viewModel.state.collectAsState().value
 
+    if (state.showDialog) {
+        TamadaDialog(
+            title = stringResource(id = R.string.lk_delete_account_dialog_title),
+            body = {
+                Column {
+                    Text(
+                        text = stringResource(id = R.string.lk_delete_account_dialog_password),
+                        style = TamadaTheme.typography.caption,
+                        color = TamadaTheme.colors.textMain
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    TamadaTextFiled(
+                        value = state.password,
+                        visualTransformation = if (state.showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                        placeholder = stringResource(id = R.string.lk_delete_account_dialog_password_hint),
+                        onValueChange = viewModel::onPasswordChanged,
+                        maxLines = 1,
+                        colorScheme = ColorScheme.LISTS,
+                        trailingIcon = {
+                            Icon(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clickable { viewModel.onShowPasswordClick() },
+                                painter = if (state.showPassword) {
+                                    painterResource(id = CoreR.drawable.outline_remove_red_eye_24)
+                                } else {
+                                    painterResource(id = CoreR.drawable.eyebrow)
+                                },
+                                contentDescription = null,
+                                tint = getPrimaryColor(scheme = ColorScheme.LISTS)
+                            )
+                        }
+                    )
+                }
+            },
+            onClose = viewModel::onCloseDialog,
+            colorScheme = ColorScheme.LISTS,
+            onConfirm = viewModel::onDeleteAccount
+        )
+    }
+
     Content(
         state = state,
         onBackClick = { navController.navigateUp() },
-        onDeleteAccountClick = viewModel::onDeleteAccount,
+        onDeleteAccountClick = viewModel::onShowDialog,
         onChangePasswordClick = { navController.navigate(ChangePasswordDestination.route()) },
         onEditInfoClick = viewModel::onEditInfoClick,
         onSaveInfoClick = viewModel::onSaveInfoClick,

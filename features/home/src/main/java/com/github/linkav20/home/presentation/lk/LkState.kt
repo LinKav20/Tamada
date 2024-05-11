@@ -10,7 +10,10 @@ data class LkState(
     val isInfoEdit: Boolean = false,
     val action: Action? = null,
     val exception: Exception? = null,
-    val wallet: Wallet? = null
+    val wallet: Wallet? = null,
+    val showDialog: Boolean = false,
+    val password: String = "",
+    val showPassword: Boolean = false
 ) {
     enum class Action { AUTH }
 }

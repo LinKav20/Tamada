@@ -26,7 +26,13 @@
     <!--List Screen -->
     <string name="list_screen_default_title">Список</string>
     <string name="list_screen_access_to_guests">Доступен гостям</string>
+    <string name="list_screen_dialog_delete_title">Вы уверены?</string>
+    <string name="list_screen_dialog_delete_subtitle">Восстановить список будет невозможно</string>
     <string name="list_screen_add_button">Новый пункт</string>
     <string name="list_screen_finance_disclaimer">Закупились? Перейдите в <u>разделение затрат</u>, чтобы добавить свои расходы, если хотите, чтобы на них скидывались</string>
+
+    <!-- Notify -->
+    <string name="list_screen_notify_task_title">Задание выполнено</string>
+    <string name="list_screen_notify_task_subtitle">Пользователь %s выполнил задачние %s для мерояприятия %s</string>
 
 </resources>
