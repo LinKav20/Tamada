@@ -21,16 +21,20 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.github.linkav20.core.utils.printPdf
+import com.github.linkav20.core.utils.saveTempFileAndGetUri
 import com.github.linkav20.coreui.theme.TamadaTheme
 import com.github.linkav20.coreui.ui.TamadaCard
 import com.github.linkav20.coreui.ui.TamadaFullscreenLoader
@@ -43,6 +47,7 @@ import com.github.linkav20.coreui.utils.getUserAvatar
 import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.UserUI
 import com.github.linkav20.finance.navigation.MyExpensesDestination
+import com.github.linkav20.finance.presentation.myexpenses.FILE_FORMAT
 import com.github.linkav20.finance.presentation.shared.ExpandableExpensesCard
 import com.github.linkav20.finance.presentation.shared.ExpenseItem
 
@@ -58,10 +63,22 @@ fun ProgressScreen(
         onExpandUserExpenseClick = viewModel::onExpandUserExpenseClick,
         onBackClick = { navController.navigateUp() },
         onMyExpensesClick = { navController.navigate(MyExpensesDestination.createRoute(state.step)) },
-        onReceiptClick = {  },
+        onReceiptClick = viewModel::onReceiptClick,
         onSpecificButtonClick = {  },
         onErrorInExpensesClick = {  }
     )
+
+    val context = LocalContext.current
+    LaunchedEffect(state.receipt) {
+        if (state.receipt != null) {
+            saveTempFileAndGetUri(
+                context = context,
+                data = state.receipt,
+                extension = FILE_FORMAT
+            )?.let { printPdf(context, it) }
+        }
+        viewModel.onNullifyReceipt()
+    }
 }
 
 @Composable
@@ -70,7 +87,7 @@ private fun Content(
     onExpandUserExpenseClick: (UserUI) -> Unit,
     onBackClick: () -> Unit,
     onMyExpensesClick: () -> Unit,
-    onReceiptClick: () -> Unit,
+    onReceiptClick: (Long) -> Unit,
     onSpecificButtonClick: () -> Unit,
     onErrorInExpensesClick: () -> Unit
 ) = Scaffold(
@@ -203,7 +220,7 @@ private fun NotDoneUsers(
     users: List<UserUI>,
     onExpandUserExpenseClick: (UserUI) -> Unit,
     onMyExpensesClick: () -> Unit,
-    onReceiptClick: () -> Unit,
+    onReceiptClick: (Long) -> Unit,
     onSpecificButtonClick: () -> Unit,
     onErrorInExpensesClick: () -> Unit
 ) {
@@ -262,7 +279,7 @@ private fun DoneUsers(
     users: List<UserUI>,
     onExpandUserExpenseClick: (UserUI) -> Unit,
     onMyExpensesClick: () -> Unit,
-    onReceiptClick: () -> Unit,
+    onReceiptClick: (Long) -> Unit,
     onSpecificButtonClick: () -> Unit,
     onErrorInExpensesClick: () -> Unit
 ) = Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

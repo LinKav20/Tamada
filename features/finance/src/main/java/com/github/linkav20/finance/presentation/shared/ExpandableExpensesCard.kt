@@ -53,7 +53,7 @@ fun ExpandableExpensesCard(
     step: Int,
     onExpand: (UserUI) -> Unit,
     onErrorInExpensesClick: () -> Unit,
-    onReceiptClick: () -> Unit,
+    onReceiptClick: (Long) -> Unit,
     onMyExpensesClick: () -> Unit,
     onSpecificButtonClick: () -> Unit
 ) = TamadaCard(
@@ -214,7 +214,7 @@ fun ExpandableExpensesCard(
                         title = stringResource(R.string.receipt_button),
                         type = ButtonType.SECONDARY,
                         colorScheme = ColorScheme.FINANCE,
-                        onClick = onReceiptClick
+                        onClick = { onReceiptClick(user.id) }
                     )
                     TamadaButton(
                         modifier = Modifier.weight(3f),

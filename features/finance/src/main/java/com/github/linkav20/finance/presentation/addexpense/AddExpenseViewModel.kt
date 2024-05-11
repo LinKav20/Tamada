@@ -59,7 +59,7 @@ class AddExpenseViewModel @Inject constructor(
 
     fun onReceiptChange(value: Uri?) = _state.update { it.copy(receipt = value) }
 
-    fun onAddClick() {
+    fun onAddClick(type: Expense.Type) {
         if (state.value.sum.isEmpty() || state.value.name.isEmpty() ||
             (state.value.actionType == AddExpenseState.ActionType.ADD && state.value.receipt == null)
         ) {
@@ -68,17 +68,17 @@ class AddExpenseViewModel @Inject constructor(
                 style = ReactionStyle.ERROR
             )
         } else {
-            saveExpense()
+            saveExpense(type)
         }
     }
 
-    private fun saveExpense() = viewModelScope.launch {
+    private fun saveExpense(type: Expense.Type) = viewModelScope.launch {
         _state.update { it.copy(loading = true) }
         try {
             if (state.value.receipt == null) return@launch
             if (state.value.id == null) {
                 addExpenseUseCase.invoke(
-                    type = state.value.type,
+                    type = type,
                     name = state.value.name,
                     sum = state.value.sum.toDouble(),
                     receipt = state.value.receipt!!,

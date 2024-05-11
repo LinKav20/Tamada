@@ -76,4 +76,6 @@ interface FinanceRepository {
     suspend fun calculateExpenses(partyId: Long, userId: Long): Calculate?
 
     suspend fun getUserWalletInfo(userId: Long): Wallet?
+
+    suspend fun getUserReceipts(userId: Long, partyId: Long): InputStream?
 }

@@ -4,12 +4,16 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.linkav20.core.domain.entity.DomainException
+import com.github.linkav20.core.domain.entity.ReactionStyle
 import com.github.linkav20.core.domain.entity.UserRole
 import com.github.linkav20.core.domain.usecase.GetPartyIdUseCase
 import com.github.linkav20.core.domain.usecase.GetRoleUseCase
+import com.github.linkav20.core.notification.ReactUseCase
 import com.github.linkav20.finance.R
 import com.github.linkav20.finance.domain.model.Expense
 import com.github.linkav20.finance.domain.model.UserUI
+import com.github.linkav20.finance.domain.usecase.GetAllUserReceipts
 import com.github.linkav20.finance.domain.usecase.GetAllUsersWithExpenses
 import com.github.linkav20.finance.domain.usecase.GetTotalPartySumUseCase
 import com.github.linkav20.finance.navigation.ProgressDestination
@@ -27,6 +31,8 @@ class ProgressViewModel @Inject constructor(
     private val getRoleUseCase: GetRoleUseCase,
     private val getAllUsersWithExpenses: GetAllUsersWithExpenses,
     private val savedStateHandle: SavedStateHandle,
+    private val getAllUserReceipts: GetAllUserReceipts,
+    private val reactUseCase: ReactUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(ProgressState())
@@ -44,6 +50,22 @@ class ProgressViewModel @Inject constructor(
         val newList = _state.value.users.minus(userUI).toMutableList()
         newList.add(index, newUser)
         _state.update { it.copy(users = newList) }
+    }
+
+    fun onNullifyReceipt() = _state.update { it.copy(receipt = null) }
+    fun onReceiptClick(userId: Long) = viewModelScope.launch {
+        _state.update { it.copy(loading = true) }
+        try {
+            val receipt =
+                getAllUserReceipts.invoke(userId) ?: throw DomainException.Network
+            _state.update { it.copy(receipt = receipt) }
+        } catch (_: Exception) {
+            reactUseCase.invoke(
+                context.getString(R.string.my_expense_popup_receipt_not_loaded),
+                style = ReactionStyle.ERROR
+            )
+        }
+        _state.update { it.copy(loading = false) }
     }
 
     private fun loadData() = viewModelScope.launch {
@@ -64,7 +86,7 @@ class ProgressViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-
+            _state.update { it.copy(error = e) }
         } finally {
             _state.update { it.copy(loading = false) }
         }

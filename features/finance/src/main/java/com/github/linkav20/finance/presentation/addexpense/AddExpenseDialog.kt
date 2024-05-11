@@ -127,15 +127,6 @@ fun AddExpenseDialog(
                 TamadaTextWithBackground(
                     modifier = Modifier.clickable {
                         openDocument.launch(arrayOf(PDF_FORMAT))
-                        /*
-                        for file
-
-                         saveTempFileAndGetUri(
-                         context = context,
-                         data = file,
-                         extension = ".pdf"
-                         )?.let { printPdf(context, it) }
-                         */
                     },
                     textColor = if (state.receipt?.lastPathSegment.isNullOrEmpty()) {
                         TamadaTheme.colors.textHint
@@ -152,7 +143,7 @@ fun AddExpenseDialog(
                 colorScheme = ColorScheme.FINANCE,
                 title = stringResource(id = R.string.add_expense_dialog_button),
                 onClick = {
-                    viewModel.onAddClick()
+                    viewModel.onAddClick(expenseType)
                 }
             )
             LaunchedEffect(state.action) {

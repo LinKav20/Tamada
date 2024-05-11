@@ -1,6 +1,5 @@
 package com.github.linkav20.finance.data
 
-import android.util.Log
 import com.github.linkav20.core.domain.entity.UserRole
 import com.github.linkav20.core.utils.DateTimeUtils
 import com.github.linkav20.finance.domain.model.Calculate
@@ -276,6 +275,15 @@ class FinanceRepositoryImpl @Inject constructor(
     override suspend fun getUserWalletInfo(userId: Long): Wallet? = retrofitErrorHandler.apiCall {
         authApi.getUserWallet(CommonGetUserWalletIn(userID = userId.toInt()))
     }?.toDomain()
+
+    override suspend fun getUserReceipts(userId: Long, partyId: Long): InputStream? =retrofitErrorHandler.apiCall {
+            eventApi.getAllUserReceipt(
+                CommonGetAllUserReceiptIn(
+                    partyID = partyId.toInt(),
+                    userID = userId.toInt()
+                )
+            )
+        }?.byteStream()
 
 }
 
